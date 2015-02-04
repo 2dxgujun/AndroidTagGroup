@@ -5,24 +5,9 @@
     android:orientation="vertical">
 
     <me.gujun.android.taggroup.TagGroup
-        android:layout_width="100dp"
+        android:id="@+id/tag_group"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-
-        <me.gujun.android.taggroup.TagView
-            android:id="@+id/tag_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="亲人"/>
-
-        <me.gujun.android.taggroup.TagView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="同学"/>
-
-        <me.gujun.android.taggroup.TagView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="朋友"/>
     </me.gujun.android.taggroup.TagGroup>
 
 
