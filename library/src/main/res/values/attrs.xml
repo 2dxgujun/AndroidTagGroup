@@ -1,9 +1,15 @@
 <resources>
     <declare-styleable name="TagView">
+        <!--  -->
         <attr name="colorActive" format="color"/>
         <attr name="colorNormal" format="color"/>
         <attr name="borderWidth" format="dimension"/>
     </declare-styleable>
 
+
+    <declare-styleable name="TagGroup">
+        <attr name="horizontalSpacing" format="dimension"/>
+        <attr name="verticalSpacing" format="dimension"/>
+    </declare-styleable>
 
 </resources>

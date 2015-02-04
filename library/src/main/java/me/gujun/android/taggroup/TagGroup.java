@@ -1,6 +1,7 @@
 package me.gujun.android.taggroup;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +15,8 @@ import android.view.ViewGroup;
  * @since 2015-2-3 14:16:32
  */
 public class TagGroup extends ViewGroup {
-    private int mHorizontalSpacing;
-    private int mVerticalSpacing;
+    private float mHorizontalSpacing;
+    private float mVerticalSpacing;
 
 
     public TagGroup(Context context) {
@@ -24,6 +25,13 @@ public class TagGroup extends ViewGroup {
 
     public TagGroup(Context context, AttributeSet attrs) {
         super(context, attrs);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TagGroup);
+        try {
+            mHorizontalSpacing = a.getDimension(R.styleable.TagGroup_horizontalSpacing, 10);
+            mVerticalSpacing = a.getDimension(R.styleable.TagGroup_verticalSpacing, 5);
+        } finally {
+            a.recycle();
+        }
     }
 
     @Override
@@ -39,30 +47,33 @@ public class TagGroup extends ViewGroup {
         int height = 0;
 
         int row = 0;
-        int childrenRowWidth = 0;
-        int childrenRowMaxHeight = 0;
+        int rowWidth = 0;
+        int rowMaxHeight = 0;
 
         final int count = getChildCount();
         for (int i = 0; i < count; i++) {
             final View child = getChildAt(i);
             final int childWidth = child.getMeasuredWidth();
             final int childHeight = child.getMeasuredHeight();
+
             if (child.getVisibility() != GONE) {
-                childrenRowWidth += childWidth;
-                if (childrenRowWidth > widthSize) { // Next line
-                    childrenRowWidth = childWidth;
-                    height += childrenRowMaxHeight;
-                    childrenRowMaxHeight = childHeight;
+                rowWidth += childWidth;
+                if (rowWidth > widthSize) { // Next line
+                    rowWidth = childWidth;
+                    height += rowMaxHeight;
+                    rowMaxHeight = childHeight;
                     row++;
                 } else {
-                    childrenRowMaxHeight = Math.max(childrenRowMaxHeight, childHeight);
+                    rowMaxHeight = Math.max(rowMaxHeight, childHeight);
                 }
             }
         }
-        height += childrenRowMaxHeight;
+        height += rowMaxHeight;
+        height += getPaddingTop() + getPaddingBottom();
 
         if (row == 0) {
-            width = childrenRowWidth;
+            width = rowWidth;
+            width += getPaddingLeft() + getPaddingRight();
         } else {// Exceed ont line
             width = widthSize;
         }
@@ -75,30 +86,28 @@ public class TagGroup extends ViewGroup {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         final int count = getChildCount();
 
-        final int parentLeft = l;
-        final int parentRight = r;
-        final int parentTop = t;
-        final int parentBottom = b;
+        final int parentLeft = getPaddingLeft();
+        final int parentRight = r - l - getPaddingRight();
+        final int parentTop = getPaddingTop();
+        final int parentBottom = b - t - getPaddingBottom();
 
         int childLeft = parentLeft;
         int childTop = parentTop;
 
-        int currRowMaxChildHeight = 0;
+        int rowMaxHeight = 0;
 
         for (int i = 0; i < count; i++) {
             final View child = getChildAt(i);
             if (child.getVisibility() != GONE) {
-                // final LayoutParams lp = (LayoutParams) child.getLayoutParams();
-
                 final int width = child.getMeasuredWidth();
                 final int height = child.getMeasuredHeight();
 
-                currRowMaxChildHeight = Math.max(currRowMaxChildHeight, height);
+                rowMaxHeight = Math.max(rowMaxHeight, height);
 
-                if (childLeft + width > parentRight - parentLeft) { // Next line
+                if (childLeft + width > parentRight) { // Next line
                     childLeft = parentLeft;
-                    childTop += currRowMaxChildHeight;
-                    currRowMaxChildHeight = 0;
+                    childTop += rowMaxHeight;
+                    rowMaxHeight = 0;
                 }
 
                 child.layout(childLeft, childTop, childLeft + width, childTop + height);
