@@ -44,8 +44,8 @@ public class TagView extends TextView {
     private RectF mLeftCornerRectF;
     private RectF mRightCornerRectF;
 
-    private RectF mHorizontalSpacingRectF;
-    private RectF mVerticalSpacingRectF;
+    private RectF mHorizontalBlankFillRectF;
+    private RectF mVerticalBlankFillRectF;
 
     private Path mBorderPath;
 
@@ -69,12 +69,16 @@ public class TagView extends TextView {
 
         mLeftCornerRectF = new RectF();
         mRightCornerRectF = new RectF();
-        mHorizontalSpacingRectF = new RectF();
-        mVerticalSpacingRectF = new RectF();
+        mHorizontalBlankFillRectF = new RectF();
+        mVerticalBlankFillRectF = new RectF();
 
         mBorderPath = new Path();
         mPathEffect = new DashPathEffect(new float[]{10, 5}, 0);
         mBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaint.setStyle(Paint.Style.STROKE);
+        mPaint.setColor(Color.BLACK);
+        mPaint.setStrokeWidth(0);
 
         setGravity(Gravity.CENTER);
         int horizontalPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
@@ -103,7 +107,6 @@ public class TagView extends TextView {
             setEnabled(false);
         } else if (mState == State.CHECKED) {
             mBorderPaint.setStyle(Paint.Style.FILL);
-            mBorderPaint.setStrokeWidth(mBorderStrokeWidth);
             mBorderPaint.setColor(mActiveColor);
             mBorderPaint.setPathEffect(null);
             setTextColor(Color.WHITE);
@@ -120,16 +123,16 @@ public class TagView extends TextView {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawPath(mBorderPath, mBorderPaint);
         if (mState == State.CHECKED) {
             canvas.drawArc(mLeftCornerRectF, -180, 90, true, mBorderPaint);
             canvas.drawArc(mLeftCornerRectF, -270, 90, true, mBorderPaint);
             canvas.drawArc(mRightCornerRectF, -90, 90, true, mBorderPaint);
             canvas.drawArc(mRightCornerRectF, 0, 90, true, mBorderPaint);
-            canvas.drawRect(mHorizontalSpacingRectF, mBorderPaint);
-            canvas.drawRect(mVerticalSpacingRectF, mBorderPaint);
+            canvas.drawRect(mHorizontalBlankFillRectF, mBorderPaint);
+            canvas.drawRect(mVerticalBlankFillRectF, mBorderPaint);
+        } else {
+            canvas.drawPath(mBorderPath, mBorderPaint);
         }
-
         super.onDraw(canvas);
     }
 
@@ -141,8 +144,7 @@ public class TagView extends TextView {
         float right = left + w - mBorderStrokeWidth * 2;
         float bottom = top + h - mBorderStrokeWidth * 2;
 
-        float cornerRadius = (bottom - top) / 2.0f;
-        float d = cornerRadius * 2;
+        float d = bottom - top;
 
         mLeftCornerRectF.set(left, top, left + d, top + d);
         mRightCornerRectF.set(right - d, top, right, top + d);
@@ -153,7 +155,7 @@ public class TagView extends TextView {
         mBorderPath.addArc(mRightCornerRectF, -90, 90);
         mBorderPath.addArc(mRightCornerRectF, 0, 90);
 
-        float l = cornerRadius;
+        int l = (int) (d / 2.0f);
         mBorderPath.moveTo(left + l, top);
         mBorderPath.lineTo(right - l, top);
 
@@ -166,8 +168,8 @@ public class TagView extends TextView {
         mBorderPath.moveTo(right, top + l);
         mBorderPath.lineTo(right, bottom - l);
 
-        mHorizontalSpacingRectF.set(left, top + l, right, bottom - l);
-        mVerticalSpacingRectF.set(left + l, top, right - l, bottom);
+        mHorizontalBlankFillRectF.set(left, top + l, right, bottom - l);
+        mVerticalBlankFillRectF.set(left + l, top, right - l, bottom);
     }
 
     public void setState(State state) {
