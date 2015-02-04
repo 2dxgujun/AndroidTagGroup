@@ -4,10 +4,22 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <me.gujun.android.taggroup.TagView
-        android:layout_width="60dp"
-        android:layout_height="30dp"
-        android:text="同学"/>
+    <me.gujun.android.taggroup.TagGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <me.gujun.android.taggroup.TagView
+            android:id="@+id/tag_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="亲人"/>
+
+        <me.gujun.android.taggroup.TagView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="同学"/>
+    </me.gujun.android.taggroup.TagGroup>
+
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -10,6 +10,7 @@ import android.graphics.Path;
 import android.graphics.PathEffect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.TextView;
 
@@ -76,6 +77,12 @@ public class TagView extends TextView {
         mBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         setGravity(Gravity.CENTER);
+        int horizontalPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                10, getResources().getDisplayMetrics());
+        int verticalPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                5, getResources().getDisplayMetrics());
+        setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding);
+        setTextSize(10);
         invalidatePaint();
     }
 
@@ -129,10 +136,10 @@ public class TagView extends TextView {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        float left = getLeft() + mBorderStrokeWidth;
-        float top = getTop() + mBorderStrokeWidth;
-        float right = getRight() - mBorderStrokeWidth;
-        float bottom = getBottom() - mBorderStrokeWidth;
+        float left = mBorderStrokeWidth;
+        float top = mBorderStrokeWidth;
+        float right = left + w - mBorderStrokeWidth * 2;
+        float bottom = top + h - mBorderStrokeWidth * 2;
 
         float cornerRadius = (bottom - top) / 2.0f;
         float d = cornerRadius * 2;
