@@ -15,8 +15,8 @@ import android.view.ViewGroup;
  * @since 2015-2-3 14:16:32
  */
 public class TagGroup extends ViewGroup {
-    private float mHorizontalSpacing;
-    private float mVerticalSpacing;
+    private int mHorizontalSpacing;
+    private int mVerticalSpacing;
 
 
     public TagGroup(Context context) {
@@ -27,8 +27,8 @@ public class TagGroup extends ViewGroup {
         super(context, attrs);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TagGroup);
         try {
-            mHorizontalSpacing = a.getDimension(R.styleable.TagGroup_horizontalSpacing, 10);
-            mVerticalSpacing = a.getDimension(R.styleable.TagGroup_verticalSpacing, 5);
+            mHorizontalSpacing = (int) a.getDimension(R.styleable.TagGroup_horizontalSpacing, 10);
+            mVerticalSpacing = (int) a.getDimension(R.styleable.TagGroup_verticalSpacing, 5);
         } finally {
             a.recycle();
         }
@@ -57,10 +57,10 @@ public class TagGroup extends ViewGroup {
             final int childHeight = child.getMeasuredHeight();
 
             if (child.getVisibility() != GONE) {
-                rowWidth += childWidth;
+                rowWidth += childWidth + mHorizontalSpacing;
                 if (rowWidth > widthSize) { // Next line
-                    rowWidth = childWidth;
-                    height += rowMaxHeight;
+                    rowWidth = childWidth + mHorizontalSpacing;
+                    height += rowMaxHeight + mVerticalSpacing;
                     rowMaxHeight = childHeight;
                     row++;
                 } else {
@@ -95,6 +95,7 @@ public class TagGroup extends ViewGroup {
         int childTop = parentTop;
 
         int rowMaxHeight = 0;
+        boolean firstTagInGroup = true;
 
         for (int i = 0; i < count; i++) {
             final View child = getChildAt(i);
@@ -106,11 +107,17 @@ public class TagGroup extends ViewGroup {
 
                 if (childLeft + width > parentRight) { // Next line
                     childLeft = parentLeft;
-                    childTop += rowMaxHeight;
+                    childTop += rowMaxHeight + mVerticalSpacing;
                     rowMaxHeight = 0;
+                    firstTagInGroup = true;
+                }
+                if (firstTagInGroup) {
+                    child.layout(childLeft, childTop, childLeft + width, childTop + height);
+                    firstTagInGroup = !firstTagInGroup;
+                } else {
+                    child.layout(childLeft + mHorizontalSpacing, childTop, childLeft + width + mHorizontalSpacing, childTop + height);
                 }
 
-                child.layout(childLeft, childTop, childLeft + width, childTop + height);
                 childLeft += width;
             }
         }
