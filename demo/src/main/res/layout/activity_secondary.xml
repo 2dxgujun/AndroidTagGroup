@@ -9,18 +9,11 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/tags"
-        android:textSize="20sp"/>
+    tools:context=".SecondaryActivity">
 
     <me.gujun.android.taggroup.TagGroup
         android:id="@+id/tag_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        app:isAppendMode="false"/>
+        app:isAppendMode="true"/>
 </LinearLayout>
