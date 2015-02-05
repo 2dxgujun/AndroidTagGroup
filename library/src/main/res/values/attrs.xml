@@ -1,6 +1,7 @@
 <resources>
     <declare-styleable name="TagGroup">
         <!--  -->
+        <attr name="isAppendMode" format="boolean"/>
         <attr name="activeColor" format="color"/>
         <attr name="normalColor" format="color"/>
         <attr name="borderWidth" format="dimension"/>

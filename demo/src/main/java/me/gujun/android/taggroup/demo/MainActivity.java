@@ -21,10 +21,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         mTagGroup = (TagGroup) findViewById(R.id.tag_group);
-        mTagGroup.addTag("同学");
-        mTagGroup.addTag("朋友");
-        mTagGroup.addTag("亲人");
-        
+
         mNormalBtn = (Button) findViewById(R.id.btn_normal);
         mActiveBtn = (Button) findViewById(R.id.btn_active);
         mCheckedBtn = (Button) findViewById(R.id.btn_checked);

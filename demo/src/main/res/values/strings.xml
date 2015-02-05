@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">TagGroup Demo</string>
+    <string name="title_activity_secondary">SecondaryActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 </resources>

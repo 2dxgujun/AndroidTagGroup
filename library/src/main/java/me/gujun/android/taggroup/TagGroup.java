@@ -9,6 +9,10 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathEffect;
 import android.graphics.RectF;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.text.method.ArrowKeyMovementMethod;
+import android.text.method.MovementMethod;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -16,9 +20,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-
 /**
- * This class is used to create a tag group.
+ * This class is used to create a group for a set of tags. The tag group has two modes:
+ * <p/>
+ * 1. APPEND mode<br/>
+ * 2. DISPLAY mode
+ * <p/>
+ * Default is DISPLAY mode. When in APPEND mode, the group is capable of input and append new tags,
+ * it always shows a INPUT state tag view at the last position of group. When you finish input,
+ * click the blank region of the tag group to end the INPUT state.Click the NORMAL state tag,
+ * will check the tag, next click to the checked tag will delete the tag.
+ * <p/>
+ * When in DISPLAY mode, the group is only for display NORMAL state tags, and all the tags in group
+ * is not focusable.
  *
  * @author Jun Gu (http://2dxgujun.com)
  * @version 1.0
@@ -32,13 +46,17 @@ public class TagGroup extends ViewGroup {
     private final float default_horizontal_spacing;
     private final float default_vertical_spacing;
 
+    /**
+     * Indicates whether this TagGroup is set up to APPEND mode or DISPLAY mode.
+     */
+    private boolean isAppendMode;
+
     private int mActiveColor;
     private int mNormalColor;
     private float mBorderWidth;
     private float mTextSize;
     private int mHorizontalSpacing;
     private int mVerticalSpacing;
-
 
     public TagGroup(Context context) {
         this(context, null);
@@ -59,6 +77,7 @@ public class TagGroup extends ViewGroup {
         final TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.TagGroup, defStyleAttr, 0);
         try {
+            isAppendMode = a.getBoolean(R.styleable.TagGroup_isAppendMode, false);
             mActiveColor = a.getColor(R.styleable.TagGroup_activeColor, default_active_color);
             mNormalColor = a.getColor(R.styleable.TagGroup_normalColor, default_normal_color);
             mBorderWidth = a.getDimension(R.styleable.TagGroup_borderWidth, default_border_width);
@@ -69,6 +88,28 @@ public class TagGroup extends ViewGroup {
                     default_vertical_spacing);
         } finally {
             a.recycle();
+        }
+
+        setUpTagGroup();
+    }
+
+    protected void setUpTagGroup() {
+        if (isAppendMode) {
+            // Append the initial INPUT state tag.
+            appendInputTag();
+
+            // Set the TagGroup click listener to end the INPUT state tag and append new one.
+            setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TagView lastTag = getLastTag();
+                    if (lastTag != null && lastTag.getState() == TagView.STATE_INPUT
+                            && lastTag.isInputAvailable()) {
+                        lastTag.endInput();
+                        appendInputTag();
+                    }
+                }
+            });
         }
     }
 
@@ -161,12 +202,51 @@ public class TagGroup extends ViewGroup {
         }
     }
 
-    public void addTag(String text) {
-        TagView tagView = new TagView(getContext());
-        tagView.setText(text);
+    /**
+     * Return the last tag in this group.
+     *
+     * @return The last tag or null if none.
+     */
+    protected TagView getLastTag() {
+        final int lastTagIndex = getChildCount() - 1;
+        TagView tagView = (TagView) getChildAt(lastTagIndex);
+        return tagView;
+    }
+
+    /**
+     * Append a INPUT state tag to this group. It will check the group state first.
+     */
+    protected void appendInputTag() {
+        TagView lastTag = getLastTag();
+        if (lastTag != null && lastTag.getState() == TagView.STATE_INPUT) {
+            throw new IllegalStateException("Already has a INPUT state tag in group. " +
+                    "You must call endInput() before you append new one.");
+        }
+
+        TagView tagView = new TagView(getContext(), TagView.STATE_INPUT, null);
         tagView.setLayoutParams(new TagGroup.LayoutParams(TagGroup.LayoutParams.WRAP_CONTENT,
                 TagGroup.LayoutParams.WRAP_CONTENT));
         addView(tagView);
+    }
+
+    public void setTags(String[] tags) {
+        if (isAppendMode) {
+            int appendIndex = getChildCount() > 0 ? getChildCount() - 1 : 0;
+            for (String tag : tags) {
+                TagView tagView = new TagView(getContext(), TagView.STATE_NORMAL, tag);
+                tagView.setLayoutParams(new TagGroup.LayoutParams(TagGroup.LayoutParams.WRAP_CONTENT,
+                        TagGroup.LayoutParams.WRAP_CONTENT));
+                addView(tagView);
+            }
+        } else {
+            removeAllViews();
+            for (String tag : tags) {
+                TagView tagView = new TagView(getContext(), TagView.STATE_NORMAL, tag);
+                tagView.setLayoutParams(new TagGroup.LayoutParams(TagGroup.LayoutParams.WRAP_CONTENT,
+                        TagGroup.LayoutParams.WRAP_CONTENT));
+                addView(tagView);
+            }
+        }
     }
 
     public float dp2px(float dp) {
@@ -206,15 +286,17 @@ public class TagGroup extends ViewGroup {
     }
 
     /**
-     *
+     * A tag view is a two-states text that can be either normal or input.
+     * When the radio button is normal, the user can press or click it to check it.
+     * Tag views are normally used in a TagGroup.
      */
-    public class TagView extends TextView {
-        public static final int NORMAL = 1;
-        public static final int ACTIVE = 2;
-        public static final int CHECKED = 3;
-        public static final int INPUT = 4;
+    class TagView extends TextView {
+        public static final int STATE_NORMAL = 1;
+        public static final int STATE_INPUT = 3;
 
-        private int mState = ACTIVE;
+        private int mState = STATE_NORMAL;
+
+        private boolean isChecked = false;
 
         private Paint mBorderPaint;
 
@@ -225,67 +307,115 @@ public class TagGroup extends ViewGroup {
         private RectF mVerticalBlankFillRectF;
 
         private Path mBorderPath;
-
         private PathEffect mPathEffect;
 
-        public TagView(Context context) {
-            this(context, null);
-        }
+        public TagView(Context context, int state, String text) {
+            super(context);
+            mBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        public TagView(Context context, AttributeSet attrs) {
-            super(context, attrs);
             mLeftCornerRectF = new RectF();
             mRightCornerRectF = new RectF();
+
             mHorizontalBlankFillRectF = new RectF();
             mVerticalBlankFillRectF = new RectF();
 
             mBorderPath = new Path();
             mPathEffect = new DashPathEffect(new float[]{10, 5}, 0);
-            mBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
 
             int horizontalPadding = (int) dp2px(15.0f);
             int verticalPadding = (int) dp2px(5.0f);
             setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding);
+
             setGravity(Gravity.CENTER);
             setTextSize(mTextSize);
+            setClickable(true);
+
+            addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    requestLayout();
+                }
+            });
+
+            mState = state;
+
+            if (state == STATE_INPUT) {
+                setHint("添加标签");
+                setFocusable(true);
+                setFocusableInTouchMode(true);
+            } else {
+                setText(text);
+            }
+
             invalidatePaint();
         }
 
+        public void endInput() {
+            setFocusable(false);
+            setFocusableInTouchMode(false);
+            requestLayout();
+            mState = STATE_NORMAL;
+            invalidatePaint();
+        }
+
+        @Override
+        protected boolean getDefaultEditable() {
+            return true;
+        }
+
+        @Override
+        protected MovementMethod getDefaultMovementMethod() {
+            return ArrowKeyMovementMethod.getInstance();
+        }
+
+        public int getState() {
+            return mState;
+        }
+
+        /**
+         * Indicates whether the input content is available.
+         *
+         * @return True if the input content is available, false otherwise.
+         */
+        public boolean isInputAvailable() {
+            return getText() != null && getText().length() > 0;
+        }
+
         private void invalidatePaint() {
-            if (mState == NORMAL) {
-                mBorderPaint.setStyle(Paint.Style.STROKE);
-                mBorderPaint.setStrokeWidth(mBorderWidth);
-                mBorderPaint.setColor(mNormalColor);
-                mBorderPaint.setPathEffect(null);
-                setTextColor(mNormalColor);
-                setEnabled(false);
-            } else if (mState == ACTIVE) {
-                mBorderPaint.setStyle(Paint.Style.STROKE);
-                mBorderPaint.setStrokeWidth(mBorderWidth);
-                mBorderPaint.setColor(mActiveColor);
-                mBorderPaint.setPathEffect(null);
-                setTextColor(mActiveColor);
-                setEnabled(false);
-            } else if (mState == CHECKED) {
-                mBorderPaint.setStyle(Paint.Style.FILL);
-                mBorderPaint.setColor(mActiveColor);
-                mBorderPaint.setPathEffect(null);
-                setTextColor(Color.WHITE);
-                setEnabled(false);
-            } else if (mState == INPUT) {
+            if (mState == STATE_NORMAL) {
+                if (isChecked) {
+                    mBorderPaint.setStyle(Paint.Style.FILL);
+                    mBorderPaint.setColor(mActiveColor);
+                    mBorderPaint.setPathEffect(null);
+                    setTextColor(Color.WHITE);
+                } else {
+                    mBorderPaint.setStyle(Paint.Style.STROKE);
+                    mBorderPaint.setStrokeWidth(mBorderWidth);
+                    mBorderPaint.setColor(mNormalColor);
+                    mBorderPaint.setPathEffect(null);
+                    setTextColor(mNormalColor);
+                }
+
+            } else if (mState == STATE_INPUT) {
                 mBorderPaint.setStyle(Paint.Style.STROKE);
                 mBorderPaint.setStrokeWidth(mBorderWidth);
                 mBorderPaint.setColor(mNormalColor);
                 mBorderPaint.setPathEffect(mPathEffect);
                 setTextColor(mNormalColor);
-                setEnabled(true);
             }
         }
 
         @Override
         protected void onDraw(Canvas canvas) {
-            if (mState == CHECKED) {
+            if (isChecked) {
                 canvas.drawArc(mLeftCornerRectF, -180, 90, true, mBorderPaint);
                 canvas.drawArc(mLeftCornerRectF, -270, 90, true, mBorderPaint);
                 canvas.drawArc(mRightCornerRectF, -90, 90, true, mBorderPaint);
@@ -332,11 +462,6 @@ public class TagGroup extends ViewGroup {
 
             mHorizontalBlankFillRectF.set(left, top + l, right, bottom - l);
             mVerticalBlankFillRectF.set(left + l, top, right - l, bottom);
-        }
-
-        public void setState(int state) {
-            mState = state;
-            invalidatePaint();
         }
     }
 }
