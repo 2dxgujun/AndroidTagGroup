@@ -13,6 +13,10 @@ public class SecondaryActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_secondary);
+
+        String[] tags = getIntent().getStringArrayExtra("tags");
+
         mTagGroup = (TagGroup) findViewById(R.id.tag_group);
+        mTagGroup.setTags(tags);
     }
 }
