@@ -25,18 +25,12 @@
         app:isAppendMode="false">
 
         <TextView
-            android:layout_width="50dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_red_light"/>
-
-        <TextView
-            android:layout_width="50dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_blue_light"/>
-
-        <TextView
-            android:layout_width="230dp"
-            android:layout_height="20dp"
-            android:background="@android:color/holo_green_light"/>
+            android:id="@+id/tv_prompt_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:text="添加标签"
+            android:textColor="@android:color/darker_gray"/>
     </me.gujun.android.taggroup.TagGroup>
 </LinearLayout>

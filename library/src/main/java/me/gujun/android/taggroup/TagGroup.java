@@ -12,7 +12,6 @@ import android.graphics.RectF;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.ArrowKeyMovementMethod;
-import android.text.method.MovementMethod;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -267,6 +266,7 @@ public class TagGroup extends ViewGroup {
         }
 
         TagView tagView = new TagView(getContext(), TagView.STATE_INPUT, null);
+        tagView.setOnClickListener(new OnTagClickListener());
         addView(tagView);
     }
 
@@ -296,36 +296,6 @@ public class TagGroup extends ViewGroup {
         }
     }
 
-    /**
-     * The tag click listener implementation.
-     */
-    class OnTagClickListener implements OnClickListener {
-        @Override
-        public void onClick(View v) {
-            TagView tagView = (TagView) v;
-            // If the clicked tag is checked, remove the tag
-            // and dispatch the tags changed event.
-            if (tagView.isChecked) {
-                removeView(tagView);
-                if (mOnTagChangeListener != null) {
-                    mOnTagChangeListener.onDelete(tagView.getText().toString());
-                }
-            } else {
-                // If the clicked tag is unchecked, uncheck the previous checked
-                // tag if exists, then set the clicked tag checked.
-                final int count = getChildCount();
-                for (int i = 0; i < count; i++) {
-                    TagView tagV = (TagView) getChildAt(i);
-                    if (tagV.isChecked) {
-                        tagV.setChecked(false);
-                        break;
-                    }
-                }
-                tagView.setChecked(true);
-            }
-        }
-    }
-
     public void setTags(String[] tags) {
         List<String> tagList = Arrays.asList(tags);
         setTags(tagList);
@@ -344,6 +314,25 @@ public class TagGroup extends ViewGroup {
     @Override
     public ViewGroup.LayoutParams generateLayoutParams(AttributeSet attrs) {
         return new TagGroup.LayoutParams(getContext(), attrs);
+    }
+
+    /**
+     * Interface definition for a callback to be invoked when a tag is changed.
+     */
+    public interface OnTagChangeListener {
+        /**
+         * Called when a tag has been appended.
+         *
+         * @param tag The appended tag.
+         */
+        void onAppend(String tag);
+
+        /**
+         * Called when a tag has been deleted.
+         *
+         * @param tag The deleted tag.
+         */
+        void onDelete(String tag);
     }
 
     /**
@@ -368,22 +357,46 @@ public class TagGroup extends ViewGroup {
     }
 
     /**
-     * Interface definition for a callback to be invoked when a tag is changed.
+     * The tag click listener implementation.
      */
-    public interface OnTagChangeListener {
-        /**
-         * Called when a tag has been appended.
-         *
-         * @param tag The appended tag.
-         */
-        void onAppend(String tag);
-
-        /**
-         * Called when a tag has been deleted.
-         *
-         * @param tag The deleted tag.
-         */
-        void onDelete(String tag);
+    class OnTagClickListener implements OnClickListener {
+        @Override
+        public void onClick(View v) {
+            TagView tagView = (TagView) v;
+            if (tagView.mState == TagView.STATE_INPUT) {
+                // If the clicked tag is in INPUT state, uncheck the previous checked
+                // tag if exists.
+                final int count = getChildCount();
+                for (int i = 0; i < count; i++) {
+                    TagView tagV = (TagView) getChildAt(i);
+                    if (tagV.isChecked) {
+                        tagV.setChecked(false);
+                        break;
+                    }
+                }
+            } else {
+                // If the clicked tag is checked, remove the tag
+                // and dispatch the tags changed event.
+                if (tagView.isChecked) {
+                    removeView(tagView);
+                    if (mOnTagChangeListener != null) {
+                        mOnTagChangeListener.onDelete(tagView.getText().toString());
+                    }
+                } else {
+                    // If the clicked tag is unchecked, uncheck the previous checked
+                    // tag if exists, then set the clicked tag checked.
+                    final int count = getChildCount();
+                    for (int i = 0; i < count; i++) {
+                        TagView tagV = (TagView) getChildAt(i);
+                        if (tagV.isChecked) {
+                            tagV.setChecked(false);
+                            break;
+                        }
+                    }
+                    tagView.setChecked(true);
+                }
+            }
+        }
     }
 
     /**
@@ -485,6 +498,7 @@ public class TagGroup extends ViewGroup {
                 setHint("添加标签");
                 setFocusable(true);
                 setFocusableInTouchMode(true);
+                setMovementMethod(ArrowKeyMovementMethod.getInstance());
             } else {
                 setText(text);
             }
@@ -492,29 +506,18 @@ public class TagGroup extends ViewGroup {
             invalidatePaint();
         }
 
-
         public void endInput() {
             setFocusable(false);
             setFocusableInTouchMode(false);
             mState = STATE_NORMAL;
             invalidatePaint();
             requestLayout();
-            setOnClickListener(new OnTagClickListener());
+            setMovementMethod(null);
         }
 
         @Override
         protected boolean getDefaultEditable() {
             return true;
-        }
-
-        @Override
-        protected MovementMethod getDefaultMovementMethod() {
-            if (mState == STATE_INPUT) {
-                // mMovement
-                return ArrowKeyMovementMethod.getInstance();
-            } else {
-                return null;
-            }
         }
 
         public int getState() {
