@@ -11,6 +11,7 @@ import android.graphics.PathEffect;
 import android.graphics.RectF;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.text.method.ArrowKeyMovementMethod;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -136,7 +137,7 @@ public class TagGroup extends ViewGroup {
             setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    TagView lastTag = getLastTag();
+                    TagView lastTag = getInputTag();
                     if (lastTag != null && lastTag.getState() == TagView.STATE_INPUT
                             && lastTag.isInputAvailable()) {
                         lastTag.endInput();
@@ -239,39 +240,38 @@ public class TagGroup extends ViewGroup {
 
     @Override
     public Parcelable onSaveInstanceState() {
-        Parcelable superState = super.onSaveInstanceState();
-        TagGroup.SavedState ss = new TagGroup.SavedState(superState);
-        TagView tagView = getLastTag();
-        ss.inputText = tagView.getText().toString();
-        ss.checkedTagPosition = getCheckedTagPosition();
-        return ss;
+        return super.onSaveInstanceState();
     }
 
     @Override
     public void onRestoreInstanceState(Parcelable state) {
-        if (!(state instanceof TagGroup.SavedState)) {
-            super.onRestoreInstanceState(state);
-            return;
-        }
-
-        TagGroup.SavedState ss = (TagGroup.SavedState) state;
-        super.onRestoreInstanceState(ss.getSuperState());
-
-        TagView lastTag = getLastTag();
-        lastTag.setText(ss.inputText);
-/*        TagView tagView = (TagView) getChildAt(ss.checkedTagPosition);
-        tagView.setChecked(true);*/
+        super.onRestoreInstanceState(state);
     }
 
     /**
-     * Return the last tag in this group.
+     * Return the INPUT state tag in this group.
      *
-     * @return The last tag or null if none.
+     * @return The INPUT state tag or null if none.
      */
-    protected TagView getLastTag() {
-        final int lastTagIndex = getChildCount() - 1;
-        TagView tagView = (TagView) getChildAt(lastTagIndex);
-        return tagView;
+    protected TagView getInputTag() {
+        if (isAppendMode) {
+            final int inputTagIndex = getChildCount() - 1;
+            TagView inputTag = (TagView) getChildAt(inputTagIndex);
+            return inputTag;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Return the last NORMAL state tag in this group.
+     *
+     * @return The last NORMAL state tag or null if none.
+     */
+    protected TagView getLastNormalTag() {
+        final int lastNormalTagIndex = isAppendMode ? getChildCount() - 2 : getChildCount() - 1;
+        TagView lastNormalTag = (TagView) getChildAt(lastNormalTagIndex);
+        return lastNormalTag;
     }
 
     protected int getCheckedTagPosition() {
@@ -308,7 +308,7 @@ public class TagGroup extends ViewGroup {
      * @param tag The tag text.
      */
     protected void appendInputTag(String tag) {
-        TagView lastTag = getLastTag();
+        TagView lastTag = getInputTag();
         if (lastTag != null && lastTag.getState() == TagView.STATE_INPUT) {
             throw new IllegalStateException("Already has a INPUT state tag in group. " +
                     "You must call endInput() before you append new one.");
@@ -548,6 +548,37 @@ public class TagGroup extends ViewGroup {
                                 appendInputTag(); // Append a new INPUT state tag.
                             }
                             return true;
+                        }
+                        return false;
+                    }
+                });
+
+                setOnKeyListener(new OnKeyListener() {
+                    @Override
+                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+                        if (keyCode == KeyEvent.KEYCODE_DEL && event.getAction() == KeyEvent.ACTION_DOWN) {
+                            if (TextUtils.isEmpty(getText().toString())) {
+                                TagView lastNormalTag = getLastNormalTag();
+                                if (lastNormalTag != null) {
+                                    if (lastNormalTag.isChecked) {
+                                        removeView(lastNormalTag);
+                                        if (mOnTagChangeListener != null) {
+                                            mOnTagChangeListener.onDelete(lastNormalTag.getText().toString());
+                                        }
+                                    } else {
+                                        final int count = getChildCount();
+                                        for (int i = 0; i < count; i++) {
+                                            TagView tagV = (TagView) getChildAt(i);
+                                            if (tagV.isChecked) {
+                                                tagV.setChecked(false);
+                                                break;
+                                            }
+                                        }
+                                        lastNormalTag.setChecked(true);
+                                    }
+                                    return true;
+                                }
+                            }
                         }
                         return false;
                     }
