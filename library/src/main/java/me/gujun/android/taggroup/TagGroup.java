@@ -11,14 +11,14 @@ import android.graphics.PathEffect;
 import android.graphics.RectF;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.text.method.ArrowKeyMovementMethod;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
 import java.util.Arrays;
@@ -332,7 +332,7 @@ public class TagGroup extends ViewGroup {
         if (isAppendMode) {
             int appendIndex = getChildCount() > 0 ? getChildCount() - 1 : 0;
             for (final String tag : tagList) {
-                final TagView tagView = new TagView(getContext(), TagView.STATE_NORMAL, tag);
+                TagView tagView = new TagView(getContext(), TagView.STATE_NORMAL, tag);
                 tagView.setOnClickListener(new OnTagClickListener());
                 addView(tagView, appendIndex++);
             }
@@ -532,21 +532,24 @@ public class TagGroup extends ViewGroup {
                 setHint("添加标签");
                 setFocusable(true);
                 setFocusableInTouchMode(true);
+                requestFocus();
                 setMovementMethod(ArrowKeyMovementMethod.getInstance());
-                addTextChangedListener(new TextWatcher() {
+                setOnEditorActionListener(new OnEditorActionListener() {
                     @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        if (actionId == EditorInfo.IME_ACTION_DONE
+                                || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                            if (isInputAvailable()) {
+                                endInput();
+                                // Dispatch the tags changed event.
+                                if (mOnTagChangeListener != null) {
+                                    mOnTagChangeListener.onAppend(getText().toString());
+                                }
+                                appendInputTag(); // Append a new INPUT state tag.
+                            }
+                            return true;
+                        }
+                        return false;
                     }
                 });
             } else {
@@ -678,7 +681,6 @@ public class TagGroup extends ViewGroup {
         // added tag
         int checkedTagPosition;
         String inputText;
-
 
 
         public SavedState(Parcel source) {
