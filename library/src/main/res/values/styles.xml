@@ -4,8 +4,8 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="isAppendMode">false</item>
-        <item name="activeColor">#49C120</item>
-        <item name="normalColor">#AAAAAA</item>
+        <item name="foregroundBright">#49C120</item>
+        <item name="foregroundDim">#AAAAAA</item>
         <item name="borderWidth">1dp</item>
         <item name="textSize">12sp</item>
         <item name="horizontalSpacing">10dp</item>

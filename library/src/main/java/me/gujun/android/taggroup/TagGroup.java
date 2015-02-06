@@ -20,6 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * This class is used to create a group for a set of tags. The tag group has two modes:
  * <p/>
@@ -39,8 +42,8 @@ import android.widget.TextView;
  * @since 2015-2-3 14:16:32
  */
 public class TagGroup extends ViewGroup {
-    private final int default_active_color = Color.rgb(0x49, 0xC1, 0x20);
-    private final int default_normal_color = Color.rgb(0xAA, 0xAA, 0xAA);
+    private final int default_foreground_bright = Color.rgb(0x49, 0xC1, 0x20);
+    private final int default_foreground_dim = Color.rgb(0xAA, 0xAA, 0xAA);
     private final float default_border_width;
     private final float default_text_size;
     private final float default_horizontal_spacing;
@@ -51,12 +54,33 @@ public class TagGroup extends ViewGroup {
      */
     private boolean isAppendMode;
 
-    private int mActiveColor;
-    private int mNormalColor;
+    private int mForegroundBright;
+    private int mForegroundDim;
+
+    /**
+     * The tag outline border stroke width, default is 1.0dp.
+     */
     private float mBorderWidth;
+
+    /**
+     * The tag text size, default is 13sp.
+     */
     private float mTextSize;
+
+    /**
+     * The horizontal tag spacing, default is 8.0dp.
+     */
     private int mHorizontalSpacing;
+
+    /**
+     * The vertical tag spacing, default is 4.0dp.
+     */
     private int mVerticalSpacing;
+
+    /**
+     * Listener used to dispatch tag change events.
+     */
+    private OnTagChangeListener mOnTagChangeListener;
 
     public TagGroup(Context context) {
         this(context, null);
@@ -78,8 +102,8 @@ public class TagGroup extends ViewGroup {
                 R.styleable.TagGroup, defStyleAttr, 0);
         try {
             isAppendMode = a.getBoolean(R.styleable.TagGroup_isAppendMode, false);
-            mActiveColor = a.getColor(R.styleable.TagGroup_activeColor, default_active_color);
-            mNormalColor = a.getColor(R.styleable.TagGroup_normalColor, default_normal_color);
+            mForegroundBright = a.getColor(R.styleable.TagGroup_foregroundBright, default_foreground_bright);
+            mForegroundDim = a.getColor(R.styleable.TagGroup_foregroundDim, default_foreground_dim);
             mBorderWidth = a.getDimension(R.styleable.TagGroup_borderWidth, default_border_width);
             mTextSize = a.getDimension(R.styleable.TagGroup_textSize, default_text_size);
             mHorizontalSpacing = (int) a.getDimension(R.styleable.TagGroup_horizontalSpacing,
@@ -106,6 +130,9 @@ public class TagGroup extends ViewGroup {
                     if (lastTag != null && lastTag.getState() == TagView.STATE_INPUT
                             && lastTag.isInputAvailable()) {
                         lastTag.endInput();
+                        if (mOnTagChangeListener != null) {
+                            mOnTagChangeListener.onAppend(lastTag.getText().toString());
+                        }
                         appendInputTag();
                     }
                 }
@@ -174,7 +201,6 @@ public class TagGroup extends ViewGroup {
         int childTop = parentTop;
 
         int rowMaxHeight = 0;
-        boolean firstTagInGroup = true;
 
         for (int i = 0; i < count; i++) {
             final View child = getChildAt(i);
@@ -188,16 +214,10 @@ public class TagGroup extends ViewGroup {
                     childLeft = parentLeft;
                     childTop += rowMaxHeight + mVerticalSpacing;
                     rowMaxHeight = 0;
-                    firstTagInGroup = true;
                 }
-                if (firstTagInGroup) {
-                    child.layout(childLeft, childTop, childLeft + width, childTop + height);
-                    firstTagInGroup = !firstTagInGroup;
-                } else {
-                    child.layout(childLeft + mHorizontalSpacing, childTop, childLeft + width + mHorizontalSpacing, childTop + height);
-                }
+                child.layout(childLeft, childTop, childLeft + width, childTop + height);
 
-                childLeft += width;
+                childLeft += width + mHorizontalSpacing;
             }
         }
     }
@@ -211,6 +231,15 @@ public class TagGroup extends ViewGroup {
         final int lastTagIndex = getChildCount() - 1;
         TagView tagView = (TagView) getChildAt(lastTagIndex);
         return tagView;
+    }
+
+    /**
+     * Register a callback to be invoked when this tag is changed.
+     *
+     * @param l The callback that will run.
+     */
+    public void setOnTagChangeListener(OnTagChangeListener l) {
+        mOnTagChangeListener = l;
     }
 
     /**
@@ -229,24 +258,50 @@ public class TagGroup extends ViewGroup {
         addView(tagView);
     }
 
-    public void setTags(String[] tags) {
+    public void setTags(List<String> tagList) {
         if (isAppendMode) {
             int appendIndex = getChildCount() > 0 ? getChildCount() - 1 : 0;
-            for (String tag : tags) {
-                TagView tagView = new TagView(getContext(), TagView.STATE_NORMAL, tag);
+            for (final String tag : tagList) {
+                final TagView tagView = new TagView(getContext(), TagView.STATE_NORMAL, tag);
                 tagView.setLayoutParams(new TagGroup.LayoutParams(TagGroup.LayoutParams.WRAP_CONTENT,
                         TagGroup.LayoutParams.WRAP_CONTENT));
-                addView(tagView);
+                tagView.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (tagView.isChecked) {
+                            removeView(tagView);
+                            if (mOnTagChangeListener != null) {
+                                mOnTagChangeListener.onDelete(tagView.getText().toString());
+                            }
+                        } else {
+                            final int count = getChildCount();
+                            for (int i = 0; i < count; i++) {
+                                TagView tagV = (TagView) getChildAt(i);
+                                if (tagV.isChecked) {
+                                    tagV.setChecked(false);
+                                    break;
+                                }
+                            }
+                            tagView.setChecked(true);
+                        }
+                    }
+                });
+                addView(tagView, appendIndex++);
             }
         } else {
             removeAllViews();
-            for (String tag : tags) {
+            for (String tag : tagList) {
                 TagView tagView = new TagView(getContext(), TagView.STATE_NORMAL, tag);
                 tagView.setLayoutParams(new TagGroup.LayoutParams(TagGroup.LayoutParams.WRAP_CONTENT,
                         TagGroup.LayoutParams.WRAP_CONTENT));
                 addView(tagView);
             }
         }
+    }
+
+    public void setTags(String[] tags) {
+        List<String> tagList = Arrays.asList(tags);
+        setTags(tagList);
     }
 
     public float dp2px(float dp) {
@@ -283,6 +338,25 @@ public class TagGroup extends ViewGroup {
         public LayoutParams(ViewGroup.LayoutParams source) {
             super(source);
         }
+    }
+
+    /**
+     * Interface definition for a callback to be invoked when a tag is changed.
+     */
+    public interface OnTagChangeListener {
+        /**
+         * Called when a tag has been appended.
+         *
+         * @param tag The appended tag.
+         */
+        void onAppend(String tag);
+
+        /**
+         * Called when a tag has been deleted.
+         *
+         * @param tag The deleted tag.
+         */
+        void onDelete(String tag);
     }
 
     /**
@@ -358,12 +432,13 @@ public class TagGroup extends ViewGroup {
             invalidatePaint();
         }
 
+
         public void endInput() {
             setFocusable(false);
             setFocusableInTouchMode(false);
-            requestLayout();
             mState = STATE_NORMAL;
             invalidatePaint();
+            requestLayout();
         }
 
         @Override
@@ -373,7 +448,12 @@ public class TagGroup extends ViewGroup {
 
         @Override
         protected MovementMethod getDefaultMovementMethod() {
-            return ArrowKeyMovementMethod.getInstance();
+            if (mState == STATE_INPUT) {
+                // mMovement
+                return ArrowKeyMovementMethod.getInstance();
+            } else {
+                return null;
+            }
         }
 
         public int getState() {
@@ -393,23 +473,23 @@ public class TagGroup extends ViewGroup {
             if (mState == STATE_NORMAL) {
                 if (isChecked) {
                     mBorderPaint.setStyle(Paint.Style.FILL);
-                    mBorderPaint.setColor(mActiveColor);
+                    mBorderPaint.setColor(mForegroundBright);
                     mBorderPaint.setPathEffect(null);
                     setTextColor(Color.WHITE);
                 } else {
                     mBorderPaint.setStyle(Paint.Style.STROKE);
                     mBorderPaint.setStrokeWidth(mBorderWidth);
-                    mBorderPaint.setColor(mNormalColor);
+                    mBorderPaint.setColor(mForegroundBright);
                     mBorderPaint.setPathEffect(null);
-                    setTextColor(mNormalColor);
+                    setTextColor(mForegroundBright);
                 }
 
             } else if (mState == STATE_INPUT) {
                 mBorderPaint.setStyle(Paint.Style.STROKE);
                 mBorderPaint.setStrokeWidth(mBorderWidth);
-                mBorderPaint.setColor(mNormalColor);
+                mBorderPaint.setColor(mForegroundDim);
                 mBorderPaint.setPathEffect(mPathEffect);
-                setTextColor(mNormalColor);
+                setTextColor(mForegroundDim);
             }
         }
 
@@ -462,6 +542,11 @@ public class TagGroup extends ViewGroup {
 
             mHorizontalBlankFillRectF.set(left, top + l, right, bottom - l);
             mVerticalBlankFillRectF.set(left + l, top, right - l, bottom);
+        }
+
+        public void setChecked(boolean checked) {
+            isChecked = checked;
+            invalidatePaint();
         }
     }
 }

@@ -5,27 +5,35 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 
+import java.util.List;
+
 import me.gujun.android.taggroup.TagGroup;
+import me.gujun.android.taggroup.demo.db.TagsManager;
 
 
 public class MainActivity extends ActionBarActivity {
     private TagGroup mTagGroup;
-    private String[] mTags;
+    private List<String> mTagList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mTags = new String[]{"朋友", "同学"};
+        TagsManager tagsManager = TagsManager.getInstance(getApplicationContext());
+        mTagList = tagsManager.getAllTags();
 
         mTagGroup = (TagGroup) findViewById(R.id.tag_group);
-        mTagGroup.setTags(mTags);
+        if (mTagList == null) {
+            Intent intent = new Intent(MainActivity.this, SecondaryActivity.class);
+            startActivity(intent);
+        } else {
+            mTagGroup.setTags(mTagList);
+        }
         mTagGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SecondaryActivity.class);
-                intent.putExtra("tags", mTags);
+                intent.putStringArrayListExtra("tagList", (java.util.ArrayList<String>) mTagList);
                 startActivity(intent);
             }
         });

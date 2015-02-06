@@ -2,8 +2,8 @@
     <declare-styleable name="TagGroup">
         <!--  -->
         <attr name="isAppendMode" format="boolean"/>
-        <attr name="activeColor" format="color"/>
-        <attr name="normalColor" format="color"/>
+        <attr name="foregroundBright" format="color"/>
+        <attr name="foregroundDim" format="color"/>
         <attr name="borderWidth" format="dimension"/>
         <attr name="textSize" format="dimension"/>
         <attr name="horizontalSpacing" format="dimension"/>
