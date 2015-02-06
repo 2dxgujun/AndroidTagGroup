@@ -489,13 +489,21 @@ public class TagGroup extends ViewGroup {
             invalidatePaint();
         }
 
+        /**
+         * Call this method to end this tag's INPUT state.
+         */
         public void endInput() {
+            // Make the view not focusable.
             setFocusable(false);
             setFocusableInTouchMode(false);
+            // Set the hint empty, make the TextView measure correctly.
+            setHint(null);
+            // Take away the cursor.
+            setMovementMethod(null);
+
             mState = STATE_NORMAL;
             invalidatePaint();
             requestLayout();
-            setMovementMethod(null);
         }
 
         @Override
