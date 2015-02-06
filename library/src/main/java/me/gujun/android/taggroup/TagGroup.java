@@ -9,6 +9,10 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathEffect;
 import android.graphics.RectF;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.method.ArrowKeyMovementMethod;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -62,7 +66,7 @@ public class TagGroup extends ViewGroup {
     private int mForegroundDim;
 
     /**
-     * The tag outline border stroke width, default is 1.0dp.
+     * The tag outline border stroke width, default is 0.5dp.
      */
     private float mBorderWidth;
 
@@ -97,7 +101,7 @@ public class TagGroup extends ViewGroup {
     public TagGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        default_border_width = dp2px(1.0f);
+        default_border_width = dp2px(0.5f);
         default_text_size = 13.0f;
         default_horizontal_spacing = dp2px(8.0f);
         default_vertical_spacing = dp2px(4.0f);
@@ -219,18 +223,44 @@ public class TagGroup extends ViewGroup {
             final int height = child.getMeasuredHeight();
 
             if (child.getVisibility() != GONE) {
-                rowMaxHeight = Math.max(rowMaxHeight, height);
-
                 if (childLeft + width > parentRight) { // Next line
                     childLeft = parentLeft;
                     childTop += rowMaxHeight + mVerticalSpacing;
-                    rowMaxHeight = 0;
+                    rowMaxHeight = height;
+                } else {
+                    rowMaxHeight = Math.max(rowMaxHeight, height);
                 }
                 child.layout(childLeft, childTop, childLeft + width, childTop + height);
 
                 childLeft += width + mHorizontalSpacing;
             }
         }
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+        TagGroup.SavedState ss = new TagGroup.SavedState(superState);
+        TagView tagView = getLastTag();
+        ss.inputText = tagView.getText().toString();
+        ss.checkedTagPosition = getCheckedTagPosition();
+        return ss;
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        if (!(state instanceof TagGroup.SavedState)) {
+            super.onRestoreInstanceState(state);
+            return;
+        }
+
+        TagGroup.SavedState ss = (TagGroup.SavedState) state;
+        super.onRestoreInstanceState(ss.getSuperState());
+
+        TagView lastTag = getLastTag();
+        lastTag.setText(ss.inputText);
+/*        TagView tagView = (TagView) getChildAt(ss.checkedTagPosition);
+        tagView.setChecked(true);*/
     }
 
     /**
@@ -244,6 +274,17 @@ public class TagGroup extends ViewGroup {
         return tagView;
     }
 
+    protected int getCheckedTagPosition() {
+        final int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            final TagView tagView = (TagView) getChildAt(i);
+            if (tagView.isChecked) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     /**
      * Register a callback to be invoked when this tag is changed.
      *
@@ -253,17 +294,27 @@ public class TagGroup extends ViewGroup {
         mOnTagChangeListener = l;
     }
 
+
     /**
-     * Append a INPUT state tag to this group. It will check the group state first.
+     * @see {@link #appendInputTag(String)}
      */
     protected void appendInputTag() {
+        appendInputTag(null);
+    }
+
+    /**
+     * Append a INPUT state tag to this group. It will check the group state first.
+     *
+     * @param tag The tag text.
+     */
+    protected void appendInputTag(String tag) {
         TagView lastTag = getLastTag();
         if (lastTag != null && lastTag.getState() == TagView.STATE_INPUT) {
             throw new IllegalStateException("Already has a INPUT state tag in group. " +
                     "You must call endInput() before you append new one.");
         }
 
-        TagView tagView = new TagView(getContext(), TagView.STATE_INPUT, null);
+        TagView tagView = new TagView(getContext(), TagView.STATE_INPUT, tag);
         tagView.setOnClickListener(new OnTagClickListener());
         addView(tagView);
     }
@@ -465,8 +516,8 @@ public class TagGroup extends ViewGroup {
             mBorderPath = new Path();
             mPathEffect = new DashPathEffect(new float[]{10, 5}, 0);
 
-            int horizontalPadding = (int) dp2px(15.0f);
-            int verticalPadding = (int) dp2px(5.0f);
+            int horizontalPadding = (int) dp2px(12.0f);
+            int verticalPadding = (int) dp2px(3.0f);
             setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding);
             setLayoutParams(new TagGroup.LayoutParams(TagGroup.LayoutParams.WRAP_CONTENT,
                     TagGroup.LayoutParams.WRAP_CONTENT));
@@ -482,6 +533,22 @@ public class TagGroup extends ViewGroup {
                 setFocusable(true);
                 setFocusableInTouchMode(true);
                 setMovementMethod(ArrowKeyMovementMethod.getInstance());
+                addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
+                    }
+                });
             } else {
                 setText(text);
             }
@@ -603,5 +670,43 @@ public class TagGroup extends ViewGroup {
             isChecked = checked;
             invalidatePaint();
         }
+    }
+
+    static class SavedState extends BaseSavedState {
+        // Checked position
+        // input text
+        // added tag
+        int checkedTagPosition;
+        String inputText;
+
+
+
+        public SavedState(Parcel source) {
+            super(source);
+            checkedTagPosition = source.readInt();
+            inputText = source.readString();
+        }
+
+        public SavedState(Parcelable superState) {
+            super(superState);
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeInt(checkedTagPosition);
+            dest.writeString(inputText);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR =
+                new Parcelable.Creator<SavedState>() {
+                    public SavedState createFromParcel(Parcel in) {
+                        return new SavedState(in);
+                    }
+
+                    public SavedState[] newArray(int size) {
+                        return new SavedState[size];
+                    }
+                };
     }
 }
