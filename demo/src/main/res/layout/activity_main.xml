@@ -22,5 +22,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        app:isAppendMode="false"/>
+        app:isAppendMode="false">
+
+        <TextView
+            android:layout_width="50dp"
+            android:layout_height="20dp"
+            android:background="@android:color/holo_red_light"/>
+
+        <TextView
+            android:layout_width="50dp"
+            android:layout_height="20dp"
+            android:background="@android:color/holo_blue_light"/>
+
+        <TextView
+            android:layout_width="230dp"
+            android:layout_height="20dp"
+            android:background="@android:color/holo_green_light"/>
+    </me.gujun.android.taggroup.TagGroup>
 </LinearLayout>
