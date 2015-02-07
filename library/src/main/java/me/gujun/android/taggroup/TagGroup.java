@@ -44,12 +44,14 @@ import java.util.List;
  * @since 2015-2-3 14:16:32
  */
 public class TagGroup extends ViewGroup {
-    private final int default_foreground_bright = Color.rgb(0x49, 0xC1, 0x20);
-    private final int default_foreground_dim = Color.rgb(0xAA, 0xAA, 0xAA);
+    private final int default_bright_color = Color.rgb(0x49, 0xC1, 0x20);
+    private final int default_dim_color = Color.rgb(0xAA, 0xAA, 0xAA);
     private final float default_border_width;
     private final float default_text_size;
     private final float default_horizontal_spacing;
     private final float default_vertical_spacing;
+    private final float default_horizontal_padding;
+    private final float default_vertical_padding;
 
     /**
      * Indicates whether this TagGroup is set up to APPEND mode or DISPLAY mode.
@@ -59,12 +61,12 @@ public class TagGroup extends ViewGroup {
     /**
      * The tag outline border and text bright color.
      */
-    private int mForegroundBright;
+    private int mBrightColor;
 
     /**
      * The tag outline border and text dim color.
      */
-    private int mForegroundDim;
+    private int mDimColor;
 
     /**
      * The tag outline border stroke width, default is 0.5dp.
@@ -87,6 +89,16 @@ public class TagGroup extends ViewGroup {
     private int mVerticalSpacing;
 
     /**
+     * The horizontal tag padding, default is 12.0dp.
+     */
+    private int mHorizontalPadding;
+
+    /**
+     * The vertical tag padding, default is 3.0dp.
+     */
+    private int mVerticalPadding;
+
+    /**
      * Listener used to dispatch tag change events.
      */
     private OnTagChangeListener mOnTagChangeListener;
@@ -103,23 +115,29 @@ public class TagGroup extends ViewGroup {
         super(context, attrs, defStyleAttr);
 
         default_border_width = dp2px(0.5f);
-        default_text_size = 13.0f;
+        default_text_size = sp2px(13.0f);
         default_horizontal_spacing = dp2px(8.0f);
         default_vertical_spacing = dp2px(4.0f);
+        default_horizontal_padding = dp2px(12.0f);
+        default_vertical_padding = dp2px(3.0f);
 
         // Load styled attributes.
         final TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.TagGroup, defStyleAttr, 0);
         try {
             isAppendMode = a.getBoolean(R.styleable.TagGroup_isAppendMode, false);
-            mForegroundBright = a.getColor(R.styleable.TagGroup_foregroundBright, default_foreground_bright);
-            mForegroundDim = a.getColor(R.styleable.TagGroup_foregroundDim, default_foreground_dim);
+            mBrightColor = a.getColor(R.styleable.TagGroup_brightColor, default_bright_color);
+            mDimColor = a.getColor(R.styleable.TagGroup_dimColor, default_dim_color);
             mBorderWidth = a.getDimension(R.styleable.TagGroup_borderWidth, default_border_width);
             mTextSize = a.getDimension(R.styleable.TagGroup_textSize, default_text_size);
             mHorizontalSpacing = (int) a.getDimension(R.styleable.TagGroup_horizontalSpacing,
                     default_horizontal_spacing);
             mVerticalSpacing = (int) a.getDimension(R.styleable.TagGroup_verticalSpacing,
                     default_vertical_spacing);
+            mHorizontalPadding = (int) a.getDimension(R.styleable.TagGroup_horizontalPadding,
+                    default_horizontal_padding);
+            mVerticalPadding = (int) a.getDimension(R.styleable.TagGroup_verticalPadding,
+                    default_vertical_padding);
         } finally {
             a.recycle();
         }
@@ -149,6 +167,24 @@ public class TagGroup extends ViewGroup {
                     }
                 }
             });
+        }
+    }
+
+    public void setBrightColor(int brightColor) {
+        mBrightColor = brightColor;
+        invalidateAllTagsPaint();
+        invalidate();
+    }
+
+    public int getBrightColor() {
+        return mBrightColor;
+    }
+
+    protected void invalidateAllTagsPaint() {
+        final int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            TagView tagView = (TagView) getChildAt(i);
+            tagView.invalidatePaint();
         }
     }
 
@@ -385,9 +421,9 @@ public class TagGroup extends ViewGroup {
     }
 
     /**
-     * Per-child layout information for layouts that support margins.
+     * Per-child layout information for layouts.
      */
-    public static class LayoutParams extends MarginLayoutParams {
+    public static class LayoutParams extends ViewGroup.LayoutParams {
         public LayoutParams(Context c, AttributeSet attrs) {
             super(c, attrs);
         }
@@ -516,14 +552,12 @@ public class TagGroup extends ViewGroup {
             mBorderPath = new Path();
             mPathEffect = new DashPathEffect(new float[]{10, 5}, 0);
 
-            int horizontalPadding = (int) dp2px(12.0f);
-            int verticalPadding = (int) dp2px(3.0f);
-            setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding);
+            setPadding(mHorizontalPadding, mVerticalPadding, mHorizontalPadding, mVerticalPadding);
             setLayoutParams(new TagGroup.LayoutParams(TagGroup.LayoutParams.WRAP_CONTENT,
                     TagGroup.LayoutParams.WRAP_CONTENT));
 
             setGravity(Gravity.CENTER);
-            setTextSize(mTextSize);
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
             setClickable(true);
 
             mState = state;
@@ -534,18 +568,20 @@ public class TagGroup extends ViewGroup {
                 setFocusableInTouchMode(true);
                 requestFocus();
                 setMovementMethod(ArrowKeyMovementMethod.getInstance());
+                // Set editor action listener for handle the Enter key down event.
                 setOnEditorActionListener(new OnEditorActionListener() {
                     @Override
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                         if (actionId == EditorInfo.IME_ACTION_DONE
                                 || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
                             if (isInputAvailable()) {
+                                // If the input content is available, end the input and dispatch
+                                // the event, then append a new INPUT state tag.
                                 endInput();
-                                // Dispatch the tags changed event.
                                 if (mOnTagChangeListener != null) {
                                     mOnTagChangeListener.onAppend(getText().toString());
                                 }
-                                appendInputTag(); // Append a new INPUT state tag.
+                                appendInputTag();
                             }
                             return true;
                         }
@@ -553,10 +589,12 @@ public class TagGroup extends ViewGroup {
                     }
                 });
 
+                // Set key listener for handle the backspace key down event.
                 setOnKeyListener(new OnKeyListener() {
                     @Override
                     public boolean onKey(View v, int keyCode, KeyEvent event) {
                         if (keyCode == KeyEvent.KEYCODE_DEL && event.getAction() == KeyEvent.ACTION_DOWN) {
+                            // If the input content is empty, check or remove the last NORMAL state tag.
                             if (TextUtils.isEmpty(getText().toString())) {
                                 TagView lastNormalTag = getLastNormalTag();
                                 if (lastNormalTag != null) {
@@ -629,23 +667,23 @@ public class TagGroup extends ViewGroup {
             if (mState == STATE_NORMAL) {
                 if (isChecked) {
                     mPaint.setStyle(Paint.Style.FILL);
-                    mPaint.setColor(mForegroundBright);
+                    mPaint.setColor(mBrightColor);
                     mPaint.setPathEffect(null);
                     setTextColor(Color.WHITE);
                 } else {
                     mPaint.setStyle(Paint.Style.STROKE);
                     mPaint.setStrokeWidth(mBorderWidth);
-                    mPaint.setColor(mForegroundBright);
+                    mPaint.setColor(mBrightColor);
                     mPaint.setPathEffect(null);
-                    setTextColor(mForegroundBright);
+                    setTextColor(mBrightColor);
                 }
 
             } else if (mState == STATE_INPUT) {
                 mPaint.setStyle(Paint.Style.STROKE);
                 mPaint.setStrokeWidth(mBorderWidth);
-                mPaint.setColor(mForegroundDim);
+                mPaint.setColor(mDimColor);
                 mPaint.setPathEffect(mPathEffect);
-                setTextColor(mForegroundDim);
+                setTextColor(mDimColor);
             }
         }
 
@@ -707,9 +745,6 @@ public class TagGroup extends ViewGroup {
     }
 
     static class SavedState extends BaseSavedState {
-        // Checked position
-        // input text
-        // added tag
         int checkedTagPosition;
         String inputText;
 

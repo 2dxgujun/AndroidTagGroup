@@ -2,12 +2,14 @@
     <declare-styleable name="TagGroup">
         <!--  -->
         <attr name="isAppendMode" format="boolean"/>
-        <attr name="foregroundBright" format="color"/>
-        <attr name="foregroundDim" format="color"/>
+        <attr name="brightColor" format="color"/>
+        <attr name="dimColor" format="color"/>
         <attr name="borderWidth" format="dimension"/>
         <attr name="textSize" format="dimension"/>
         <attr name="horizontalSpacing" format="dimension"/>
         <attr name="verticalSpacing" format="dimension"/>
+        <attr name="horizontalPadding" format="dimension"/>
+        <attr name="verticalPadding" format="dimension"/>
     </declare-styleable>
 
     <declare-styleable name="Themes">

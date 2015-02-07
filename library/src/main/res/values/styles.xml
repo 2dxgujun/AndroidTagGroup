@@ -1,27 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="TagGroup">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="isAppendMode">false</item>
-        <item name="foregroundBright">#49C120</item>
-        <item name="foregroundDim">#AAAAAA</item>
-        <item name="borderWidth">1dp</item>
-        <item name="textSize">12sp</item>
-        <item name="horizontalSpacing">10dp</item>
-        <item name="verticalSpacing">5dp</item>
+        <item name="brightColor">#49C120</item>
+        <item name="dimColor">#AAAAAA</item>
+        <item name="borderWidth">0.5dp</item>
+        <item name="textSize">13sp</item>
+        <item name="horizontalSpacing">8dp</item>
+        <item name="verticalSpacing">4dp</item>
+        <item name="horizontalPadding">12dp</item>
+        <item name="verticalPadding">3dp</item>
     </style>
 
     <style name="TagGroup.Small" parent="TagGroup">
         <item name="textSize">10sp</item>
-    </style>
-
-    <style name="TagGroup.Medium" parent="TagGroup">
-        <item name="textSize">13sp</item>
+        <item name="horizontalSpacing">6dp</item>
+        <item name="verticalSpacing">3dp</item>
+        <item name="horizontalPadding">8dp</item>
+        <item name="verticalPadding">2dp</item>
     </style>
 
     <style name="TagGroup.Large" parent="TagGroup">
-        <item name="borderWidth">1.5dp</item>
+        <item name="borderWidth">0.7dp</item>
         <item name="textSize">15sp</item>
+        <item name="horizontalSpacing">9dp</item>
+        <item name="verticalSpacing">5dp</item>
+        <item name="horizontalPadding">14dp</item>
+        <item name="verticalPadding">4dp</item>
+    </style>
+
+    <style name="TagGroup.Beauty_Red" parent="TagGroup">
+        <item name="brightColor">#FF3D7F</item>
+    </style>
+
+    <style name="TagGroup.Small.Beauty_Red" parent="TagGroup.Small">
+        <item name="brightColor">#FF3D7F</item>
+    </style>
+
+    <style name="TagGroup.Large.Beauty_Red" parent="TagGroup.Large">
+        <item name="brightColor">#FF3D7F</item>
+    </style>
+
+    <style name="TagGroup.Holo_Dark" parent="TagGroup">
+        <item name="brightColor">#303030</item>
+    </style>
+
+    <style name="TagGroup.Small.Holo_Dark" parent="TagGroup.Small">
+        <item name="brightColor">#303030</item>
+    </style>
+
+    <style name="TagGroup.Large.Holo_Dark" parent="TagGroup.Large">
+        <item name="brightColor">#303030</item>
+    </style>
+
+    <style name="TagGroup.Light_Blue" parent="TagGroup">
+        <item name="brightColor">#33B5E5</item>
+    </style>
+
+    <style name="TagGroup.Small.Light_Blue" parent="TagGroup.Small">
+        <item name="brightColor">#33B5E5</item>
+    </style>
+
+    <style name="TagGroup.Large.Light_Blue" parent="TagGroup.Large">
+        <item name="brightColor">#33B5E5</item>
+    </style>
+
+    <style name="TagGroup.Indigo" parent="TagGroup">
+        <item name="brightColor">#3F51B5</item>
+    </style>
+
+    <style name="TagGroup.Small.Indigo" parent="TagGroup.Small">
+        <item name="brightColor">#3F51B5</item>
+    </style>
+
+    <style name="TagGroup.Large.Indigo" parent="TagGroup.Large">
+        <item name="brightColor">#3F51B5</item>
     </style>
 </resources>
