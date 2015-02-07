@@ -550,6 +550,8 @@ public class TagGroup extends ViewGroup {
          */
         private Paint mPaint;
 
+        private Paint mMarkPaint;
+
         /**
          * The rect for the tag's left corner drawing.
          */
@@ -570,6 +572,8 @@ public class TagGroup extends ViewGroup {
          */
         private RectF mVerticalBlankFillRectF;
 
+        private RectF mCheckedMarkDrawBound;
+
         /**
          * The path for draw the tag's outline border.
          */
@@ -583,12 +587,17 @@ public class TagGroup extends ViewGroup {
         public TagView(Context context, int state, CharSequence text) {
             super(context);
             mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            mMarkPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            mMarkPaint.setColor(Color.WHITE);
+            mMarkPaint.setStrokeWidth(4);
 
             mLeftCornerRectF = new RectF();
             mRightCornerRectF = new RectF();
 
             mHorizontalBlankFillRectF = new RectF();
             mVerticalBlankFillRectF = new RectF();
+
+            mCheckedMarkDrawBound = new RectF();
 
             mBorderPath = new Path();
             mPathEffect = new DashPathEffect(new float[]{10, 5}, 0);
@@ -737,6 +746,14 @@ public class TagGroup extends ViewGroup {
                 canvas.drawArc(mRightCornerRectF, 0, 90, true, mPaint);
                 canvas.drawRect(mHorizontalBlankFillRectF, mPaint);
                 canvas.drawRect(mVerticalBlankFillRectF, mPaint);
+
+                canvas.save();
+                canvas.rotate(45, mCheckedMarkDrawBound.centerX(), mCheckedMarkDrawBound.centerY());
+                canvas.drawLine(mCheckedMarkDrawBound.left, mCheckedMarkDrawBound.centerY(),
+                        mCheckedMarkDrawBound.right, mCheckedMarkDrawBound.centerY(), mMarkPaint);
+                canvas.drawLine(mCheckedMarkDrawBound.centerX(), mCheckedMarkDrawBound.top,
+                        mCheckedMarkDrawBound.centerX(), mCheckedMarkDrawBound.bottom, mMarkPaint);
+                canvas.restore();
             } else {
                 canvas.drawPath(mBorderPath, mPaint);
             }
@@ -746,7 +763,7 @@ public class TagGroup extends ViewGroup {
         @Override
         protected void onSizeChanged(int w, int h, int oldw, int oldh) {
             super.onSizeChanged(w, h, oldw, oldh);
-            // Cast to int(在填充选中状态的背景矩形时，由于精度问题会出现透明线)
+            // Cast to int  (在填充选中状态的背景矩形时，由于精度问题会出现透明线)
             int left = (int) mBorderWidth;
             int top = (int) mBorderWidth;
             int right = (int) (left + w - mBorderWidth * 2);
@@ -778,10 +795,22 @@ public class TagGroup extends ViewGroup {
 
             mHorizontalBlankFillRectF.set(left, top + l, right, bottom - l);
             mVerticalBlankFillRectF.set(left + l, top, right - l, bottom);
+
+            int m = (int) (h / 2.5f);
+            int offset = 3;
+            h = bottom - top;
+            mCheckedMarkDrawBound.set(right - m - mHorizontalPadding + offset,
+                    top + h / 2 - m / 2,
+                    right - mHorizontalPadding + offset,
+                    bottom - h / 2 + m / 2);
         }
 
         public void setChecked(boolean checked) {
             isChecked = checked;
+            setPadding(mHorizontalPadding,
+                    mVerticalPadding,
+                    isChecked ? (int) (mHorizontalPadding + getHeight() / 2.5f + 3) : mHorizontalPadding,
+                    mVerticalPadding);
             invalidatePaint();
         }
     }
@@ -789,7 +818,6 @@ public class TagGroup extends ViewGroup {
     static class SavedState extends BaseSavedState {
         int checkedTagPosition;
         String inputText;
-
 
         public SavedState(Parcel source) {
             super(source);
