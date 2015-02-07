@@ -6,8 +6,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.TextView;
 
-import java.util.List;
-
 import me.gujun.android.taggroup.TagGroup;
 import me.gujun.android.taggroup.demo.db.TagsManager;
 
@@ -19,41 +17,43 @@ public class MainActivity extends ActionBarActivity {
     private TagGroup mSmallTagGroup;
     private TagGroup mLargeTagGroup;
 
-    private List<String> mTagList;
-
     private int default_green;
     private int beauty_red;
     private int holo_dark;
     private int light_blue;
     private int indigo;
 
+    private TagsManager mTagsManager;
+
+    private CharSequence[] mTags;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TagsManager tagsManager = TagsManager.getInstance(getApplicationContext());
-        mTagList = tagsManager.getAllTags();
+        mTagsManager = TagsManager.getInstance(getApplicationContext());
+        mTags = mTagsManager.getTags();
 
         mPromptText = (TextView) findViewById(R.id.tv_prompt);
-        mPromptText.setVisibility(mTagList.isEmpty() ? View.VISIBLE : View.GONE);
+        mPromptText.setVisibility((mTags == null || mTags.length == 0) ? View.VISIBLE : View.GONE);
         mPromptText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, SecondaryActivity.class);
-                startActivity(intent);
+                launchSecondaryActivity();
             }
         });
 
-        mDefaultTagGroup = (TagGroup) findViewById(R.id.tag_group_default);
+        mDefaultTagGroup = (TagGroup) findViewById(R.id.tag_group);
         mSmallTagGroup = (TagGroup) findViewById(R.id.tag_group_small);
         mLargeTagGroup = (TagGroup) findViewById(R.id.tag_group_large);
-        if (mTagList != null && !mTagList.isEmpty()) {
-            mDefaultTagGroup.setTags(mTagList);
-            mSmallTagGroup.setTags(mTagList);
-            mLargeTagGroup.setTags(mTagList);
+        if (mTags != null && mTags.length > 0) {
+            mDefaultTagGroup.setTags(mTags);
+            mSmallTagGroup.setTags(mTags);
+            mLargeTagGroup.setTags(mTags);
         }
 
         MyTagGroupOnClickListener tgClickListener = new MyTagGroupOnClickListener();
+
         mDefaultTagGroup.setOnClickListener(tgClickListener);
         mSmallTagGroup.setOnClickListener(tgClickListener);
         mLargeTagGroup.setOnClickListener(tgClickListener);
@@ -101,13 +101,30 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 110 && resultCode == 110) {
+            mTags = data.getCharSequenceArrayExtra("tagsResult");
+            mTagsManager.updateTags(mTags);
+            mPromptText.setVisibility((mTags == null || mTags.length == 0) ? View.VISIBLE : View.GONE);
+            mDefaultTagGroup.setTags(mTags);
+            mSmallTagGroup.setTags(mTags);
+            mLargeTagGroup.setTags(mTags);
+        }
+    }
+
+    protected void launchSecondaryActivity() {
+        Intent intent = new Intent(MainActivity.this, SecondaryActivity.class);
+        intent.putExtra("tags", mTags);
+        intent.putExtra("color", mDefaultTagGroup.getBrightColor());
+        startActivityForResult(intent, 110);
+    }
+
     class MyTagGroupOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(MainActivity.this, SecondaryActivity.class);
-            intent.putStringArrayListExtra("tagList", (java.util.ArrayList<String>) mTagList);
-            intent.putExtra("brightColor", mDefaultTagGroup.getBrightColor());
-            startActivity(intent);
+            launchSecondaryActivity();
         }
     }
 }

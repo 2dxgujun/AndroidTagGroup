@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <Please describe the usage of this class>
+ * Manage the tags from SQLite database.
  *
  * @author Jun Gu (http://2dxgujun.com)
  * @version 1.0
@@ -24,21 +24,14 @@ public class TagsManager {
         mDbHelper = new DatabaseHelper(context);
     }
 
-    public void insertTag(String tag) {
-        ContentValues values = new ContentValues();
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        values.put(TagsTable.TAG, tag);
-        db.insert(TagsTable.TABLE_NAME, null, values);
-        db.close();
-    }
-
-    public void insertTags(String[] tags) {
-        for (String tag : tags) {
-            insertTag(tag);
+    public static TagsManager getInstance(Context context) {
+        if (INSTANCE == null) {
+            INSTANCE = new TagsManager(context);
         }
+        return INSTANCE;
     }
 
-    public List<String> getAllTags() {
+    public CharSequence[] getTags() {
         List<String> tagList = new ArrayList<>();
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         Cursor c = db.query(TagsTable.TABLE_NAME,
@@ -49,19 +42,27 @@ public class TagsManager {
         }
         c.close();
         db.close();
-        return tagList;
+        return tagList.toArray(new CharSequence[]{});
     }
 
-    public void deleteTag(String tag) {
+    public void updateTags(CharSequence... tags) {
+        clearTags();
+        for (CharSequence tag : tags) {
+            addTag(tag);
+        }
+    }
+
+    public void addTag(CharSequence tag) {
+        ContentValues values = new ContentValues();
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        db.delete(TagsTable.TABLE_NAME, TagsTable.TAG + "=?", new String[]{tag});
+        values.put(TagsTable.TAG, tag.toString());
+        db.insert(TagsTable.TABLE_NAME, null, values);
         db.close();
     }
 
-    public static TagsManager getInstance(Context context) {
-        if (INSTANCE == null) {
-            INSTANCE = new TagsManager(context);
-        }
-        return INSTANCE;
+    public void clearTags() {
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.delete(TagsTable.TABLE_NAME, null, null);
+        db.close();
     }
 }

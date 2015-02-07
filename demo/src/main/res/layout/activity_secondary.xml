@@ -12,7 +12,7 @@
     tools:context=".SecondaryActivity">
 
     <me.gujun.android.taggroup.TagGroup
-        android:id="@+id/tag_group_default"
+        android:id="@+id/tag_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:isAppendMode="true"/>

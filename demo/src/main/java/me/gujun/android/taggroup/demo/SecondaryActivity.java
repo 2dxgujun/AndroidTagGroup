@@ -1,43 +1,46 @@
 package me.gujun.android.taggroup.demo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-
-import java.util.List;
+import android.view.MenuItem;
 
 import me.gujun.android.taggroup.TagGroup;
-import me.gujun.android.taggroup.demo.db.TagsManager;
 
 
 public class SecondaryActivity extends ActionBarActivity {
     private TagGroup mTagGroup;
-    private TagsManager mTagsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_secondary);
-        mTagsManager = TagsManager.getInstance(this);
 
-        mTagGroup = (TagGroup) findViewById(R.id.tag_group_default);
-        mTagGroup.setOnTagChangeListener(new TagGroup.OnTagChangeListener() {
-            @Override
-            public void onAppend(String tag) {
-                mTagsManager.insertTag(tag);
-            }
+        CharSequence[] tags = getIntent().getCharSequenceArrayExtra("tags");
+        int color = getIntent().getIntExtra("color", getResources().getColor(R.color.default_green));
 
-            @Override
-            public void onDelete(String tag) {
-                mTagsManager.deleteTag(tag);
-            }
-        });
+        mTagGroup = (TagGroup) findViewById(R.id.tag_group);
+        mTagGroup.setTags(tags);
+        mTagGroup.setBrightColor(color);
+    }
 
-        List<String> tagList = getIntent().getStringArrayListExtra("tagList");
-        int brightColor = getIntent().getIntExtra("brightColor",
-                getResources().getColor(R.color.default_green));
-        if (tagList != null) {
-            mTagGroup.setTags(tagList);
-            mTagGroup.setBrightColor(brightColor);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            Intent intent = new Intent();
+            intent.putExtra("tagsResult", mTagGroup.getTags());
+            setResult(110, intent);
+            finish();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("tagsResult", mTagGroup.getTags());
+        setResult(110, intent);
+        super.onBackPressed();
     }
 }

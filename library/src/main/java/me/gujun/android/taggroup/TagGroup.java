@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -381,9 +381,50 @@ public class TagGroup extends ViewGroup {
         }
     }
 
-    public void setTags(String[] tags) {
-        List<String> tagList = Arrays.asList(tags);
-        setTags(tagList);
+    public void appendTag(CharSequence tag) {
+        if (isAppendMode) {
+            int appendIndex = getChildCount();
+            TagView tagView = new TagView(getContext(), TagView.STATE_NORMAL, tag);
+            tagView.setOnClickListener(new OnTagClickListener());
+            addView(tagView, appendIndex++);
+        } else {
+            TagView tagView = new TagView(getContext(), TagView.STATE_NORMAL, tag);
+            addView(tagView);
+        }
+    }
+
+    public void setTags(String... tags) {
+        removeAllViews();
+        for (String tag : tags) {
+            appendTag(tag);
+        }
+        if (isAppendMode) {
+            appendInputTag();
+        }
+    }
+
+    public void setTags(CharSequence... tags) {
+        removeAllViews();
+        for (CharSequence tag : tags) {
+            appendTag(tag);
+        }
+
+        if (isAppendMode) {
+            appendInputTag();
+        }
+    }
+
+    public CharSequence[] getTags() {
+        final int count = getChildCount();
+        final List<CharSequence> tagList = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            final TagView tag = (TagView) getChildAt(i);
+            if (tag.mState == TagView.STATE_NORMAL) {
+                tagList.add(tag.getText());
+            }
+        }
+
+        return tagList.toArray(new CharSequence[]{});
     }
 
     public float dp2px(float dp) {
@@ -539,7 +580,7 @@ public class TagGroup extends ViewGroup {
          */
         private PathEffect mPathEffect;
 
-        public TagView(Context context, int state, String text) {
+        public TagView(Context context, int state, CharSequence text) {
             super(context);
             mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
