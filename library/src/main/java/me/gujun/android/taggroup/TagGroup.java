@@ -276,12 +276,34 @@ public class TagGroup extends ViewGroup {
 
     @Override
     public Parcelable onSaveInstanceState() {
-        return super.onSaveInstanceState();
+        Parcelable superState = super.onSaveInstanceState();
+        SavedState ss = new SavedState(superState);
+        ss.tags = getTags();
+        ss.checkedPosition = getCheckedTagPosition();
+        if (getInputTag() != null) {
+            ss.input = getInputTag().getText().toString();
+        }
+        return ss;
     }
 
     @Override
     public void onRestoreInstanceState(Parcelable state) {
-        super.onRestoreInstanceState(state);
+        if (!(state instanceof SavedState)) {
+            super.onRestoreInstanceState(state);
+            return;
+        }
+
+        SavedState ss = (SavedState) state;
+        super.onRestoreInstanceState(ss.getSuperState());
+
+        setTags(ss.tags);
+        TagView tagView = (TagView) getChildAt(ss.checkedPosition);
+        if (tagView != null) {
+            tagView.setChecked(true);
+        }
+        if (getInputTag() != null) {
+            getInputTag().setText(ss.input);
+        }
     }
 
     /**
@@ -414,17 +436,17 @@ public class TagGroup extends ViewGroup {
         }
     }
 
-    public CharSequence[] getTags() {
+    public String[] getTags() {
         final int count = getChildCount();
         final List<CharSequence> tagList = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             final TagView tag = (TagView) getChildAt(i);
             if (tag.mState == TagView.STATE_NORMAL) {
-                tagList.add(tag.getText());
+                tagList.add(tag.getText().toString());
             }
         }
 
-        return tagList.toArray(new CharSequence[]{});
+        return tagList.toArray(new String[]{});
     }
 
     public float dp2px(float dp) {
@@ -572,7 +594,15 @@ public class TagGroup extends ViewGroup {
          */
         private RectF mVerticalBlankFillRectF;
 
+        /**
+         * The rect for the checked mark draw bound.
+         */
         private RectF mCheckedMarkDrawBound;
+
+        /**
+         * The offset to the text.
+         */
+        private int mCheckedMarkOffset;
 
         /**
          * The path for draw the tag's outline border.
@@ -598,6 +628,7 @@ public class TagGroup extends ViewGroup {
             mVerticalBlankFillRectF = new RectF();
 
             mCheckedMarkDrawBound = new RectF();
+            mCheckedMarkOffset = 3;
 
             mBorderPath = new Path();
             mPathEffect = new DashPathEffect(new float[]{10, 5}, 0);
@@ -797,11 +828,10 @@ public class TagGroup extends ViewGroup {
             mVerticalBlankFillRectF.set(left + l, top, right - l, bottom);
 
             int m = (int) (h / 2.5f);
-            int offset = 3;
             h = bottom - top;
-            mCheckedMarkDrawBound.set(right - m - mHorizontalPadding + offset,
+            mCheckedMarkDrawBound.set(right - m - mHorizontalPadding + mCheckedMarkOffset,
                     top + h / 2 - m / 2,
-                    right - mHorizontalPadding + offset,
+                    right - mHorizontalPadding + mCheckedMarkOffset,
                     bottom - h / 2 + m / 2);
         }
 
@@ -809,20 +839,26 @@ public class TagGroup extends ViewGroup {
             isChecked = checked;
             setPadding(mHorizontalPadding,
                     mVerticalPadding,
-                    isChecked ? (int) (mHorizontalPadding + getHeight() / 2.5f + 3) : mHorizontalPadding,
+                    isChecked ? (int) (mHorizontalPadding + getHeight() / 2.5f + mCheckedMarkOffset)
+                            : mHorizontalPadding,
                     mVerticalPadding);
             invalidatePaint();
         }
     }
 
     static class SavedState extends BaseSavedState {
-        int checkedTagPosition;
-        String inputText;
+        int tagCount;
+        String[] tags;
+        int checkedPosition;
+        String input;
 
         public SavedState(Parcel source) {
             super(source);
-            checkedTagPosition = source.readInt();
-            inputText = source.readString();
+            tagCount = source.readInt();
+            tags = new String[tagCount];
+            source.readStringArray(tags);
+            checkedPosition = source.readInt();
+            input = source.readString();
         }
 
         public SavedState(Parcelable superState) {
@@ -832,8 +868,11 @@ public class TagGroup extends ViewGroup {
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             super.writeToParcel(dest, flags);
-            dest.writeInt(checkedTagPosition);
-            dest.writeString(inputText);
+            tagCount = tags.length;
+            dest.writeInt(tagCount);
+            dest.writeStringArray(tags);
+            dest.writeInt(checkedPosition);
+            dest.writeString(input);
         }
 
         public static final Parcelable.Creator<SavedState> CREATOR =
