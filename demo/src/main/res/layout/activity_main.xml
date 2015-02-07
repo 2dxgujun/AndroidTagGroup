@@ -10,22 +10,23 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
-    
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/tags"
+        android:text="@string/tags_default"
         android:textSize="20sp"/>
 
     <me.gujun.android.taggroup.TagGroup
-        android:id="@+id/tag_group"
+        android:id="@+id/tag_group_default"
+        style="@style/TagGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         app:isAppendMode="false">
 
         <TextView
-            android:id="@+id/tv_prompt_tag"
+            android:id="@+id/tv_prompt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="5dp"
@@ -33,4 +34,81 @@
             android:text="添加标签"
             android:textColor="@android:color/darker_gray"/>
     </me.gujun.android.taggroup.TagGroup>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/tags_small"
+        android:textSize="18sp"/>
+
+    <me.gujun.android.taggroup.TagGroup
+        android:id="@+id/tag_group_small"
+        style="@style/TagGroup.Small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:isAppendMode="false"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/tags_large"
+        android:textSize="22sp"/>
+
+    <me.gujun.android.taggroup.TagGroup
+        android:id="@+id/tag_group_large"
+        style="@style/TagGroup.Large"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:isAppendMode="false"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/cp_default"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:background="@color/default_green"
+            android:onClick="onPickColor"/>
+
+        <View
+            android:id="@+id/cp_beauty_red"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:background="@color/beauty_red"
+            android:onClick="onPickColor"/>
+
+        <View
+            android:id="@+id/cp_holo_dark"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:background="@color/holo_dark"
+            android:onClick="onPickColor"/>
+
+        <View
+            android:id="@+id/cp_light_blue"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:background="@color/light_blue"
+            android:onClick="onPickColor"/>
+
+        <View
+            android:id="@+id/cp_indigo"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:background="@color/indigo"
+            android:onClick="onPickColor"/>
+    </LinearLayout>
 </LinearLayout>

@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">TagGroup-Demo</string>
     <string name="title_activity_secondary">添加标签</string>
-    <string name="tags">标签</string>
+    <string name="tags_default">标签(默认)</string>
+    <string name="tags_small">标签(小号)</string>
+    <string name="tags_large">标签(大号)</string>
 </resources>

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="title_activity_secondary">Add Tags</string>
-    <string name="tags">Tags</string>
+    <string name="tags_default">Tags(Default)</string>
+    <string name="tags_large">Tags(Large)</string>
+    <string name="tags_small">Tags(Small)</string>
 </resources>

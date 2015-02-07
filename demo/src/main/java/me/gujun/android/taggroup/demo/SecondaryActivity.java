@@ -19,7 +19,7 @@ public class SecondaryActivity extends ActionBarActivity {
         setContentView(R.layout.activity_secondary);
         mTagsManager = TagsManager.getInstance(this);
 
-        mTagGroup = (TagGroup) findViewById(R.id.tag_group);
+        mTagGroup = (TagGroup) findViewById(R.id.tag_group_default);
         mTagGroup.setOnTagChangeListener(new TagGroup.OnTagChangeListener() {
             @Override
             public void onAppend(String tag) {
@@ -33,8 +33,11 @@ public class SecondaryActivity extends ActionBarActivity {
         });
 
         List<String> tagList = getIntent().getStringArrayListExtra("tagList");
+        int brightColor = getIntent().getIntExtra("brightColor",
+                getResources().getColor(R.color.default_green));
         if (tagList != null) {
             mTagGroup.setTags(tagList);
+            mTagGroup.setBrightColor(brightColor);
         }
     }
 }
