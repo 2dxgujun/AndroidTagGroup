@@ -54,7 +54,7 @@ public class TagGroup extends ViewGroup {
     private final float default_vertical_padding;
 
     /**
-     * Indicates whether this TagGroup is set up to APPEND mode or DISPLAY mode.
+     * Indicates whether this TagGroup is set up to APPEND mode or DISPLAY mode. Default is false.
      */
     private boolean isAppendMode;
 
@@ -746,12 +746,13 @@ public class TagGroup extends ViewGroup {
         @Override
         protected void onSizeChanged(int w, int h, int oldw, int oldh) {
             super.onSizeChanged(w, h, oldw, oldh);
-            float left = mBorderWidth;
-            float top = mBorderWidth;
-            float right = left + w - mBorderWidth * 2;
-            float bottom = top + h - mBorderWidth * 2;
+            // Cast to int(在填充选中状态的背景矩形时，由于精度问题会出现透明线)
+            int left = (int) mBorderWidth;
+            int top = (int) mBorderWidth;
+            int right = (int) (left + w - mBorderWidth * 2);
+            int bottom = (int) (top + h - mBorderWidth * 2);
 
-            float d = bottom - top;
+            int d = bottom - top;
 
             mLeftCornerRectF.set(left, top, left + d, top + d);
             mRightCornerRectF.set(right - d, top, right, top + d);
