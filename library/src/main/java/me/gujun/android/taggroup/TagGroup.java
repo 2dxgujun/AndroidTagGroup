@@ -26,17 +26,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class is used to create a group for a set of tags. The tag group has two modes:
+ * A <code>TagGroup</code> is a special view that can contain other views (called tag.).
+ * This group has two modes:
  * <p/>
  * 1. APPEND mode<br/>
  * 2. DISPLAY mode
  * <p/>
- * Default is DISPLAY mode. When in APPEND mode, the group is capable of input and append new tags,
- * it always shows a INPUT state tag view at the last position of group. When you finish input,
- * click the blank region of the tag group to end the INPUT state.Click the NORMAL state tag,
- * will check the tag, next click to the checked tag will delete the tag.
+ * Default is DISPLAY mode. When in APPEND mode, the group is capable of input for append new tags,
+ * it always shows a INPUT state tag at the end of group. Click the blank region of the group to
+ * finish input.
  * <p/>
- * When in DISPLAY mode, the group is only for display NORMAL state tags, and all the tags in group
+ * Double-click a NORMAL state tag, will remove it from the group.
+ * <p/>
+ * When in DISPLAY mode, the group is only contain NORMAL state tags, and all the tags in group
  * is not focusable.
  *
  * @author Jun Gu (http://2dxgujun.com)
@@ -59,12 +61,12 @@ public class TagGroup extends ViewGroup {
     private boolean isAppendMode;
 
     /**
-     * The tag outline border and text bright color.
+     * The bright color of the tag.
      */
     private int mBrightColor;
 
     /**
-     * The tag outline border and text dim color.
+     * The dim color of the tag.
      */
     private int mDimColor;
 
@@ -99,7 +101,7 @@ public class TagGroup extends ViewGroup {
     private int mVerticalPadding;
 
     /**
-     * Listener used to dispatch tag change events.
+     * Listener used to dispatch tag change event.
      */
     private OnTagChangeListener mOnTagChangeListener;
 
@@ -155,13 +157,13 @@ public class TagGroup extends ViewGroup {
             setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    TagView lastTag = getInputTag();
-                    if (lastTag != null && lastTag.getState() == TagView.STATE_INPUT
-                            && lastTag.isInputAvailable()) {
-                        lastTag.endInput();
+                    TagView inputTag = getInputTag();
+                    // TODO max input length
+                    if (inputTag != null && inputTag.isInputAvailable()) {
+                        inputTag.endInput();
                         // Dispatch the tags changed event.
                         if (mOnTagChangeListener != null) {
-                            mOnTagChangeListener.onAppend(lastTag.getText().toString());
+                            mOnTagChangeListener.onAppend(inputTag.getText().toString());
                         }
                         appendInputTag(); // Append a new INPUT state tag.
                     }
@@ -170,14 +172,86 @@ public class TagGroup extends ViewGroup {
         }
     }
 
+    public int getBrightColor() {
+        return mBrightColor;
+    }
+
     public void setBrightColor(int brightColor) {
         mBrightColor = brightColor;
         invalidateAllTagsPaint();
         invalidate();
     }
 
-    public int getBrightColor() {
-        return mBrightColor;
+    public int getDimColor() {
+        return mDimColor;
+    }
+
+    public void setDimColor(int dimColor) {
+        mDimColor = dimColor;
+        invalidateAllTagsPaint();
+        invalidate();
+    }
+
+    public float getBorderWidth() {
+        return mBorderWidth;
+    }
+
+    public void setBorderWidth(float borderWidth) {
+        mBorderWidth = borderWidth;
+        invalidateAllTagsPaint();
+        requestLayout();
+        invalidate();
+    }
+
+    public float getTextSize() {
+        return mTextSize;
+    }
+
+    public void setTextSize(float textSize) {
+        mTextSize = textSize;
+        invalidateAllTagsPaint();
+        requestLayout();
+        invalidate();
+    }
+
+    public int getHorizontalSpacing() {
+        return mHorizontalSpacing;
+    }
+
+    public void setHorizontalSpacing(int horizontalSpacing) {
+        mHorizontalSpacing = horizontalSpacing;
+        requestLayout();
+        invalidate();
+    }
+
+    public int getVerticalSpacing() {
+        return mVerticalSpacing;
+    }
+
+    public void setVerticalSpacing(int verticalSpacing) {
+        mVerticalSpacing = verticalSpacing;
+        requestLayout();
+        invalidate();
+    }
+
+    public int getHorizontalPadding() {
+        return mHorizontalPadding;
+    }
+
+    public void setHorizontalPadding(int horizontalPadding) {
+        mHorizontalPadding = horizontalPadding;
+        requestLayout();
+        invalidate();
+    }
+
+    public int getVerticalPadding() {
+        return mVerticalPadding;
+    }
+
+    public void setVerticalPadding(int verticalPadding) {
+        mVerticalPadding = verticalPadding;
+        requestLayout();
+        invalidate();
     }
 
     protected void invalidateAllTagsPaint() {
@@ -315,7 +389,11 @@ public class TagGroup extends ViewGroup {
         if (isAppendMode) {
             final int inputTagIndex = getChildCount() - 1;
             TagView inputTag = (TagView) getChildAt(inputTagIndex);
-            return inputTag;
+            if (inputTag != null && inputTag.mState == TagView.STATE_INPUT) {
+                return inputTag;
+            } else {
+                return null;
+            }
         } else {
             return null;
         }
@@ -425,17 +503,6 @@ public class TagGroup extends ViewGroup {
         }
     }
 
-    public void setTags(CharSequence... tags) {
-        removeAllViews();
-        for (CharSequence tag : tags) {
-            appendTag(tag);
-        }
-
-        if (isAppendMode) {
-            appendInputTag();
-        }
-    }
-
     public String[] getTags() {
         final int count = getChildCount();
         final List<CharSequence> tagList = new ArrayList<>();
@@ -447,6 +514,17 @@ public class TagGroup extends ViewGroup {
         }
 
         return tagList.toArray(new String[]{});
+    }
+
+    public void setTags(CharSequence... tags) {
+        removeAllViews();
+        for (CharSequence tag : tags) {
+            appendTag(tag);
+        }
+
+        if (isAppendMode) {
+            appendInputTag();
+        }
     }
 
     public float dp2px(float dp) {
@@ -501,6 +579,49 @@ public class TagGroup extends ViewGroup {
 
         public LayoutParams(ViewGroup.LayoutParams source) {
             super(source);
+        }
+    }
+
+    /**
+     * For {@link TagGroup} save and restore state.
+     */
+    static class SavedState extends BaseSavedState {
+        public static final Parcelable.Creator<SavedState> CREATOR =
+                new Parcelable.Creator<SavedState>() {
+                    public SavedState createFromParcel(Parcel in) {
+                        return new SavedState(in);
+                    }
+
+                    public SavedState[] newArray(int size) {
+                        return new SavedState[size];
+                    }
+                };
+        int tagCount;
+        String[] tags;
+        int checkedPosition;
+        String input;
+
+        public SavedState(Parcel source) {
+            super(source);
+            tagCount = source.readInt();
+            tags = new String[tagCount];
+            source.readStringArray(tags);
+            checkedPosition = source.readInt();
+            input = source.readString();
+        }
+
+        public SavedState(Parcelable superState) {
+            super(superState);
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            tagCount = tags.length;
+            dest.writeInt(tagCount);
+            dest.writeStringArray(tags);
+            dest.writeInt(checkedPosition);
+            dest.writeString(input);
         }
     }
 
@@ -844,46 +965,5 @@ public class TagGroup extends ViewGroup {
                     mVerticalPadding);
             invalidatePaint();
         }
-    }
-
-    static class SavedState extends BaseSavedState {
-        int tagCount;
-        String[] tags;
-        int checkedPosition;
-        String input;
-
-        public SavedState(Parcel source) {
-            super(source);
-            tagCount = source.readInt();
-            tags = new String[tagCount];
-            source.readStringArray(tags);
-            checkedPosition = source.readInt();
-            input = source.readString();
-        }
-
-        public SavedState(Parcelable superState) {
-            super(superState);
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            super.writeToParcel(dest, flags);
-            tagCount = tags.length;
-            dest.writeInt(tagCount);
-            dest.writeStringArray(tags);
-            dest.writeInt(checkedPosition);
-            dest.writeString(input);
-        }
-
-        public static final Parcelable.Creator<SavedState> CREATOR =
-                new Parcelable.Creator<SavedState>() {
-                    public SavedState createFromParcel(Parcel in) {
-                        return new SavedState(in);
-                    }
-
-                    public SavedState[] newArray(int size) {
-                        return new SavedState[size];
-                    }
-                };
     }
 }
