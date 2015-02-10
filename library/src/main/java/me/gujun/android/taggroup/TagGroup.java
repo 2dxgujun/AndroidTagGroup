@@ -160,7 +160,6 @@ public class TagGroup extends ViewGroup {
                 @Override
                 public void onClick(View v) {
                     TagView inputTag = getInputTagView();
-                    // TODO max input length
                     if (inputTag != null && inputTag.isInputAvailable()) {
                         inputTag.endInput();
 

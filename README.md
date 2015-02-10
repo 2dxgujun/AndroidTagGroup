@@ -101,7 +101,7 @@ For example, the default style:
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="isAppendMode">false</item>
-    <item name="appendTagHint">@string/append_tag</item>
+    <item name="inputTagHint">@string/add_tag</item>
     <item name="brightColor">#49C120</item>
     <item name="dimColor">#AAAAAA</item>
     <item name="borderStrokeWidth">0.5dp</item>
@@ -117,6 +117,3 @@ License
 ---
 
 This project is licensed under the [MIT License](https://raw.github.com/2dxgujun/AndroidTagGroup/master/assets/LICENSE).
-
-
-OnTagChangeListener
