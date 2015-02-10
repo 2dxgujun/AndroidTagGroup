@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">TagGroup-Demo</string>
     <string name="title_activity_secondary">Add Tags</string>
     <string name="tags_default">Tags (Default)</string>
     <string name="tags_large">Tags (Large)</string>
