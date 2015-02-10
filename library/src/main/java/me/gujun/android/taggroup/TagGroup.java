@@ -844,6 +844,22 @@ public class TagGroup extends ViewGroup {
         }
 
         /**
+         * Set whether this tag view is in the checked state.
+         *
+         * @param checked true is checked, false otherwise
+         */
+        public void setChecked(boolean checked) {
+            isChecked = checked;
+            // Make the checked mark drawing region.
+            setPadding(mHorizontalPadding,
+                    mVerticalPadding,
+                    isChecked ? (int) (mHorizontalPadding + getHeight() / 2.5f + mCheckedMarkOffset)
+                            : mHorizontalPadding,
+                    mVerticalPadding);
+            invalidatePaint();
+        }
+
+        /**
          * Call this method to end this tag's INPUT state.
          */
         public void endInput() {
@@ -963,16 +979,15 @@ public class TagGroup extends ViewGroup {
                     top + h / 2 - m / 2,
                     right - mHorizontalPadding + mCheckedMarkOffset,
                     bottom - h / 2 + m / 2);
-        }
 
-        public void setChecked(boolean checked) {
-            isChecked = checked;
-            setPadding(mHorizontalPadding,
-                    mVerticalPadding,
-                    isChecked ? (int) (mHorizontalPadding + getHeight() / 2.5f + mCheckedMarkOffset)
-                            : mHorizontalPadding,
-                    mVerticalPadding);
-            invalidatePaint();
+            // Ensure the checked mark drawing region is correct across screen orientation changes.
+            if (isChecked) {
+                setPadding(mHorizontalPadding,
+                        mVerticalPadding,
+                        isChecked ? (int) (mHorizontalPadding + h / 2.5f + mCheckedMarkOffset)
+                                : mHorizontalPadding,
+                        mVerticalPadding);
+            }
         }
     }
 }
