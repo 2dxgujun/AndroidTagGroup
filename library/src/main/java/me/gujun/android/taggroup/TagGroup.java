@@ -48,7 +48,7 @@ import java.util.List;
 public class TagGroup extends ViewGroup {
     private final int default_bright_color = Color.rgb(0x49, 0xC1, 0x20);
     private final int default_dim_color = Color.rgb(0xAA, 0xAA, 0xAA);
-    private final float default_border_width;
+    private final float default_border_stroke_width;
     private final float default_text_size;
     private final float default_horizontal_spacing;
     private final float default_vertical_spacing;
@@ -59,6 +59,11 @@ public class TagGroup extends ViewGroup {
      * Indicates whether this TagGroup is set up to APPEND mode or DISPLAY mode. Default is false.
      */
     private boolean isAppendMode;
+
+    /**
+     * The text to be displayed when the text of the INPUT state tag is empty.
+     */
+    private CharSequence mAppendTagHint;
 
     /**
      * The bright color of the tag.
@@ -73,7 +78,7 @@ public class TagGroup extends ViewGroup {
     /**
      * The tag outline border stroke width, default is 0.5dp.
      */
-    private float mBorderWidth;
+    private float mBorderStrokeWidth;
 
     /**
      * The tag text size, default is 13sp.
@@ -116,7 +121,7 @@ public class TagGroup extends ViewGroup {
     public TagGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        default_border_width = dp2px(0.5f);
+        default_border_stroke_width = dp2px(0.5f);
         default_text_size = sp2px(13.0f);
         default_horizontal_spacing = dp2px(8.0f);
         default_vertical_spacing = dp2px(4.0f);
@@ -125,12 +130,13 @@ public class TagGroup extends ViewGroup {
 
         // Load styled attributes.
         final TypedArray a = context.obtainStyledAttributes(attrs,
-                R.styleable.TagGroup, defStyleAttr, 0);
+                R.styleable.TagGroup, defStyleAttr, R.style.TagGroup);
         try {
             isAppendMode = a.getBoolean(R.styleable.TagGroup_isAppendMode, false);
+            mAppendTagHint = a.getText(R.styleable.TagGroup_appendTagHint);
             mBrightColor = a.getColor(R.styleable.TagGroup_brightColor, default_bright_color);
             mDimColor = a.getColor(R.styleable.TagGroup_dimColor, default_dim_color);
-            mBorderWidth = a.getDimension(R.styleable.TagGroup_borderWidth, default_border_width);
+            mBorderStrokeWidth = a.getDimension(R.styleable.TagGroup_borderStrokeWidth, default_border_stroke_width);
             mTextSize = a.getDimension(R.styleable.TagGroup_textSize, default_text_size);
             mHorizontalSpacing = (int) a.getDimension(R.styleable.TagGroup_horizontalSpacing,
                     default_horizontal_spacing);
@@ -192,12 +198,12 @@ public class TagGroup extends ViewGroup {
         invalidate();
     }
 
-    public float getBorderWidth() {
-        return mBorderWidth;
+    public float getBorderStrokeWidth() {
+        return mBorderStrokeWidth;
     }
 
-    public void setBorderWidth(float borderWidth) {
-        mBorderWidth = borderWidth;
+    public void setBorderStrokeWidth(float borderStrokeWidth) {
+        mBorderStrokeWidth = borderStrokeWidth;
         invalidateAllTagsPaint();
         requestLayout();
         invalidate();
@@ -765,7 +771,7 @@ public class TagGroup extends ViewGroup {
             mState = state;
 
             if (state == STATE_INPUT) {
-                setHint("添加标签");
+                setHint(mAppendTagHint);
                 setFocusable(true);
                 setFocusableInTouchMode(true);
                 requestFocus();
@@ -874,7 +880,7 @@ public class TagGroup extends ViewGroup {
                     setTextColor(Color.WHITE);
                 } else {
                     mPaint.setStyle(Paint.Style.STROKE);
-                    mPaint.setStrokeWidth(mBorderWidth);
+                    mPaint.setStrokeWidth(mBorderStrokeWidth);
                     mPaint.setColor(mBrightColor);
                     mPaint.setPathEffect(null);
                     setTextColor(mBrightColor);
@@ -882,7 +888,7 @@ public class TagGroup extends ViewGroup {
 
             } else if (mState == STATE_INPUT) {
                 mPaint.setStyle(Paint.Style.STROKE);
-                mPaint.setStrokeWidth(mBorderWidth);
+                mPaint.setStrokeWidth(mBorderStrokeWidth);
                 mPaint.setColor(mDimColor);
                 mPaint.setPathEffect(mPathEffect);
                 setTextColor(mDimColor);
@@ -916,10 +922,10 @@ public class TagGroup extends ViewGroup {
         protected void onSizeChanged(int w, int h, int oldw, int oldh) {
             super.onSizeChanged(w, h, oldw, oldh);
             // Cast to int  (在填充选中状态的背景矩形时，由于精度问题会出现透明线)
-            int left = (int) mBorderWidth;
-            int top = (int) mBorderWidth;
-            int right = (int) (left + w - mBorderWidth * 2);
-            int bottom = (int) (top + h - mBorderWidth * 2);
+            int left = (int) mBorderStrokeWidth;
+            int top = (int) mBorderStrokeWidth;
+            int right = (int) (left + w - mBorderStrokeWidth * 2);
+            int bottom = (int) (top + h - mBorderStrokeWidth * 2);
 
             int d = bottom - top;
 

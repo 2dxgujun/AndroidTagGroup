@@ -1,10 +1,10 @@
 <resources>
     <declare-styleable name="TagGroup">
-        <!--  -->
         <attr name="isAppendMode" format="boolean"/>
+        <attr name="appendTagHint" format="string"/>
         <attr name="brightColor" format="color"/>
         <attr name="dimColor" format="color"/>
-        <attr name="borderWidth" format="dimension"/>
+        <attr name="borderStrokeWidth" format="dimension"/>
         <attr name="textSize" format="dimension"/>
         <attr name="horizontalSpacing" format="dimension"/>
         <attr name="verticalSpacing" format="dimension"/>

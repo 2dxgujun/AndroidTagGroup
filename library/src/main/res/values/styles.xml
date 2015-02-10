@@ -2,12 +2,13 @@
 <resources>
 
     <style name="TagGroup">
-        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="isAppendMode">false</item>
+        <item name="appendTagHint">@string/append_tag</item>
         <item name="brightColor">#49C120</item>
         <item name="dimColor">#AAAAAA</item>
-        <item name="borderWidth">0.5dp</item>
+        <item name="borderStrokeWidth">0.5dp</item>
         <item name="textSize">13sp</item>
         <item name="horizontalSpacing">8dp</item>
         <item name="verticalSpacing">4dp</item>
@@ -24,7 +25,7 @@
     </style>
 
     <style name="TagGroup.Large" parent="TagGroup">
-        <item name="borderWidth">0.7dp</item>
+        <item name="borderStrokeWidth">0.7dp</item>
         <item name="textSize">15sp</item>
         <item name="horizontalSpacing">9dp</item>
         <item name="verticalSpacing">5dp</item>
