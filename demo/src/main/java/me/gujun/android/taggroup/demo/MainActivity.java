@@ -25,7 +25,7 @@ public class MainActivity extends ActionBarActivity {
 
     private TagsManager mTagsManager;
 
-    private CharSequence[] mTags;
+    private String[] mTags;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +105,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 110 && resultCode == 110) {
-            mTags = data.getCharSequenceArrayExtra("tagsResult");
+            mTags = data.getStringArrayExtra("tagsResult");
             mTagsManager.updateTags(mTags);
             mPromptText.setVisibility((mTags == null || mTags.length == 0) ? View.VISIBLE : View.GONE);
             mDefaultTagGroup.setTags(mTags);

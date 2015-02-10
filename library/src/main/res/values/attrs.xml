@@ -1,7 +1,7 @@
 <resources>
     <declare-styleable name="TagGroup">
         <attr name="isAppendMode" format="boolean"/>
-        <attr name="appendTagHint" format="string"/>
+        <attr name="inputTagHint" format="string"/>
         <attr name="brightColor" format="color"/>
         <attr name="dimColor" format="color"/>
         <attr name="borderStrokeWidth" format="dimension"/>

@@ -16,7 +16,7 @@ public class SecondaryActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_secondary);
 
-        CharSequence[] tags = getIntent().getCharSequenceArrayExtra("tags");
+        String[] tags = getIntent().getStringArrayExtra("tags");
         int color = getIntent().getIntExtra("color", getResources().getColor(R.color.default_green));
 
         mTagGroup = (TagGroup) findViewById(R.id.tag_group);

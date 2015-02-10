@@ -31,7 +31,7 @@ public class TagsManager {
         return INSTANCE;
     }
 
-    public CharSequence[] getTags() {
+    public String[] getTags() {
         List<String> tagList = new ArrayList<>();
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         Cursor c = db.query(TagsTable.TABLE_NAME,
@@ -42,7 +42,7 @@ public class TagsManager {
         }
         c.close();
         db.close();
-        return tagList.toArray(new CharSequence[]{});
+        return tagList.toArray(new String[]{});
     }
 
     public void updateTags(CharSequence... tags) {

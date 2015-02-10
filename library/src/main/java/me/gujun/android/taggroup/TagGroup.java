@@ -26,19 +26,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A <code>TagGroup</code> is a special view that can contain other views (called tag.).
+ * A <code>TagGroup</code> is a special layout that contain a set of tags.
  * This group has two modes:
  * <p/>
  * 1. APPEND mode<br/>
  * 2. DISPLAY mode
  * <p/>
- * Default is DISPLAY mode. When in APPEND mode, the group is capable of input for append new tags,
- * it always shows a INPUT state tag at the end of group. Click the blank region of the group to
- * finish input.
+ * Default is DISPLAY mode. When in APPEND mode, the group is capable of input for append new tags
+ * and delete tags.
  * <p/>
- * Double-click a NORMAL state tag, will remove it from the group.
- * <p/>
- * When in DISPLAY mode, the group is only contain NORMAL state tags, and all the tags in group
+ * When in DISPLAY mode, the group is only contain NORMAL state tags, and the tags in group
  * is not focusable.
  *
  * @author Jun Gu (http://2dxgujun.com)
@@ -63,7 +60,7 @@ public class TagGroup extends ViewGroup {
     /**
      * The text to be displayed when the text of the INPUT state tag is empty.
      */
-    private CharSequence mAppendTagHint;
+    private CharSequence mInputTagHint;
 
     /**
      * The bright color of the tag.
@@ -133,7 +130,7 @@ public class TagGroup extends ViewGroup {
                 R.styleable.TagGroup, defStyleAttr, R.style.TagGroup);
         try {
             isAppendMode = a.getBoolean(R.styleable.TagGroup_isAppendMode, false);
-            mAppendTagHint = a.getText(R.styleable.TagGroup_appendTagHint);
+            mInputTagHint = a.getText(R.styleable.TagGroup_inputTagHint);
             mBrightColor = a.getColor(R.styleable.TagGroup_brightColor, default_bright_color);
             mDimColor = a.getColor(R.styleable.TagGroup_dimColor, default_dim_color);
             mBorderStrokeWidth = a.getDimension(R.styleable.TagGroup_borderStrokeWidth, default_border_stroke_width);
@@ -154,7 +151,6 @@ public class TagGroup extends ViewGroup {
     }
 
     protected void setUpTagGroup() {
-        // If the tag group created in APPEND mode.
         if (isAppendMode) {
             // Append the initial INPUT state tag.
             appendInputTag();
@@ -163,13 +159,13 @@ public class TagGroup extends ViewGroup {
             setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    TagView inputTag = getInputTag();
+                    TagView inputTag = getInputTagView();
                     // TODO max input length
                     if (inputTag != null && inputTag.isInputAvailable()) {
                         inputTag.endInput();
-                        // Dispatch the tags changed event.
+
                         if (mOnTagChangeListener != null) {
-                            mOnTagChangeListener.onAppend(inputTag.getText().toString());
+                            mOnTagChangeListener.onAppend(TagGroup.this, inputTag.getText().toString());
                         }
                         appendInputTag(); // Append a new INPUT state tag.
                     }
@@ -206,7 +202,6 @@ public class TagGroup extends ViewGroup {
         mBorderStrokeWidth = borderStrokeWidth;
         invalidateAllTagsPaint();
         requestLayout();
-        invalidate();
     }
 
     public float getTextSize() {
@@ -217,7 +212,6 @@ public class TagGroup extends ViewGroup {
         mTextSize = textSize;
         invalidateAllTagsPaint();
         requestLayout();
-        invalidate();
     }
 
     public int getHorizontalSpacing() {
@@ -227,7 +221,6 @@ public class TagGroup extends ViewGroup {
     public void setHorizontalSpacing(int horizontalSpacing) {
         mHorizontalSpacing = horizontalSpacing;
         requestLayout();
-        invalidate();
     }
 
     public int getVerticalSpacing() {
@@ -237,7 +230,6 @@ public class TagGroup extends ViewGroup {
     public void setVerticalSpacing(int verticalSpacing) {
         mVerticalSpacing = verticalSpacing;
         requestLayout();
-        invalidate();
     }
 
     public int getHorizontalPadding() {
@@ -247,7 +239,6 @@ public class TagGroup extends ViewGroup {
     public void setHorizontalPadding(int horizontalPadding) {
         mHorizontalPadding = horizontalPadding;
         requestLayout();
-        invalidate();
     }
 
     public int getVerticalPadding() {
@@ -257,13 +248,15 @@ public class TagGroup extends ViewGroup {
     public void setVerticalPadding(int verticalPadding) {
         mVerticalPadding = verticalPadding;
         requestLayout();
-        invalidate();
     }
 
+    /**
+     * Invalidate all tag views' paint in this group.
+     */
     protected void invalidateAllTagsPaint() {
         final int count = getChildCount();
         for (int i = 0; i < count; i++) {
-            TagView tagView = (TagView) getChildAt(i);
+            TagView tagView = getTagViewAt(i);
             tagView.invalidatePaint();
         }
     }
@@ -359,9 +352,9 @@ public class TagGroup extends ViewGroup {
         Parcelable superState = super.onSaveInstanceState();
         SavedState ss = new SavedState(superState);
         ss.tags = getTags();
-        ss.checkedPosition = getCheckedTagPosition();
-        if (getInputTag() != null) {
-            ss.input = getInputTag().getText().toString();
+        ss.checkedPosition = getCheckedTagIndex();
+        if (getInputTagView() != null) {
+            ss.input = getInputTagView().getText().toString();
         }
         return ss;
     }
@@ -377,24 +370,24 @@ public class TagGroup extends ViewGroup {
         super.onRestoreInstanceState(ss.getSuperState());
 
         setTags(ss.tags);
-        TagView tagView = (TagView) getChildAt(ss.checkedPosition);
-        if (tagView != null) {
-            tagView.setChecked(true);
+        TagView checkedTagView = getTagViewAt(ss.checkedPosition);
+        if (checkedTagView != null) {
+            checkedTagView.setChecked(true);
         }
-        if (getInputTag() != null) {
-            getInputTag().setText(ss.input);
+        if (getInputTagView() != null) {
+            getInputTagView().setText(ss.input);
         }
     }
 
     /**
-     * Return the INPUT state tag in this group.
+     * Returns the INPUT state tag view in this group.
      *
-     * @return The INPUT state tag or null if none.
+     * @return the INPUT state tag view or null if not exists
      */
-    protected TagView getInputTag() {
+    protected TagView getInputTagView() {
         if (isAppendMode) {
             final int inputTagIndex = getChildCount() - 1;
-            TagView inputTag = (TagView) getChildAt(inputTagIndex);
+            final TagView inputTag = getTagViewAt(inputTagIndex);
             if (inputTag != null && inputTag.mState == TagView.STATE_INPUT) {
                 return inputTag;
             } else {
@@ -406,20 +399,80 @@ public class TagGroup extends ViewGroup {
     }
 
     /**
-     * Return the last NORMAL state tag in this group.
+     * Returns the INPUT state tag in this group.
      *
-     * @return The last NORMAL state tag or null if none.
+     * @return the INPUT state tag view or null if not exists
      */
-    protected TagView getLastNormalTag() {
-        final int lastNormalTagIndex = isAppendMode ? getChildCount() - 2 : getChildCount() - 1;
-        TagView lastNormalTag = (TagView) getChildAt(lastNormalTagIndex);
-        return lastNormalTag;
+    public String getInputTag() {
+        final TagView inputTagView = getInputTagView();
+        if (inputTagView != null) {
+            return inputTagView.getText().toString();
+        }
+        return null;
     }
 
-    protected int getCheckedTagPosition() {
+    /**
+     * Return the last NORMAL state tag view in this group.
+     *
+     * @return the last NORMAL state tag view or null if not exists
+     */
+    protected TagView getLastNormalTagView() {
+        final int lastNormalTagIndex = isAppendMode ? getChildCount() - 2 : getChildCount() - 1;
+        TagView lastNormalTagView = getTagViewAt(lastNormalTagIndex);
+        return lastNormalTagView;
+    }
+
+    /**
+     * Returns the NORMAL state tags array in group.
+     *
+     * @return the tag array
+     */
+    public String[] getTags() {
+        final int count = getChildCount();
+        final List<String> tagList = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            final TagView tagView = getTagViewAt(i);
+            if (tagView.mState == TagView.STATE_NORMAL) {
+                tagList.add(tagView.getText().toString());
+            }
+        }
+
+        return tagList.toArray(new String[]{});
+    }
+
+    /**
+     * Returns the tag view at the specified position in the group.
+     *
+     * @param index the position at which to get the tag view from
+     * @return the tag view at the specified position or null if the position
+     * does not exists within this group
+     */
+    protected TagView getTagViewAt(int index) {
+        return (TagView) getChildAt(index);
+    }
+
+    /**
+     * Returns the checked tag view in the group.
+     *
+     * @return the checked tag view or null if it does not exists within this group
+     */
+    protected TagView getCheckedTagView() {
+        final int checkedTagIndex = getCheckedTagIndex();
+        if (checkedTagIndex != -1) { // exists
+            return getTagViewAt(checkedTagIndex);
+        }
+        return null;
+    }
+
+    /**
+     * Return the checked tag index.
+     *
+     * @return the checked tag index, or -1 if there is no checked tag exists
+     */
+    protected int getCheckedTagIndex() {
         final int count = getChildCount();
         for (int i = 0; i < count; i++) {
-            final TagView tagView = (TagView) getChildAt(i);
+            final TagView tagView = getTagViewAt(i);
             if (tagView.isChecked) {
                 return i;
             }
@@ -428,9 +481,9 @@ public class TagGroup extends ViewGroup {
     }
 
     /**
-     * Register a callback to be invoked when this tag is changed.
+     * Register a callback to be invoked when this tag group is changed.
      *
-     * @param l The callback that will run.
+     * @param l the callback that will run
      */
     public void setOnTagChangeListener(OnTagChangeListener l) {
         mOnTagChangeListener = l;
@@ -447,11 +500,11 @@ public class TagGroup extends ViewGroup {
     /**
      * Append a INPUT state tag to this group. It will check the group state first.
      *
-     * @param tag The tag text.
+     * @param tag the tag text
      */
     protected void appendInputTag(String tag) {
-        TagView lastTag = getInputTag();
-        if (lastTag != null && lastTag.getState() == TagView.STATE_INPUT) {
+        TagView lastTag = getInputTagView();
+        if (lastTag != null) {
             throw new IllegalStateException("Already has a INPUT state tag in group. " +
                     "You must call endInput() before you append new one.");
         }
@@ -462,74 +515,42 @@ public class TagGroup extends ViewGroup {
     }
 
     /**
-     * Set the NORMAL state tag to this group. If the group is in APPEND mode, it will remove
-     * all tags except the last INPUT state tag and append the new tags at the beginning of the
-     * group.
-     * <p/>
-     * If the group is in DISPLAY mode, it will remove all tags and append the new tags.
-     *
-     * @param tagList The tag list to set.
+     * @see {@link #setTags(String...)}
      */
     public void setTags(List<String> tagList) {
-        if (isAppendMode) {
-            int appendIndex = getChildCount() > 0 ? getChildCount() - 1 : 0;
-            for (final String tag : tagList) {
-                TagView tagView = new TagView(getContext(), TagView.STATE_NORMAL, tag);
-                tagView.setOnClickListener(new OnTagClickListener());
-                addView(tagView, appendIndex++);
-            }
-        } else {
-            removeAllViews();
-            for (String tag : tagList) {
-                TagView tagView = new TagView(getContext(), TagView.STATE_NORMAL, tag);
-                addView(tagView);
-            }
-        }
+        setTags(tagList.toArray(new String[]{}));
     }
 
-    public void appendTag(CharSequence tag) {
-        if (isAppendMode) {
-            int appendIndex = getChildCount();
-            TagView tagView = new TagView(getContext(), TagView.STATE_NORMAL, tag);
-            tagView.setOnClickListener(new OnTagClickListener());
-            addView(tagView, appendIndex++);
-        } else {
-            TagView tagView = new TagView(getContext(), TagView.STATE_NORMAL, tag);
-            addView(tagView);
-        }
-    }
-
+    /**
+     * Set the NORMAL state tag to this group. It will remove all tags first.
+     *
+     * @param tags the tag list to set
+     */
     public void setTags(String... tags) {
         removeAllViews();
-        for (String tag : tags) {
-            appendTag(tag);
-        }
-        if (isAppendMode) {
-            appendInputTag();
-        }
-    }
-
-    public String[] getTags() {
-        final int count = getChildCount();
-        final List<CharSequence> tagList = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
-            final TagView tag = (TagView) getChildAt(i);
-            if (tag.mState == TagView.STATE_NORMAL) {
-                tagList.add(tag.getText().toString());
-            }
-        }
-
-        return tagList.toArray(new String[]{});
-    }
-
-    public void setTags(CharSequence... tags) {
-        removeAllViews();
-        for (CharSequence tag : tags) {
+        for (final String tag : tags) {
             appendTag(tag);
         }
 
         if (isAppendMode) {
             appendInputTag();
+        }
+    }
+
+    /**
+     * Append NORMAL state tag to this group.
+     *
+     * @param tag the tag to append
+     */
+    protected void appendTag(CharSequence tag) {
+        if (isAppendMode) {
+            final int appendIndex = getChildCount();
+            final TagView tagView = new TagView(getContext(), TagView.STATE_NORMAL, tag);
+            tagView.setOnClickListener(new OnTagClickListener());
+            addView(tagView, appendIndex);
+        } else {
+            final TagView tagView = new TagView(getContext(), TagView.STATE_NORMAL, tag);
+            addView(tagView);
         }
     }
 
@@ -549,22 +570,22 @@ public class TagGroup extends ViewGroup {
     }
 
     /**
-     * Interface definition for a callback to be invoked when a tag is changed.
+     * Interface definition for a callback to be invoked when a tag group is changed.
      */
     public interface OnTagChangeListener {
         /**
-         * Called when a tag has been appended.
+         * Called when a tag has been appended to the group.
          *
-         * @param tag The appended tag.
+         * @param tag the appended tag
          */
-        void onAppend(String tag);
+        void onAppend(TagGroup tagGroup, String tag);
 
         /**
-         * Called when a tag has been deleted.
+         * Called when a tag has been deleted from the the group.
          *
-         * @param tag The deleted tag.
+         * @param tag the deleted tag.
          */
-        void onDelete(String tag);
+        void onDelete(TagGroup tagGroup, String tag);
     }
 
     /**
@@ -579,10 +600,6 @@ public class TagGroup extends ViewGroup {
             super(width, height);
         }
 
-        public LayoutParams(MarginLayoutParams source) {
-            super(source);
-        }
-
         public LayoutParams(ViewGroup.LayoutParams source) {
             super(source);
         }
@@ -592,16 +609,6 @@ public class TagGroup extends ViewGroup {
      * For {@link TagGroup} save and restore state.
      */
     static class SavedState extends BaseSavedState {
-        public static final Parcelable.Creator<SavedState> CREATOR =
-                new Parcelable.Creator<SavedState>() {
-                    public SavedState createFromParcel(Parcel in) {
-                        return new SavedState(in);
-                    }
-
-                    public SavedState[] newArray(int size) {
-                        return new SavedState[size];
-                    }
-                };
         int tagCount;
         String[] tags;
         int checkedPosition;
@@ -629,63 +636,63 @@ public class TagGroup extends ViewGroup {
             dest.writeInt(checkedPosition);
             dest.writeString(input);
         }
+
+        public static final Parcelable.Creator<SavedState> CREATOR =
+                new Parcelable.Creator<SavedState>() {
+                    public SavedState createFromParcel(Parcel in) {
+                        return new SavedState(in);
+                    }
+
+                    public SavedState[] newArray(int size) {
+                        return new SavedState[size];
+                    }
+                };
     }
 
     /**
-     * The tag click listener implementation.
+     * The tag view click listener.
      */
     class OnTagClickListener implements OnClickListener {
         @Override
         public void onClick(View v) {
-            TagView tagView = (TagView) v;
-            if (tagView.mState == TagView.STATE_INPUT) {
-                // If the clicked tag is in INPUT state, uncheck the previous checked
-                // tag if exists.
-                final int count = getChildCount();
-                for (int i = 0; i < count; i++) {
-                    TagView tagV = (TagView) getChildAt(i);
-                    if (tagV.isChecked) {
-                        tagV.setChecked(false);
-                        break;
-                    }
+            final TagView clickedTagView = (TagView) v;
+            if (clickedTagView.mState == TagView.STATE_INPUT) {
+                // If the clicked tag is in INPUT state,
+                // uncheck the previous checked tag if exists.
+                final TagView checkedTagView = getCheckedTagView();
+                if (checkedTagView != null) {
+                    checkedTagView.setChecked(false);
                 }
             } else {
                 // If the clicked tag is checked, remove the tag
-                // and dispatch the tags changed event.
-                if (tagView.isChecked) {
-                    removeView(tagView);
+                // and dispatch the tag group changed event.
+                if (clickedTagView.isChecked) {
+                    removeView(clickedTagView);
                     if (mOnTagChangeListener != null) {
-                        mOnTagChangeListener.onDelete(tagView.getText().toString());
+                        mOnTagChangeListener.onDelete(TagGroup.this, clickedTagView.getText().toString());
                     }
                 } else {
                     // If the clicked tag is unchecked, uncheck the previous checked
                     // tag if exists, then set the clicked tag checked.
-                    final int count = getChildCount();
-                    for (int i = 0; i < count; i++) {
-                        TagView tagV = (TagView) getChildAt(i);
-                        if (tagV.isChecked) {
-                            tagV.setChecked(false);
-                            break;
-                        }
+                    final TagView checkedTagView = getCheckedTagView();
+                    if (checkedTagView != null) {
+                        checkedTagView.setChecked(false);
                     }
-                    tagView.setChecked(true);
+                    clickedTagView.setChecked(true);
                 }
             }
         }
     }
 
     /**
-     * A tag view is a two-states tag that can be either NORMAL or INPUT.
-     * <p/>
-     * When the tag is NORMAL, the user can't press or click it to check it. When the tag is INPUT,
-     * it may take the input focus.
+     * The tag view which has two states can be either NORMAL or INPUT.
      */
     class TagView extends TextView {
         public static final int STATE_NORMAL = 1;
         public static final int STATE_INPUT = 2;
 
         /**
-         * The tag state.
+         * The current state.
          */
         private int mState;
 
@@ -699,6 +706,9 @@ public class TagGroup extends ViewGroup {
          */
         private Paint mPaint;
 
+        /**
+         * The paint of the checked mark.
+         */
         private Paint mMarkPaint;
 
         /**
@@ -765,18 +775,21 @@ public class TagGroup extends ViewGroup {
                     TagGroup.LayoutParams.WRAP_CONTENT));
 
             setGravity(Gravity.CENTER);
+            setText(text);
             setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
-            setClickable(true);
 
             mState = state;
 
+            setClickable(isAppendMode ? true : false);
+            setFocusable(state == STATE_INPUT ? true : false);
+            setFocusableInTouchMode(state == STATE_INPUT ? true : false);
+            setHint(state == STATE_INPUT ? mInputTagHint : null);
+            setMovementMethod(state == STATE_INPUT ? ArrowKeyMovementMethod.getInstance() : null);
+
             if (state == STATE_INPUT) {
-                setHint(mAppendTagHint);
-                setFocusable(true);
-                setFocusableInTouchMode(true);
                 requestFocus();
-                setMovementMethod(ArrowKeyMovementMethod.getInstance());
-                // Set editor action listener for handle the Enter key down event.
+
+                // Handle the ENTER key down.
                 setOnEditorActionListener(new OnEditorActionListener() {
                     @Override
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -787,7 +800,7 @@ public class TagGroup extends ViewGroup {
                                 // the event, then append a new INPUT state tag.
                                 endInput();
                                 if (mOnTagChangeListener != null) {
-                                    mOnTagChangeListener.onAppend(getText().toString());
+                                    mOnTagChangeListener.onAppend(TagGroup.this, getText().toString());
                                 }
                                 appendInputTag();
                             }
@@ -797,30 +810,26 @@ public class TagGroup extends ViewGroup {
                     }
                 });
 
-                // Set key listener for handle the backspace key down event.
+                // Handle the BACKSPACE key down.
                 setOnKeyListener(new OnKeyListener() {
                     @Override
                     public boolean onKey(View v, int keyCode, KeyEvent event) {
                         if (keyCode == KeyEvent.KEYCODE_DEL && event.getAction() == KeyEvent.ACTION_DOWN) {
                             // If the input content is empty, check or remove the last NORMAL state tag.
                             if (TextUtils.isEmpty(getText().toString())) {
-                                TagView lastNormalTag = getLastNormalTag();
-                                if (lastNormalTag != null) {
-                                    if (lastNormalTag.isChecked) {
-                                        removeView(lastNormalTag);
+                                TagView lastNormalTagView = getLastNormalTagView();
+                                if (lastNormalTagView != null) {
+                                    if (lastNormalTagView.isChecked) {
+                                        removeView(lastNormalTagView);
                                         if (mOnTagChangeListener != null) {
-                                            mOnTagChangeListener.onDelete(lastNormalTag.getText().toString());
+                                            mOnTagChangeListener.onDelete(TagGroup.this, lastNormalTagView.getText().toString());
                                         }
                                     } else {
-                                        final int count = getChildCount();
-                                        for (int i = 0; i < count; i++) {
-                                            TagView tagV = (TagView) getChildAt(i);
-                                            if (tagV.isChecked) {
-                                                tagV.setChecked(false);
-                                                break;
-                                            }
+                                        final TagView checkedTagView = getCheckedTagView();
+                                        if (checkedTagView != null) {
+                                            checkedTagView.setChecked(false);
                                         }
-                                        lastNormalTag.setChecked(true);
+                                        lastNormalTagView.setChecked(true);
                                     }
                                     return true;
                                 }
@@ -829,8 +838,6 @@ public class TagGroup extends ViewGroup {
                         return false;
                     }
                 });
-            } else {
-                setText(text);
             }
 
             invalidatePaint();
@@ -856,10 +863,6 @@ public class TagGroup extends ViewGroup {
         @Override
         protected boolean getDefaultEditable() {
             return true;
-        }
-
-        public int getState() {
-            return mState;
         }
 
         /**

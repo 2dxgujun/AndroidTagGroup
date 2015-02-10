@@ -5,7 +5,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="isAppendMode">false</item>
-        <item name="appendTagHint">@string/append_tag</item>
+        <item name="inputTagHint">@string/add_tag</item>
         <item name="brightColor">#49C120</item>
         <item name="dimColor">#AAAAAA</item>
         <item name="borderStrokeWidth">0.5dp</item>
