@@ -23,7 +23,7 @@ And also you can contribute new idea to me.
 
 ![Delete tag](https://raw.github.com/2dxgujun/AndroidTagGroup/master/assets/delete_tag.png)
 
-[Download Demo]()
+[Download Demo](https://github.com/2dxgujun/AndroidTagGroup/releases/download/v1.0/AndroidTagGroup-Demo-v1.0.apk)
 
 ### Usage
 ---
