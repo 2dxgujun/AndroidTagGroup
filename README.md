@@ -1,35 +1,34 @@
-## AndroidTagGroup
+# AndroidTagGroup
 ---
 
-The AndroidTagGroup is a layout for a set of tags.
+The AndroidTagGroup is a layout for a set of tags.You can use it to group people, books or anything you want.
 
-You can use it to group people, books or anything you want.
-
-And also you can contribute new idea to me.
+Also you can contribute new idea to me.
 
 
-### Demo
+# Demo
 ---
 
-#### Screenshot
+### Screenshot
 
 ![Demo screenshot](https://raw.github.com/2dxgujun/AndroidTagGroup/master/assets/demo_screenshot.png)
 
-#### Append Tag
+### Append Tag
 
 ![Append mode](https://raw.github.com/2dxgujun/AndroidTagGroup/master/assets/append_mode.png)
 
-#### Delete tag
+### Delete tag
 
 ![Delete tag](https://raw.github.com/2dxgujun/AndroidTagGroup/master/assets/delete_tag.png)
 
 [Download Demo](https://github.com/2dxgujun/AndroidTagGroup/releases/download/v1.0/AndroidTagGroup-Demo-v1.0.apk)
 
-### Usage
+# Usage
 ---
 
-#### Gradle
+## Step 1
 
+#### Gradle
 ```groovy
 dependencies {
    compile 'me.gujun.android.taggroup:library:1.0@aar'
@@ -37,7 +36,6 @@ dependencies {
 ```
 
 #### Maven
-
 ```xml
 <dependency>
     <groupId>me.gujun.taggroup:library</groupId>
@@ -47,12 +45,19 @@ dependencies {
 </dependency>
 ```
 
+## Step 2
+
 Use it in your own code:
 ```xml
 <me.gujun.android.taggroup.TagGroup
     android:id="@+id/tag_group"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
+```
+
+```java
+TagGroup mTagGroup = (TagGroup) findViewById(R.id.tag_group);
+mTagGroup.setTags(new String[]{"Tag1", "Tag2", "Tag3"});
 ```
 
 I made some pre-design style. You can use them via `style` property.
@@ -78,7 +83,8 @@ In the above picture, the style is:
 You can get more beautiful color from [Adobe Color CC](https://color.adobe.com), and you can also contribute your color style to AndroidTagGroup!
 
 
-### Build
+# Build
+---
 
 run `./gradlew assembleDebug` (Mac/Linux)
 
@@ -86,51 +92,28 @@ or
 
 run `gradlew.bat assembleDebug` (Windows)
 
-### Attributes
+# Attributes
+---
 
 There are several attributes you can set:
 
 ![Dimension illustrate](https://raw.github.com/2dxgujun/AndroidTagGroup/master/assets/dimension_illustrate.png)
 
-The  **dimension**:
+|     attr      	|    default      |                         mean                         	|
+|:-----------------:|:---------------:|:-------------------------------------------------------:|
+| isAppendMode  	| false           | Determine the TagGroup mode, APPEND or single DISPLAY.  |
+| inputTagHint   	| Add Tag/添加标签 | Hint of the INPUT state tag.                         	|
+| brightColor	    | #49C120         | The bright color of the tag.                          	|
+| dimColor       	| #AAAAAA         | The dim color of the tag.                           	|
+| borderStrokeWidth | 0.5dp           | The tag outline border stroke width.        	        |
+| textSize      	| 13sp            | The tag text size.                                  	|
+| horizontalSpacing | 8dp             | The horizontal tag spacing.(Mark1)                     	|
+| verticalSpacing  	| 4dp             | The vertical tag spacing.(Mark2)                      	|
+| horizontalPadding	| 12dp            | The horizontal tag padding.(Mark3)                     	|
+| verticalPadding  	| 3dp             | The vertical tag padding.(Mark4)                       	|
 
-- Horizontal tag spacing (Mark 1)
-- Vertical tag spacing (Mark 2)
-- Horizontal tag padding (Mark 3)
-- Vertical tag padding (Mark 4)
-- Tag text size
-- Tag outline border stroke width
 
-The **color**:
-
-- Bright tag color
-- Dim tag color
-
-The **mode** related:
-
-- Append mode flag
-- Append mode INPUT state tag hint
-
-For example, the default style:
-
-```xml
-<style name="TagGroup">
-    <item name="android:layout_width">match_parent</item>
-    <item name="android:layout_height">wrap_content</item>
-    <item name="isAppendMode">false</item>
-    <item name="inputTagHint">@string/add_tag</item>
-    <item name="brightColor">#49C120</item>
-    <item name="dimColor">#AAAAAA</item>
-    <item name="borderStrokeWidth">0.5dp</item>
-    <item name="textSize">13sp</item>
-    <item name="horizontalSpacing">8dp</item>
-    <item name="verticalSpacing">4dp</item>
-    <item name="horizontalPadding">12dp</item>
-    <item name="verticalPadding">3dp</item>
-</style>
-```
-
-License
+# License
 ---
 
     Copyright 2015 Jun Gu
