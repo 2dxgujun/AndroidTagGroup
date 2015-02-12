@@ -28,15 +28,16 @@ import java.util.List;
 /**
  * A <code>TagGroup</code> is a special layout that contain a set of tags.
  * This group has two modes:
- * <p/>
- * 1. APPEND mode<br/>
+ * <p>
+ * 1. APPEND mode
  * 2. DISPLAY mode
- * <p/>
+ * </p>
  * Default is DISPLAY mode. When in APPEND mode, the group is capable of input for append new tags
  * and delete tags.
- * <p/>
+ * <p>
  * When in DISPLAY mode, the group is only contain NORMAL state tags, and the tags in group
  * is not focusable.
+ * </p>
  *
  * @author Jun Gu (http://2dxgujun.com)
  * @version 1.0
@@ -490,7 +491,7 @@ public class TagGroup extends ViewGroup {
 
 
     /**
-     * @see {@link #appendInputTag(String)}
+     * @see #appendInputTag(String)
      */
     protected void appendInputTag() {
         appendInputTag(null);
@@ -514,7 +515,7 @@ public class TagGroup extends ViewGroup {
     }
 
     /**
-     * @see {@link #setTags(String...)}
+     * @see #setTags(String...)
      */
     public void setTags(List<String> tagList) {
         setTags(tagList.toArray(new String[]{}));
@@ -939,7 +940,7 @@ public class TagGroup extends ViewGroup {
         @Override
         protected void onSizeChanged(int w, int h, int oldw, int oldh) {
             super.onSizeChanged(w, h, oldw, oldh);
-            // Cast to int  (在填充选中状态的背景矩形时，由于精度问题会出现透明线)
+            // Cast to int
             int left = (int) mBorderStrokeWidth;
             int top = (int) mBorderStrokeWidth;
             int right = (int) (left + w - mBorderStrokeWidth * 2);
