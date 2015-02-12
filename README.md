@@ -1,5 +1,4 @@
 # AndroidTagGroup
----
 
 The AndroidTagGroup is a layout for a set of tags.You can use it to group people, books or anything you want.
 
@@ -7,24 +6,19 @@ Also you can contribute new idea to me.
 
 
 # Demo
----
 
 ### Screenshot
-
 ![Demo screenshot](https://raw.github.com/2dxgujun/AndroidTagGroup/master/assets/demo_screenshot.png)
 
 ### Append Tag
-
 ![Append mode](https://raw.github.com/2dxgujun/AndroidTagGroup/master/assets/append_mode.png)
 
 ### Delete tag
-
 ![Delete tag](https://raw.github.com/2dxgujun/AndroidTagGroup/master/assets/delete_tag.png)
 
 [Download Demo](https://github.com/2dxgujun/AndroidTagGroup/releases/download/v1.0/AndroidTagGroup-Demo-v1.0.apk)
 
 # Usage
----
 
 ## Step 1
 
@@ -82,9 +76,7 @@ In the above picture, the style is:
 
 You can get more beautiful color from [Adobe Color CC](https://color.adobe.com), and you can also contribute your color style to AndroidTagGroup!
 
-
 # Build
----
 
 run `./gradlew assembleDebug` (Mac/Linux)
 
@@ -93,28 +85,25 @@ or
 run `gradlew.bat assembleDebug` (Windows)
 
 # Attributes
----
 
 There are several attributes you can set:
 
 ![Dimension illustrate](https://raw.github.com/2dxgujun/AndroidTagGroup/master/assets/dimension_illustrate.png)
 
-|     attr      	|    default      |                         mean                         	|
-|:-----------------:|:---------------:|:-------------------------------------------------------:|
-| isAppendMode  	| false           | Determine the TagGroup mode, APPEND or single DISPLAY.  |
-| inputTagHint   	| Add Tag/添加标签 | Hint of the INPUT state tag.                         	|
-| brightColor	    | #49C120         | The bright color of the tag.                          	|
-| dimColor       	| #AAAAAA         | The dim color of the tag.                           	|
-| borderStrokeWidth | 0.5dp           | The tag outline border stroke width.        	        |
-| textSize      	| 13sp            | The tag text size.                                  	|
-| horizontalSpacing | 8dp             | The horizontal tag spacing.(Mark1)                     	|
-| verticalSpacing  	| 4dp             | The vertical tag spacing.(Mark2)                      	|
-| horizontalPadding	| 12dp            | The horizontal tag padding.(Mark3)                     	|
-| verticalPadding  	| 3dp             | The vertical tag padding.(Mark4)                       	|
-
+|       attr      	|     default      |                         mean                          	 |
+|:-----------------:|:----------------:|:-------------------------------------------------------:|
+| isAppendMode  	| false            | Determine the TagGroup mode, APPEND or single DISPLAY.  |
+| inputTagHint   	| Add Tag/添加标签  | Hint of the INPUT state tag.                            |
+| brightColor	    | #49C120          | The bright color of the tag.                            |
+| dimColor       	| #AAAAAA          | The dim color of the tag.                           	 |
+| borderStrokeWidth | 0.5dp            | The tag outline border stroke width.        	         |
+| textSize      	| 13sp             | The tag text size.                                  	 |
+| horizontalSpacing | 8dp              | The horizontal tag spacing.(Mark1)                      |
+| verticalSpacing  	| 4dp              | The vertical tag spacing.(Mark2)                      	 |
+| horizontalPadding	| 12dp             | The horizontal tag padding.(Mark3)                      |
+| verticalPadding  	| 3dp              | The vertical tag padding.(Mark4)                        |
 
 # License
----
 
     Copyright 2015 Jun Gu
 
