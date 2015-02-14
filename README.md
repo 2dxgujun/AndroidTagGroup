@@ -1,4 +1,4 @@
-# AndroidTagGroup
+# AndroidTagGroup [![Maven Central](https://maven-badges.herokuapp.com/maven-central/me.gujun.android.taggroup/library/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/me.gujun.android.taggroup/library)
 
 The AndroidTagGroup is a layout for a set of tags.You can use it to group people, books or anything you want.
 
@@ -32,7 +32,7 @@ dependencies {
 #### Maven
 ```xml
 <dependency>
-    <groupId>me.gujun.taggroup:library</groupId>
+    <groupId>me.gujun.android.taggroup</groupId>
     <artifactId>library</artifactId>
     <version>1.0</version>
     <type>apklib</type>
