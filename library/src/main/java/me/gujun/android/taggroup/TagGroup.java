@@ -11,7 +11,9 @@ import android.graphics.PathEffect;
 import android.graphics.RectF;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.method.ArrowKeyMovementMethod;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -837,6 +839,26 @@ public class TagGroup extends ViewGroup {
                             }
                         }
                         return false;
+                    }
+                });
+
+                // Handle the INPUT tag content changed.
+                addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                        // When the INPUT state tag changed, uncheck the checked tag if exists.
+                        final TagView checkedTagView = getCheckedTagView();
+                        if (checkedTagView != null) {
+                            checkedTagView.setChecked(false);
+                        }
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
                     }
                 });
             }
