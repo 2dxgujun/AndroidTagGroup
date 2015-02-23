@@ -780,9 +780,9 @@ public class TagGroup extends ViewGroup {
 
             mState = state;
 
-            setClickable(isAppendMode ? true : false);
-            setFocusable(state == STATE_INPUT ? true : false);
-            setFocusableInTouchMode(state == STATE_INPUT ? true : false);
+            setClickable(isAppendMode);
+            setFocusable(state == STATE_INPUT);
+            setFocusableInTouchMode(state == STATE_INPUT);
             setHint(state == STATE_INPUT ? mInputTagHint : null);
             setMovementMethod(state == STATE_INPUT ? ArrowKeyMovementMethod.getInstance() : null);
 
@@ -793,8 +793,9 @@ public class TagGroup extends ViewGroup {
                 setOnEditorActionListener(new OnEditorActionListener() {
                     @Override
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                        if (actionId == EditorInfo.IME_ACTION_DONE
-                                || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                        if (actionId == EditorInfo.IME_NULL
+                                && (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER
+                                && event.getAction() == KeyEvent.ACTION_DOWN)) {
                             if (isInputAvailable()) {
                                 // If the input content is available, end the input and dispatch
                                 // the event, then append a new INPUT state tag.
