@@ -12,6 +12,7 @@ before_install:
   - tar xzf android-sdk_r23-linux.tgz
   - export ANDROID_HOME=$PWD/android-sdk-linux
   - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
+  - chmod +x gradlew
 
  # Gradle
   - wget http://services.gradle.org/distributions/gradle-1.12-bin.zip

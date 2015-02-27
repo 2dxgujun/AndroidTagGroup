@@ -29,7 +29,7 @@ Also you can contribute new idea to me.
 #### Gradle
 ```groovy
 dependencies {
-   compile 'me.gujun.android.taggroup:library:1.0@aar'
+   compile 'me.gujun.android.taggroup:library:1.1@aar'
 }
 ```
 
@@ -38,7 +38,7 @@ dependencies {
 <dependency>
     <groupId>me.gujun.android.taggroup</groupId>
     <artifactId>library</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
     <type>apklib</type>
 </dependency>
 ```
