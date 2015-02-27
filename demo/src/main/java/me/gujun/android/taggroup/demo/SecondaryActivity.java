@@ -3,6 +3,7 @@ package me.gujun.android.taggroup.demo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import me.gujun.android.taggroup.TagGroup;
@@ -25,6 +26,12 @@ public class SecondaryActivity extends ActionBarActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_secondary_activity, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             Intent intent = new Intent();
@@ -32,8 +39,11 @@ public class SecondaryActivity extends ActionBarActivity {
             setResult(110, intent);
             finish();
             return true;
+        } else if (item.getItemId() == R.id.action_submit) {
+            mTagGroup.submitTag();
+            return true;
         }
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
     @Override

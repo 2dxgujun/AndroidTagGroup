@@ -162,17 +162,24 @@ public class TagGroup extends ViewGroup {
             setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    TagView inputTag = getInputTagView();
-                    if (inputTag != null && inputTag.isInputAvailable()) {
-                        inputTag.endInput();
-
-                        if (mOnTagChangeListener != null) {
-                            mOnTagChangeListener.onAppend(TagGroup.this, inputTag.getText().toString());
-                        }
-                        appendInputTag(); // Append a new INPUT state tag.
-                    }
+                    submitTag();
                 }
             });
+        }
+    }
+
+    /**
+     * Call this to submit the INPUT state tag.
+     */
+    public void submitTag() {
+        final TagView inputTag = getInputTagView();
+        if (inputTag != null && inputTag.isInputAvailable()) {
+            inputTag.endInput();
+
+            if (mOnTagChangeListener != null) {
+                mOnTagChangeListener.onAppend(TagGroup.this, inputTag.getText().toString());
+            }
+            appendInputTag(); // Append a new INPUT state tag.
         }
     }
 

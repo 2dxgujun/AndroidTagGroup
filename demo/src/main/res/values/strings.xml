@@ -5,4 +5,5 @@
     <string name="tags_default">标签(默认)</string>
     <string name="tags_small">标签(小号)</string>
     <string name="tags_large">标签(大号)</string>
+    <string name="submit">Submit</string>
 </resources>
