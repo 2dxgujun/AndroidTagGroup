@@ -1,12 +1,8 @@
-language: android
+language: java
 jdk: oraclejdk7
 env:
   matrix:
-    - ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a
-
-android:
-  components:
-  - build-tools-21.1.1
+    - ANDROID_TARGET=android-20 ANDROID_ABI=armeabi-v7a
 
 before_install:
   # Install base Android SDK

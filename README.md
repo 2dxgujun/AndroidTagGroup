@@ -4,7 +4,6 @@
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-AndroidTagGroup-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1539)
 [![Build Status](https://travis-ci.org/2dxgujun/AndroidTagGroup.png?branch=master)](https://travis-ci.org/2dxgujun/AndroidTagGroup)
 
-
 The AndroidTagGroup is a layout for a set of tags.You can use it to group people, books or anything you want.
 
 Also you can contribute new idea to me.
@@ -115,7 +114,6 @@ Jun Gu - <2dxgujun@gmail.com>
 <a href="http://weibo.com/2dxgujun">
   <img alt="Follow me on Weibo" src="http://ww4.sinaimg.cn/large/bce2dea9gw1epjhk9h9m6j20230233yb.jpg"/>
 </a>
-
 <a href="https://plus.google.com/u/0/113657331852211913645">
   <img alt="Follow me on Google Plus" src="http://ww1.sinaimg.cn/large/bce2dea9gw1epjhbx0ouij2023023jr6.jpg"/>
 </a>
