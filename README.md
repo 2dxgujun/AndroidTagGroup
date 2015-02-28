@@ -12,13 +12,13 @@ Also you can contribute new idea to me.
 # Demo
 
 ### Screenshot
-![Demo screenshot](https://raw.github.com/2dxgujun/AndroidTagGroup/master/assets/demo_screenshot.png)
+![Demo screenshot](http://ww2.sinaimg.cn/large/bce2dea9gw1epouvl2mvuj20dw0ehmyb.jpg)
 
 ### Append Tag
-![Append mode](https://raw.github.com/2dxgujun/AndroidTagGroup/master/assets/append_mode.png)
+![Append mode](http://ww4.sinaimg.cn/large/bce2dea9gw1epouw5y9ijj20dw06dt8x.jpg)
 
 ### Delete tag
-![Delete tag](https://raw.github.com/2dxgujun/AndroidTagGroup/master/assets/delete_tag.png)
+![Delete tag](http://ww3.sinaimg.cn/large/bce2dea9gw1epouweadrqj20dw05dglt.jpg)
 
 [Download Demo](https://github.com/2dxgujun/AndroidTagGroup/releases/download/v1.0/AndroidTagGroup-Demo-v1.0.apk)
 
@@ -58,9 +58,16 @@ TagGroup mTagGroup = (TagGroup) findViewById(R.id.tag_group);
 mTagGroup.setTags(new String[]{"Tag1", "Tag2", "Tag3"});
 ```
 
+Use `setTags(...)` to set the initial tags in the group.
+
+To "submit" a new tag as user press "Enter" or tap the blank area of the tag group, also you can "submit" a new tag via `submitTag()`.
+To delete a tag as user press "Backspace" or double-tap the tag which you want to delete.
+
+**Note**: Google keyboard (a few soft keyboard not honour the key event) currently not supported "Enter" key to "submit" a new tag and "Backspace" key to delete a tag.
+
 I made some pre-design style. You can use them via `style` property.
 
-![Present color](https://raw.github.com/2dxgujun/AndroidTagGroup/master/assets/present_color.png)
+![Present color](http://ww4.sinaimg.cn/large/bce2dea9gw1epouwn8og4j20dw0a5aal.jpg)
 
 Use the present style just like below:
 
@@ -92,7 +99,7 @@ run `gradlew.bat assembleDebug` (Windows)
 
 There are several attributes you can set:
 
-![Dimension illustrate](https://raw.github.com/2dxgujun/AndroidTagGroup/master/assets/dimension_illustrate.png)
+![Dimension illustrate](http://ww2.sinaimg.cn/large/bce2dea9gw1epov0i8x6kj20rk054q4g.jpg)
 
 |       attr      	|     default      |                         mean                          	 |
 |:-----------------:|:----------------:|:-------------------------------------------------------:|
