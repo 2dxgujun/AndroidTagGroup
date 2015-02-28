@@ -6,9 +6,9 @@ android {
     defaultConfig {
         applicationId 'me.gujun.android.taggroup.demo'
         minSdkVersion 8
-        targetSdkVersion 19
-        versionCode Integer.parseInt(project.VERSION_CODE)
+        targetSdkVersion 21
         versionName project.VERSION_NAME
+        versionCode Integer.parseInt(project.VERSION_CODE)
     }
     buildTypes {
         release {
