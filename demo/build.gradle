@@ -3,11 +3,10 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 21
     buildToolsVersion '21.1.1'
-
     defaultConfig {
         applicationId 'me.gujun.android.taggroup.demo'
         minSdkVersion 8
-        targetSdkVersion 21
+        targetSdkVersion 19
         versionCode Integer.parseInt(project.VERSION_CODE)
         versionName project.VERSION_NAME
     }
@@ -16,6 +15,8 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    productFlavors {
     }
 }
 
