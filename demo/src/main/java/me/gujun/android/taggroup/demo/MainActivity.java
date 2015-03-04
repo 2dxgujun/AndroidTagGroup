@@ -13,6 +13,7 @@ import me.gujun.android.taggroup.demo.db.TagsManager;
 public class MainActivity extends ActionBarActivity {
     private TextView mPromptText;
 
+    private TagGroup mDefaultFixedTagGroup;
     private TagGroup mDefaultTagGroup;
     private TagGroup mSmallTagGroup;
     private TagGroup mLargeTagGroup;
@@ -43,10 +44,12 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+        mDefaultFixedTagGroup = (TagGroup) findViewById(R.id.tag_group_fixed);
         mDefaultTagGroup = (TagGroup) findViewById(R.id.tag_group);
         mSmallTagGroup = (TagGroup) findViewById(R.id.tag_group_small);
         mLargeTagGroup = (TagGroup) findViewById(R.id.tag_group_large);
         if (mTags != null && mTags.length > 0) {
+            mDefaultFixedTagGroup.setTags(mTags);
             mDefaultTagGroup.setTags(mTags);
             mSmallTagGroup.setTags(mTags);
             mLargeTagGroup.setTags(mTags);
@@ -54,6 +57,7 @@ public class MainActivity extends ActionBarActivity {
 
         MyTagGroupOnClickListener tgClickListener = new MyTagGroupOnClickListener();
 
+        mDefaultFixedTagGroup.setOnClickListener(tgClickListener);
         mDefaultTagGroup.setOnClickListener(tgClickListener);
         mSmallTagGroup.setOnClickListener(tgClickListener);
         mLargeTagGroup.setOnClickListener(tgClickListener);
@@ -69,30 +73,35 @@ public class MainActivity extends ActionBarActivity {
         final int id = v.getId();
         switch (id) {
             case R.id.cp_default: {
+                mDefaultFixedTagGroup.setBrightColor(default_green);
                 mDefaultTagGroup.setBrightColor(default_green);
                 mSmallTagGroup.setBrightColor(default_green);
                 mLargeTagGroup.setBrightColor(default_green);
                 break;
             }
             case R.id.cp_beauty_red: {
+                mDefaultFixedTagGroup.setBrightColor(beauty_red);
                 mDefaultTagGroup.setBrightColor(beauty_red);
                 mSmallTagGroup.setBrightColor(beauty_red);
                 mLargeTagGroup.setBrightColor(beauty_red);
                 break;
             }
             case R.id.cp_holo_dark: {
+                mDefaultFixedTagGroup.setBrightColor(holo_dark);
                 mDefaultTagGroup.setBrightColor(holo_dark);
                 mSmallTagGroup.setBrightColor(holo_dark);
                 mLargeTagGroup.setBrightColor(holo_dark);
                 break;
             }
             case R.id.cp_light_blue: {
+                mDefaultFixedTagGroup.setBrightColor(light_blue);
                 mDefaultTagGroup.setBrightColor(light_blue);
                 mSmallTagGroup.setBrightColor(light_blue);
                 mLargeTagGroup.setBrightColor(light_blue);
                 break;
             }
             case R.id.cp_indigo: {
+                mDefaultFixedTagGroup.setBrightColor(indigo);
                 mDefaultTagGroup.setBrightColor(indigo);
                 mSmallTagGroup.setBrightColor(indigo);
                 mLargeTagGroup.setBrightColor(indigo);
@@ -108,6 +117,7 @@ public class MainActivity extends ActionBarActivity {
             mTags = data.getStringArrayExtra("tagsResult");
             mTagsManager.updateTags(mTags);
             mPromptText.setVisibility((mTags == null || mTags.length == 0) ? View.VISIBLE : View.GONE);
+            mDefaultFixedTagGroup.setTags(mTags);
             mDefaultTagGroup.setTags(mTags);
             mSmallTagGroup.setTags(mTags);
             mLargeTagGroup.setTags(mTags);

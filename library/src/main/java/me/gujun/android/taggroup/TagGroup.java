@@ -54,6 +54,7 @@ public class TagGroup extends ViewGroup {
     private final float default_vertical_spacing;
     private final float default_horizontal_padding;
     private final float default_vertical_padding;
+    private final int default_number_of_colnmns;
 
     /**
      * Indicates whether this TagGroup is set up to APPEND mode or DISPLAY mode. Default is false.
@@ -110,6 +111,11 @@ public class TagGroup extends ViewGroup {
      */
     private OnTagChangeListener mOnTagChangeListener;
 
+    /**
+     * Fixed number of each row labels, the label will be filled, default is 0 (not fixed);
+     */
+    private int mNumberOfColumns;
+
     public TagGroup(Context context) {
         this(context, null);
     }
@@ -127,6 +133,7 @@ public class TagGroup extends ViewGroup {
         default_vertical_spacing = dp2px(4.0f);
         default_horizontal_padding = dp2px(12.0f);
         default_vertical_padding = dp2px(3.0f);
+        default_number_of_colnmns = 0;
 
         // Load styled attributes.
         final TypedArray a = context.obtainStyledAttributes(attrs,
@@ -146,6 +153,8 @@ public class TagGroup extends ViewGroup {
                     default_horizontal_padding);
             mVerticalPadding = (int) a.getDimension(R.styleable.TagGroup_verticalPadding,
                     default_vertical_padding);
+            mNumberOfColumns = a.getInteger(R.styleable.TagGroup_numberOfColumns,
+                    default_number_of_colnmns);
         } finally {
             a.recycle();
         }
@@ -276,7 +285,6 @@ public class TagGroup extends ViewGroup {
         final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         final int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-
         measureChildren(widthMeasureSpec, heightMeasureSpec);
 
         int width = 0;
@@ -942,6 +950,20 @@ public class TagGroup extends ViewGroup {
                 mPaint.setPathEffect(mPathEffect);
                 setTextColor(mDimColor);
             }
+        }
+
+        @Override
+        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+            // Initiative to observe the properties and configuration.
+            if (mNumberOfColumns != default_number_of_colnmns) {
+                widthMeasureSpec = MeasureSpec.getSize(widthMeasureSpec);
+                widthMeasureSpec =
+                        (widthMeasureSpec - mHorizontalSpacing * (mNumberOfColumns - 1))
+                                / mNumberOfColumns;
+                widthMeasureSpec = MeasureSpec.makeMeasureSpec(widthMeasureSpec,
+                        MeasureSpec.EXACTLY);
+            }
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
 
         @Override
