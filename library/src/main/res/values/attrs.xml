@@ -10,6 +10,7 @@
         <attr name="verticalSpacing" format="dimension"/>
         <attr name="horizontalPadding" format="dimension"/>
         <attr name="verticalPadding" format="dimension"/>
+        <attr name="numberOfColumns" format="integer"/>
     </declare-styleable>
 
     <declare-styleable name="Themes">

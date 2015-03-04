@@ -12,7 +12,7 @@ Also you can contribute new idea to me.
 # Demo
 
 ### Screenshot
-![Demo screenshot](http://ww2.sinaimg.cn/large/bce2dea9gw1epouvl2mvuj20dw0ehmyb.jpg)
+![Demo screenshot](http://ww3.sinaimg.cn/mw690/42a4fe0agw1eptskg6cqfj20dk0hagmv.jpg)
 
 ### Append Tag
 ![Append mode](http://ww4.sinaimg.cn/large/bce2dea9gw1epouw5y9ijj20dw06dt8x.jpg)
@@ -140,3 +140,4 @@ Jun Gu - <2dxgujun@gmail.com>
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+    .
