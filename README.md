@@ -12,7 +12,7 @@ Also you can contribute new idea to me.
 # Demo
 
 ### Screenshot
-![Demo screenshot](http://ww4.sinaimg.cn/mw690/42a4fe0agw1eptsaik3cnj20dl0hedgy.jpg)
+![Demo screenshot](http://ww3.sinaimg.cn/mw690/42a4fe0agw1eptskg6cqfj20dk0hagmv.jpg)
 
 ### Append Tag
 ![Append mode](http://ww4.sinaimg.cn/large/bce2dea9gw1epouw5y9ijj20dw06dt8x.jpg)
