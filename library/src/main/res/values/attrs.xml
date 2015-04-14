@@ -1,18 +1,20 @@
 <resources>
     <declare-styleable name="TagGroup">
-        <attr name="isAppendMode" format="boolean"/>
-        <attr name="inputTagHint" format="string"/>
-        <attr name="brightColor" format="color"/>
-        <attr name="dimColor" format="color"/>
-        <attr name="borderStrokeWidth" format="dimension"/>
-        <attr name="textSize" format="dimension"/>
-        <attr name="horizontalSpacing" format="dimension"/>
-        <attr name="verticalSpacing" format="dimension"/>
-        <attr name="horizontalPadding" format="dimension"/>
-        <attr name="verticalPadding" format="dimension"/>
+        <attr name="isAppendMode" format="boolean" />
+        <attr name="inputTagHint" format="string" />
+        <attr name="brightColor" format="color" />
+        <attr name="dimColor" format="color" />
+        <attr name="backgroundColor" format="color" />
+        <attr name="pressedBackgroundColor" format="color" />
+        <attr name="borderStrokeWidth" format="dimension" />
+        <attr name="textSize" format="dimension" />
+        <attr name="horizontalSpacing" format="dimension" />
+        <attr name="verticalSpacing" format="dimension" />
+        <attr name="horizontalPadding" format="dimension" />
+        <attr name="verticalPadding" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="Themes">
-        <attr name="tagGroupStyle" format="reference"/>
+        <attr name="tagGroupStyle" format="reference" />
     </declare-styleable>
 </resources>

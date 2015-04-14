@@ -48,6 +48,8 @@ import java.util.List;
 public class TagGroup extends ViewGroup {
     private final int default_bright_color = Color.rgb(0x49, 0xC1, 0x20);
     private final int default_dim_color = Color.rgb(0xAA, 0xAA, 0xAA);
+    private final int default_background_color = Color.WHITE;
+    private final int default_pressed_background_color = Color.rgb(0xED, 0xED, 0xED);
     private final float default_border_stroke_width;
     private final float default_text_size;
     private final float default_horizontal_spacing;
@@ -74,6 +76,16 @@ public class TagGroup extends ViewGroup {
      * The dim color of the tag.
      */
     private int mDimColor;
+
+    /**
+     * The background color of the tag.
+     */
+    private int mBackgroundColor;
+
+    /**
+     * The background color when the tag is pressed.
+     */
+    private int mPressedBackgroundColor;
 
     /**
      * The tag outline border stroke width, default is 0.5dp.
@@ -136,16 +148,14 @@ public class TagGroup extends ViewGroup {
             mInputTagHint = a.getText(R.styleable.TagGroup_inputTagHint);
             mBrightColor = a.getColor(R.styleable.TagGroup_brightColor, default_bright_color);
             mDimColor = a.getColor(R.styleable.TagGroup_dimColor, default_dim_color);
+            mBackgroundColor = a.getColor(R.styleable.TagGroup_backgroundColor, default_background_color);
+            mPressedBackgroundColor = a.getColor(R.styleable.TagGroup_pressedBackgroundColor, default_pressed_background_color);
             mBorderStrokeWidth = a.getDimension(R.styleable.TagGroup_borderStrokeWidth, default_border_stroke_width);
             mTextSize = a.getDimension(R.styleable.TagGroup_textSize, default_text_size);
-            mHorizontalSpacing = (int) a.getDimension(R.styleable.TagGroup_horizontalSpacing,
-                    default_horizontal_spacing);
-            mVerticalSpacing = (int) a.getDimension(R.styleable.TagGroup_verticalSpacing,
-                    default_vertical_spacing);
-            mHorizontalPadding = (int) a.getDimension(R.styleable.TagGroup_horizontalPadding,
-                    default_horizontal_padding);
-            mVerticalPadding = (int) a.getDimension(R.styleable.TagGroup_verticalPadding,
-                    default_vertical_padding);
+            mHorizontalSpacing = (int) a.getDimension(R.styleable.TagGroup_horizontalSpacing, default_horizontal_spacing);
+            mVerticalSpacing = (int) a.getDimension(R.styleable.TagGroup_verticalSpacing, default_vertical_spacing);
+            mHorizontalPadding = (int) a.getDimension(R.styleable.TagGroup_horizontalPadding, default_horizontal_padding);
+            mVerticalPadding = (int) a.getDimension(R.styleable.TagGroup_verticalPadding, default_vertical_padding);
         } finally {
             a.recycle();
         }
@@ -721,6 +731,11 @@ public class TagGroup extends ViewGroup {
         private Paint mMarkPaint;
 
         /**
+         * Use this paint to draw the tag background.
+         */
+        private Paint mBackgroundPaint;
+
+        /**
          * The rect for the tag's left corner drawing.
          */
         private RectF mLeftCornerRectF;
@@ -766,6 +781,8 @@ public class TagGroup extends ViewGroup {
             mMarkPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             mMarkPaint.setColor(Color.WHITE);
             mMarkPaint.setStrokeWidth(4);
+            mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            mBackgroundPaint.setColor(mBackgroundColor);
 
             mLeftCornerRectF = new RectF();
             mRightCornerRectF = new RectF();
@@ -946,6 +963,13 @@ public class TagGroup extends ViewGroup {
 
         @Override
         protected void onDraw(Canvas canvas) {
+            canvas.drawArc(mLeftCornerRectF, -180, 90, true, mBackgroundPaint);
+            canvas.drawArc(mLeftCornerRectF, -270, 90, true, mBackgroundPaint);
+            canvas.drawArc(mRightCornerRectF, -90, 90, true, mBackgroundPaint);
+            canvas.drawArc(mRightCornerRectF, 0, 90, true, mBackgroundPaint);
+            canvas.drawRect(mHorizontalBlankFillRectF, mBackgroundPaint);
+            canvas.drawRect(mVerticalBlankFillRectF, mBackgroundPaint);
+
             if (isChecked) {
                 canvas.drawArc(mLeftCornerRectF, -180, 90, true, mPaint);
                 canvas.drawArc(mLeftCornerRectF, -270, 90, true, mPaint);

@@ -8,6 +8,8 @@
         <item name="inputTagHint">@string/add_tag</item>
         <item name="brightColor">#49C120</item>
         <item name="dimColor">#AAAAAA</item>
+        <item name="backgroundColor">#FFFFFF</item>
+        <item name="pressedBackgroundColor">#EDEDED</item>
         <item name="borderStrokeWidth">0.5dp</item>
         <item name="textSize">13sp</item>
         <item name="horizontalSpacing">8dp</item>
