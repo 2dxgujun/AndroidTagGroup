@@ -20,7 +20,7 @@ Also you can contribute new idea to me.
 ### Delete tag
 ![Delete tag](http://ww3.sinaimg.cn/large/bce2dea9gw1epouweadrqj20dw05dglt.jpg)
 
-[Download Demo](https://github.com/2dxgujun/AndroidTagGroup/releases/download/v1.0/AndroidTagGroup-Demo-v1.0.apk)
+[Download Demo](https://github.com/2dxgujun/AndroidTagGroup/releases/download/v1.0/AndroidTagGroup-Demo-v1.2.apk)
 
 # Usage
 
