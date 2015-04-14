@@ -8,6 +8,7 @@ import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathEffect;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -19,6 +20,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -721,6 +723,11 @@ public class TagGroup extends ViewGroup {
         private boolean isChecked = false;
 
         /**
+         * Indicates the tag if pressed.
+         */
+        private boolean isPressed = false;
+
+        /**
          * The paint of tag outline border and text.
          */
         private Paint mPaint;
@@ -759,6 +766,11 @@ public class TagGroup extends ViewGroup {
          * The rect for the checked mark draw bound.
          */
         private RectF mCheckedMarkDrawBound;
+
+        /**
+         * Used to detect the touch event.
+         */
+        private Rect mOutRect = new Rect();
 
         /**
          * The offset to the text.
@@ -959,6 +971,12 @@ public class TagGroup extends ViewGroup {
                 mPaint.setPathEffect(mPathEffect);
                 setTextColor(mDimColor);
             }
+
+            if (isPressed) {
+                mBackgroundPaint.setColor(mPressedBackgroundColor);
+            } else {
+                mBackgroundPaint.setColor(mBackgroundColor);
+            }
         }
 
         @Override
@@ -1042,6 +1060,39 @@ public class TagGroup extends ViewGroup {
                                 : mHorizontalPadding,
                         mVerticalPadding);
             }
+        }
+
+        @Override
+        public boolean onTouchEvent(MotionEvent event) {
+            if (mState == STATE_INPUT) {
+                // The INPUT state tag doesn't change background color on the touch event.
+                return super.onTouchEvent(event);
+            }
+
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN: {
+                    getDrawingRect(mOutRect);
+                    isPressed = true;
+                    invalidatePaint();
+                    invalidate();
+                    break;
+                }
+                case MotionEvent.ACTION_MOVE: {
+                    if (!mOutRect.contains((int) event.getX(), (int) event.getY())) {
+                        isPressed = false;
+                        invalidatePaint();
+                        invalidate();
+                    }
+                    break;
+                }
+                case MotionEvent.ACTION_UP: {
+                    isPressed = false;
+                    invalidatePaint();
+                    invalidate();
+                    break;
+                }
+            }
+            return true;
         }
     }
 }
