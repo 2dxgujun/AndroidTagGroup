@@ -20,7 +20,7 @@ Also you can contribute new idea to me.
 ### Delete tag
 ![Delete tag](http://ww3.sinaimg.cn/large/bce2dea9gw1epouweadrqj20dw05dglt.jpg)
 
-[Download Demo](https://github.com/2dxgujun/AndroidTagGroup/releases/download/v1.0/AndroidTagGroup-Demo-v1.2.apk)
+[Download Demo](https://github.com/2dxgujun/AndroidTagGroup/releases/download/v1.2/AndroidTagGroup-Demo-v1.2.apk)
 
 # Usage
 
@@ -29,7 +29,7 @@ Also you can contribute new idea to me.
 #### Gradle
 ```groovy
 dependencies {
-   compile 'me.gujun.android.taggroup:library:1.1@aar'
+   compile 'me.gujun.android.taggroup:library:1.2@aar'
 }
 ```
 
@@ -38,7 +38,7 @@ dependencies {
 <dependency>
     <groupId>me.gujun.android.taggroup</groupId>
     <artifactId>library</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
     <type>apklib</type>
 </dependency>
 ```
