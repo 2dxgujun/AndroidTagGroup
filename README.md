@@ -63,7 +63,7 @@ Use `setTags(...)` to set the initial tags in the group.
 To "submit" a new tag as user press "Enter" or tap the blank area of the tag group, also you can "submit" a new tag via `submitTag()`.
 To delete a tag as user press "Backspace" or double-tap the tag which you want to delete.
 
-**Note**: Google keyboard (a few soft keyboard not honour the key event) currently not supported "Enter" key to "submit" a new tag and "Backspace" key to delete a tag.
+**Note**: Google keyboard (a few soft keyboard not honour the key event) currently not supported "Enter" key to "submit" a new tag.
 
 I made some pre-design style. You can use them via `style` property.
 
@@ -101,18 +101,20 @@ There are several attributes you can set:
 
 ![Dimension illustrate](http://ww2.sinaimg.cn/large/bce2dea9gw1epov0i8x6kj20rk054q4g.jpg)
 
-|       attr      	|     default      |                         mean                          	 |
-|:-----------------:|:----------------:|:-------------------------------------------------------:|
-| isAppendMode  	| false            | Determine the TagGroup mode, APPEND or single DISPLAY.  |
-| inputTagHint   	| Add Tag/添加标签  | Hint of the INPUT state tag.                            |
-| brightColor	    | #49C120          | The bright color of the tag.                            |
-| dimColor       	| #AAAAAA          | The dim color of the tag.                           	 |
-| borderStrokeWidth | 0.5dp            | The tag outline border stroke width.        	         |
-| textSize      	| 13sp             | The tag text size.                                  	 |
-| horizontalSpacing | 8dp              | The horizontal tag spacing.(Mark1)                      |
-| verticalSpacing  	| 4dp              | The vertical tag spacing.(Mark2)                      	 |
-| horizontalPadding	| 12dp             | The horizontal tag padding.(Mark3)                      |
-| verticalPadding  	| 3dp              | The vertical tag padding.(Mark4)                        |
+|       attr        	|     default      |                         mean                          	 |
+|:--------------------- |:---------------- |:------------------------------------------------------- |
+| isAppendMode      	| false            | Determine the TagGroup mode, APPEND or single DISPLAY.  |
+| inputTagHint   	    | Add Tag/添加标签  | Hint of the INPUT state tag.                            |
+| brightColor	        | #49C120          | The bright color of the tag.                            |
+| dimColor          	| #AAAAAA          | The dim color of the tag.                           	 |
+| backgroundColor       | #FFFFFF          | The background color of the tag.                        |
+| pressedBackgroundColor| #EDEDED          | The background color of the tag when user press.        |
+| borderStrokeWidth     | 0.5dp            | The tag outline border stroke width.        	         |
+| textSize          	| 13sp             | The tag text size.                                  	 |
+| horizontalSpacing     | 8dp              | The horizontal tag spacing.(Mark1)                      |
+| verticalSpacing  	    | 4dp              | The vertical tag spacing.(Mark2)                      	 |
+| horizontalPadding	    | 12dp             | The horizontal tag padding.(Mark3)                      |
+| verticalPadding  	    | 3dp              | The vertical tag padding.(Mark4)                        |
 
 # Developed By
 
