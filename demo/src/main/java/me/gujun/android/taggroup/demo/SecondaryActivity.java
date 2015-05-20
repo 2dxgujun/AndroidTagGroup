@@ -18,11 +18,13 @@ public class SecondaryActivity extends ActionBarActivity {
         setContentView(R.layout.activity_secondary);
 
         String[] tags = getIntent().getStringArrayExtra("tags");
-        int color = getIntent().getIntExtra("color", getResources().getColor(R.color.default_green));
+        int brightColor = getIntent().getIntExtra("brightColor", getResources().getColor(R.color.default_green));
+        int backgroundColor = getIntent().getIntExtra("backgroundColor", getResources().getColor(android.R.color.white));
 
         mTagGroup = (TagGroup) findViewById(R.id.tag_group);
         mTagGroup.setTags(tags);
-        mTagGroup.setBrightColor(color);
+        mTagGroup.setBrightColor(brightColor);
+        mTagGroup.setBackgroundColor(backgroundColor);
     }
 
     @Override

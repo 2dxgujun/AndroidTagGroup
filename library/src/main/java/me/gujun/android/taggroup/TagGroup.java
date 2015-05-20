@@ -217,6 +217,16 @@ public class TagGroup extends ViewGroup {
         invalidate();
     }
 
+    public int getBackgroundColor() {
+        return mBackgroundColor;
+    }
+
+    public void setBackgroundColor(int backgroundColor) {
+        mBackgroundColor = backgroundColor;
+        invalidateAllTagsPaint();
+        invalidate();
+    }
+
     public float getBorderStrokeWidth() {
         return mBorderStrokeWidth;
     }

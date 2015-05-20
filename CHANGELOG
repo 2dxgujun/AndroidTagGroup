@@ -1,0 +1,22 @@
+Change Log
+==========
+
+Version 1.2 *(2015-04-14)*
+----------------------------
+
+- Fix: Google soft keyboard backspace issue.
+- Add tag background color feature.
+
+
+Version 1.1 *(2015-02-28)*
+----------------------------
+
+- Fix: EditorActionListener.
+- Fix: Uncheck tag when user is typing.
+- Add `submitTag()` to submit a new tag.
+
+
+Version 1.0 *(2015-02-10)*
+----------------------------
+
+- Initial release.

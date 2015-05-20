@@ -117,7 +117,8 @@ public class MainActivity extends ActionBarActivity {
     protected void launchSecondaryActivity() {
         Intent intent = new Intent(MainActivity.this, SecondaryActivity.class);
         intent.putExtra("tags", mTags);
-        intent.putExtra("color", mDefaultTagGroup.getBrightColor());
+        intent.putExtra("brightColor", mDefaultTagGroup.getBrightColor());
+        intent.putExtra("backgroundColor", mDefaultTagGroup.getBackgroundColor());
         startActivityForResult(intent, 110);
     }
 
