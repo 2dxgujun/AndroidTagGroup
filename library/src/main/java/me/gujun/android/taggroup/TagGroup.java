@@ -17,7 +17,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.ArrowKeyMovementMethod;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -77,24 +76,34 @@ public class TagGroup extends ViewGroup {
 
     /** The tag outline border color. */
     private int borderColor;
+
     /** The tag text color. */
     private int textColor;
+
     /** The tag background color. */
     private int backgroundColor;
+
     /** The dash outline border color. */
     private int dashBorderColor;
+
     /** The  input tag hint text color. */
     private int inputHintColor;
+
     /** The input tag type text color. */
     private int inputTextColor;
+
     /** The checked tag outline border color. */
     private int checkedBorderColor;
+
     /** The check text color */
     private int checkedTextColor;
-    /** The checked markder color. */
+
+    /** The checked marker color. */
     private int checkedMarkerColor;
+
     /** The checked tag background color. */
     private int checkedBackgroundColor;
+
     /** The tag background color, when the tag is being pressed. */
     private int pressedBackgroundColor;
 
@@ -119,8 +128,11 @@ public class TagGroup extends ViewGroup {
     /** Listener used to dispatch tag change event. */
     private OnTagChangeListener mOnTagChangeListener;
 
+    /** Listener used to dispatch tag click event. */
+    private OnTagClickListener mOnTagClickListener;
+
     /** Listener used to handle tag click event. */
-    private OnTagClickListener mOnTagClickListener = new OnTagClickListener();
+    private InternalTagClickListener mInternalTagClickListener = new InternalTagClickListener();
 
     public TagGroup(Context context) {
         this(context, null);
@@ -464,7 +476,7 @@ public class TagGroup extends ViewGroup {
         }
 
         final TagView newInputTag = new TagView(getContext(), TagView.STATE_INPUT, tag);
-        newInputTag.setOnClickListener(mOnTagClickListener);
+        newInputTag.setOnClickListener(mInternalTagClickListener);
         addView(newInputTag);
     }
 
@@ -475,7 +487,7 @@ public class TagGroup extends ViewGroup {
      */
     protected void appendTag(CharSequence tag) {
         final TagView newTag = new TagView(getContext(), TagView.STATE_NORMAL, tag);
-        newTag.setOnClickListener(mOnTagClickListener);
+        newTag.setOnClickListener(mInternalTagClickListener);
         addView(newTag);
     }
 
@@ -511,6 +523,27 @@ public class TagGroup extends ViewGroup {
          * @param tag the deleted tag.
          */
         void onDelete(TagGroup tagGroup, String tag);
+    }
+
+    /**
+     * Register a callback to be invoked when a tag is clicked.
+     *
+     * @param l the callback that will run.
+     */
+    public void setOnTagClickListener(OnTagClickListener l) {
+        mOnTagClickListener = l;
+    }
+
+    /**
+     * Interface definition for a callback to be invoked when a tag is clicked.
+     */
+    public interface OnTagClickListener {
+        /**
+         * Called when a tag has been clicked.
+         *
+         * @param tag The tag text of the tag that was clicked.
+         */
+        void onTagClick(String tag);
     }
 
     /**
@@ -570,9 +603,9 @@ public class TagGroup extends ViewGroup {
     }
 
     /**
-     * The tag view click listener.
+     * The tag view click listener for internal use.
      */
-    class OnTagClickListener implements OnClickListener {
+    class InternalTagClickListener implements OnClickListener {
         @Override
         public void onClick(View v) {
             final TagView tag = (TagView) v;
@@ -598,8 +631,9 @@ public class TagGroup extends ViewGroup {
                     }
                 }
             } else {
-                // TODO Dispatch tag click event.
-                Log.i("TagGroup", "Tag " + tag.getText() + " clicked.");
+                if (mOnTagClickListener != null) {
+                    mOnTagClickListener.onTagClick(tag.getText().toString());
+                }
             }
         }
     }
@@ -669,7 +703,7 @@ public class TagGroup extends ViewGroup {
         /** The path effect provide draw the dash border. */
         private PathEffect mPathEffect = new DashPathEffect(new float[]{10, 5}, 0);
 
-        public TagView(Context context, int state, CharSequence text) {
+        public TagView(Context context, final int state, CharSequence text) {
             super(context);
             setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding);
             setLayoutParams(new TagGroup.LayoutParams(TagGroup.LayoutParams.WRAP_CONTENT,
@@ -686,6 +720,13 @@ public class TagGroup extends ViewGroup {
             setFocusableInTouchMode(state == STATE_INPUT);
             setHint(state == STATE_INPUT ? inputHint : null);
             setMovementMethod(state == STATE_INPUT ? ArrowKeyMovementMethod.getInstance() : null);
+
+            setOnLongClickListener(new OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    return state != STATE_INPUT;
+                }
+            });
 
             if (state == STATE_INPUT) {
                 requestFocus();
