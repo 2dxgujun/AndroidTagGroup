@@ -13,7 +13,6 @@
 
     <me.gujun.android.taggroup.TagGroup
         android:id="@+id/tag_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/TagGroup"
         app:isAppendMode="true"/>
 </LinearLayout>

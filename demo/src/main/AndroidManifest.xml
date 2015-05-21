@@ -16,7 +16,7 @@
         </activity>
         <activity
             android:name=".TagEditorActivity"
-            android:label="@string/title_activity_secondary"
+            android:label="@string/title_activity_tag_editor"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

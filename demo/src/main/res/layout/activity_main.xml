@@ -15,6 +15,15 @@
         android:text="@string/tags_default"
         android:textSize="16sp" />
 
+    <TextView
+        android:id="@+id/tv_prompt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:text="@string/add_tags"
+        android:textColor="@android:color/darker_gray" />
+
     <me.gujun.android.taggroup.TagGroup
         android:id="@+id/tag_group"
         style="@style/TagGroup"
@@ -45,15 +54,6 @@
         android:id="@+id/tag_group_beauty_inverse"
         style="@style/TagGroup.Beauty_Red.Inverse"
         android:layout_marginTop="5dp" />
-
-    <TextView
-        android:id="@+id/tv_prompt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp"
-        android:text="@string/add_tags"
-        android:textColor="@android:color/darker_gray" />
 
     <TextView
         android:layout_width="wrap_content"
