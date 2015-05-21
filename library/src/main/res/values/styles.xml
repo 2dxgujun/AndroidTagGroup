@@ -53,6 +53,6 @@
         <item name="textColor">#FFFFFF</item>
         <item name="backgroundColor">#FF3D7F</item>
         <item name="checkedBackgroundColor">#FF3D7F</item>
-        <item name="pressedBackgroundColor">#FF2165</item>
+        <item name="pressedBackgroundColor">#FF99B1</item>
     </style>
 </resources>

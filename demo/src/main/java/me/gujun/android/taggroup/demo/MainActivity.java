@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import me.gujun.android.taggroup.TagGroup;
 import me.gujun.android.taggroup.demo.db.TagsManager;
@@ -22,6 +23,13 @@ public class MainActivity extends ActionBarActivity {
     private TagGroup mBeautyInverseTagGroup;
 
     private TagsManager mTagsManager;
+
+    private TagGroup.OnTagClickListener mTagClickListener = new TagGroup.OnTagClickListener() {
+        @Override
+        public void onTagClick(String tag) {
+            Toast.makeText(MainActivity.this, tag, Toast.LENGTH_SHORT).show();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +67,12 @@ public class MainActivity extends ActionBarActivity {
         mLargeTagGroup.setOnClickListener(tgClickListener);
         mBeautyTagGroup.setOnClickListener(tgClickListener);
         mBeautyInverseTagGroup.setOnClickListener(tgClickListener);
+
+        mDefaultTagGroup.setOnTagClickListener(mTagClickListener);
+        mSmallTagGroup.setOnTagClickListener(mTagClickListener);
+        mLargeTagGroup.setOnTagClickListener(mTagClickListener);
+        mBeautyTagGroup.setOnTagClickListener(mTagClickListener);
+        mBeautyInverseTagGroup.setOnTagClickListener(mTagClickListener);
     }
 
     @Override
