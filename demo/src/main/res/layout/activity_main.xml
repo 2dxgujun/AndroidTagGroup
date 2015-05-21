@@ -1,5 +1,4 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,12 +13,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/tags_default"
-        android:textSize="20sp"/>
+        android:textSize="16sp" />
 
     <me.gujun.android.taggroup.TagGroup
         android:id="@+id/tag_group"
         style="@style/TagGroup"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp" />
 
     <TextView
         android:id="@+id/tv_prompt"
@@ -28,76 +27,39 @@
         android:paddingBottom="5dp"
         android:paddingTop="5dp"
         android:text="@string/add_tags"
-        android:textColor="@android:color/darker_gray"/>
+        android:textColor="@android:color/darker_gray" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:text="@string/tags_small"
-        android:textSize="18sp"/>
+        android:textSize="14sp" />
 
     <me.gujun.android.taggroup.TagGroup
         android:id="@+id/tag_group_small"
         style="@style/TagGroup.Small"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:text="@string/tags_large"
-        android:textSize="22sp"/>
+        android:textSize="18sp" />
 
     <me.gujun.android.taggroup.TagGroup
         android:id="@+id/tag_group_large"
         style="@style/TagGroup.Large"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:orientation="horizontal">
+    <me.gujun.android.taggroup.TagGroup
+        android:id="@+id/tag_group_beauty"
+        style="@style/TagGroup.Beauty_Red"
+        android:layout_marginTop="10dp" />
 
-        <View
-            android:id="@+id/cp_default"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
-            android:background="@color/default_green"
-            android:onClick="onPickColor"/>
-
-        <View
-            android:id="@+id/cp_beauty_red"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
-            android:background="@color/beauty_red"
-            android:onClick="onPickColor"/>
-
-        <View
-            android:id="@+id/cp_holo_dark"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
-            android:background="@color/holo_dark"
-            android:onClick="onPickColor"/>
-
-        <View
-            android:id="@+id/cp_light_blue"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
-            android:background="@color/light_blue"
-            android:onClick="onPickColor"/>
-
-        <View
-            android:id="@+id/cp_indigo"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
-            android:background="@color/indigo"
-            android:onClick="onPickColor"/>
-    </LinearLayout>
+    <me.gujun.android.taggroup.TagGroup
+        android:id="@+id/tag_group_beauty_inverse"
+        style="@style/TagGroup.Beauty_Red.Inverse"
+        android:layout_marginTop="10dp" />
 </LinearLayout>

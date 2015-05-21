@@ -15,7 +15,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SecondaryActivity"
+            android:name=".TagEditorActivity"
             android:label="@string/title_activity_secondary"
             android:parentActivityName=".MainActivity" >
             <meta-data
