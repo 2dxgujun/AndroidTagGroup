@@ -46,13 +46,19 @@
         <item name="borderColor">#FF3D7F</item>
         <item name="textColor">#FF3D7F</item>
         <item name="checkedBorderColor">#FF3D7F</item>
+        <item name="checkedBackgroundColor">#FF3D7F</item>
     </style>
 
     <style name="TagGroup.Beauty_Red.Inverse" parent="TagGroup">
         <item name="borderColor">#FF3D7F</item>
         <item name="textColor">#FFFFFF</item>
         <item name="backgroundColor">#FF3D7F</item>
-        <item name="checkedBackgroundColor">#FF3D7F</item>
+        <item name="inputHintColor">#80FFFFFF</item>
+        <item name="inputTextColor">#DEFFFFFF</item>
+        <item name="checkedBorderColor">#FF3D7F</item>
+        <item name="checkedTextColor">#FF3D7F</item>
+        <item name="checkedMarkerColor">#FF3D7F</item>
+        <item name="checkedBackgroundColor">#FFFFFF</item>
         <item name="pressedBackgroundColor">#FF99B1</item>
     </style>
 </resources>

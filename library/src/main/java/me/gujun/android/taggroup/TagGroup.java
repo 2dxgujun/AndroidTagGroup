@@ -507,13 +507,29 @@ public class TagGroup extends ViewGroup {
     }
 
     /**
+     * Register a callback to be invoked when a tag is clicked.
+     *
+     * @param l the callback that will run.
+     */
+    public void setOnTagClickListener(OnTagClickListener l) {
+        mOnTagClickListener = l;
+    }
+
+    protected void deleteTag(TagView tagView) {
+        removeView(tagView);
+        if (mOnTagChangeListener != null) {
+            mOnTagChangeListener.onDelete(TagGroup.this, tagView.getText().toString());
+        }
+    }
+
+    /**
      * Interface definition for a callback to be invoked when a tag group is changed.
      */
     public interface OnTagChangeListener {
         /**
          * Called when a tag has been appended to the group.
          *
-         * @param tag the appended tag
+         * @param tag the appended tag.
          */
         void onAppend(TagGroup tagGroup, String tag);
 
@@ -523,15 +539,6 @@ public class TagGroup extends ViewGroup {
          * @param tag the deleted tag.
          */
         void onDelete(TagGroup tagGroup, String tag);
-    }
-
-    /**
-     * Register a callback to be invoked when a tag is clicked.
-     *
-     * @param l the callback that will run.
-     */
-    public void setOnTagClickListener(OnTagClickListener l) {
-        mOnTagClickListener = l;
     }
 
     /**
@@ -638,13 +645,6 @@ public class TagGroup extends ViewGroup {
         }
     }
 
-    protected void deleteTag(TagView tagView) {
-        removeView(tagView);
-        if (mOnTagChangeListener != null) {
-            mOnTagChangeListener.onDelete(TagGroup.this, tagView.getText().toString());
-        }
-    }
-
     /**
      * The tag view which has two states can be either NORMAL or INPUT.
      */
@@ -654,6 +654,7 @@ public class TagGroup extends ViewGroup {
 
         /** The offset to the text. */
         private static final int CHECKED_MARKER_OFFSET = 3;
+
         /** The stroke width of the checked marker */
         private static final int CHECKED_MARKER_STROKE_WIDTH = 4;
 
@@ -667,17 +668,10 @@ public class TagGroup extends ViewGroup {
         private boolean isPressed = false;
 
         private Paint mBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        private Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        private Paint mCheckedMarkerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        {
-            mBorderPaint.setStyle(Paint.Style.STROKE);
-            mBorderPaint.setStrokeWidth(borderStrokeWidth);
-            mBackgroundPaint.setStyle(Paint.Style.FILL);
-            mCheckedMarkerPaint.setStyle(Paint.Style.FILL);
-            mCheckedMarkerPaint.setStrokeWidth(CHECKED_MARKER_STROKE_WIDTH);
-            mCheckedMarkerPaint.setColor(checkedMarkerColor);
-        }
+        private Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+        private Paint mCheckedMarkerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         /** The rect for the tag's left corner drawing. */
         private RectF mLeftCornerRectF = new RectF();
@@ -703,10 +697,21 @@ public class TagGroup extends ViewGroup {
         /** The path effect provide draw the dash border. */
         private PathEffect mPathEffect = new DashPathEffect(new float[]{10, 5}, 0);
 
+        {
+            mBorderPaint.setStyle(Paint.Style.STROKE);
+            mBorderPaint.setStrokeWidth(borderStrokeWidth);
+            mBackgroundPaint.setStyle(Paint.Style.FILL);
+            mCheckedMarkerPaint.setStyle(Paint.Style.FILL);
+            mCheckedMarkerPaint.setStrokeWidth(CHECKED_MARKER_STROKE_WIDTH);
+            mCheckedMarkerPaint.setColor(checkedMarkerColor);
+        }
+
+
         public TagView(Context context, final int state, CharSequence text) {
             super(context);
             setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding);
-            setLayoutParams(new TagGroup.LayoutParams(TagGroup.LayoutParams.WRAP_CONTENT,
+            setLayoutParams(new TagGroup.LayoutParams(
+                    TagGroup.LayoutParams.WRAP_CONTENT,
                     TagGroup.LayoutParams.WRAP_CONTENT));
 
             setGravity(Gravity.CENTER);
@@ -721,6 +726,7 @@ public class TagGroup extends ViewGroup {
             setHint(state == STATE_INPUT ? inputHint : null);
             setMovementMethod(state == STATE_INPUT ? ArrowKeyMovementMethod.getInstance() : null);
 
+            // Interrupted long click event to avoid PAUSE popup.
             setOnLongClickListener(new OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -894,13 +900,6 @@ public class TagGroup extends ViewGroup {
             canvas.drawRect(mVerticalBlankFillRectF, mBackgroundPaint);
 
             if (isChecked) {
-                // canvas.drawArc(mLeftCornerRectF, -180, 90, true, mBorderPaint);
-                // canvas.drawArc(mLeftCornerRectF, -270, 90, true, mBorderPaint);
-                // canvas.drawArc(mRightCornerRectF, -90, 90, true, mBorderPaint);
-                // canvas.drawArc(mRightCornerRectF, 0, 90, true, mBorderPaint);
-                // canvas.drawRect(mHorizontalBlankFillRectF, mPaint);
-                // canvas.drawRect(mVerticalBlankFillRectF, mPaint);
-
                 canvas.save();
                 canvas.rotate(45, mCheckedMarkerBound.centerX(), mCheckedMarkerBound.centerY());
                 canvas.drawLine(mCheckedMarkerBound.left, mCheckedMarkerBound.centerY(),
@@ -908,9 +907,8 @@ public class TagGroup extends ViewGroup {
                 canvas.drawLine(mCheckedMarkerBound.centerX(), mCheckedMarkerBound.top,
                         mCheckedMarkerBound.centerX(), mCheckedMarkerBound.bottom, mCheckedMarkerPaint);
                 canvas.restore();
-            } else {
-                canvas.drawPath(mBorderPath, mBorderPaint);
             }
+            canvas.drawPath(mBorderPath, mBorderPaint);
             super.onDraw(canvas);
         }
 
