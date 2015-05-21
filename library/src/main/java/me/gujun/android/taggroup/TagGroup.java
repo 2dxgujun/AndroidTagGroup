@@ -17,6 +17,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.ArrowKeyMovementMethod;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -32,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A <code>TagGroup</code> is a special layout that contain a set of tags.
+ * A <code>TagGroup</code> is a special layout with a set of tags.
  * This group has two modes:
  * <p>
  * 1. APPEND mode
@@ -46,13 +47,20 @@ import java.util.List;
  * </p>
  *
  * @author Jun Gu (http://2dxgujun.com)
- * @version 1.0
+ * @version 2.0
  * @since 2015-2-3 14:16:32
  */
 public class TagGroup extends ViewGroup {
-    private final int default_bright_color = Color.rgb(0x49, 0xC1, 0x20);
-    private final int default_dim_color = Color.rgb(0xAA, 0xAA, 0xAA);
+    private final int default_border_color = Color.rgb(0x49, 0xC1, 0x20);
+    private final int default_text_color = Color.rgb(0x49, 0xC1, 0x20);
     private final int default_background_color = Color.WHITE;
+    private final int default_dash_border_color = Color.rgb(0xAA, 0xAA, 0xAA);
+    private final int default_input_hint_color = Color.argb(0x80, 0x00, 0x00, 0x00);
+    private final int default_input_text_color = Color.argb(0xDE, 0x00, 0x00, 0x00);
+    private final int default_checked_border_color = Color.rgb(0x49, 0xC1, 0x20);
+    private final int default_checked_text_color = Color.WHITE;
+    private final int default_checked_marker_color = Color.WHITE;
+    private final int default_checked_background_color = Color.rgb(0x49, 0xC1, 0x20);
     private final int default_pressed_background_color = Color.rgb(0xED, 0xED, 0xED);
     private final float default_border_stroke_width;
     private final float default_text_size;
@@ -61,70 +69,58 @@ public class TagGroup extends ViewGroup {
     private final float default_horizontal_padding;
     private final float default_vertical_padding;
 
-    /**
-     * Indicates whether this TagGroup is set up to APPEND mode or DISPLAY mode. Default is false.
-     */
+    /** Indicates whether this TagGroup is set up to APPEND mode or DISPLAY mode. Default is false. */
     private boolean isAppendMode;
 
-    /**
-     * The text to be displayed when the text of the INPUT state tag is empty.
-     */
-    private CharSequence mInputTagHint;
+    /** The text to be displayed when the text of the INPUT tag is empty. */
+    private CharSequence inputHint;
 
-    /**
-     * The bright color of the tag.
-     */
-    private int mBrightColor;
+    /** The tag outline border color. */
+    private int borderColor;
+    /** The tag text color. */
+    private int textColor;
+    /** The tag background color. */
+    private int backgroundColor;
+    /** The dash outline border color. */
+    private int dashBorderColor;
+    /** The  input tag hint text color. */
+    private int inputHintColor;
+    /** The input tag type text color. */
+    private int inputTextColor;
+    /** The checked tag outline border color. */
+    private int checkedBorderColor;
+    /** The check text color */
+    private int checkedTextColor;
+    /** The checked markder color. */
+    private int checkedMarkerColor;
+    /** The checked tag background color. */
+    private int checkedBackgroundColor;
+    /** The tag background color, when the tag is being pressed. */
+    private int pressedBackgroundColor;
 
-    /**
-     * The dim color of the tag.
-     */
-    private int mDimColor;
+    /** The tag outline border stroke width, default is 0.5dp. */
+    private float borderStrokeWidth;
 
-    /**
-     * The background color of the tag.
-     */
-    private int mBackgroundColor;
+    /** The tag text size, default is 13sp. */
+    private float textSize;
 
-    /**
-     * The background color when the tag is pressed.
-     */
-    private int mPressedBackgroundColor;
+    /** The horizontal tag spacing, default is 8.0dp. */
+    private int horizontalSpacing;
 
-    /**
-     * The tag outline border stroke width, default is 0.5dp.
-     */
-    private float mBorderStrokeWidth;
+    /** The vertical tag spacing, default is 4.0dp. */
+    private int verticalSpacing;
 
-    /**
-     * The tag text size, default is 13sp.
-     */
-    private float mTextSize;
+    /** The horizontal tag padding, default is 12.0dp. */
+    private int horizontalPadding;
 
-    /**
-     * The horizontal tag spacing, default is 8.0dp.
-     */
-    private int mHorizontalSpacing;
+    /** The vertical tag padding, default is 3.0dp. */
+    private int verticalPadding;
 
-    /**
-     * The vertical tag spacing, default is 4.0dp.
-     */
-    private int mVerticalSpacing;
-
-    /**
-     * The horizontal tag padding, default is 12.0dp.
-     */
-    private int mHorizontalPadding;
-
-    /**
-     * The vertical tag padding, default is 3.0dp.
-     */
-    private int mVerticalPadding;
-
-    /**
-     * Listener used to dispatch tag change event.
-     */
+    /** Listener used to dispatch tag change event. */
     private OnTagChangeListener mOnTagChangeListener;
+
+    /** Listener used to handle tag click event. */
+    private OnTagClickListener mOnTagClickListener = new OnTagClickListener();
 
     public TagGroup(Context context) {
         this(context, null);
@@ -136,7 +132,6 @@ public class TagGroup extends ViewGroup {
 
     public TagGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
         default_border_stroke_width = dp2px(0.5f);
         default_text_size = sp2px(13.0f);
         default_horizontal_spacing = dp2px(8.0f);
@@ -145,34 +140,36 @@ public class TagGroup extends ViewGroup {
         default_vertical_padding = dp2px(3.0f);
 
         // Load styled attributes.
-        final TypedArray a = context.obtainStyledAttributes(attrs,
-                R.styleable.TagGroup, defStyleAttr, R.style.TagGroup);
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TagGroup, defStyleAttr, R.style.TagGroup);
         try {
             isAppendMode = a.getBoolean(R.styleable.TagGroup_isAppendMode, false);
-            mInputTagHint = a.getText(R.styleable.TagGroup_inputTagHint);
-            mBrightColor = a.getColor(R.styleable.TagGroup_brightColor, default_bright_color);
-            mDimColor = a.getColor(R.styleable.TagGroup_dimColor, default_dim_color);
-            mBackgroundColor = a.getColor(R.styleable.TagGroup_backgroundColor, default_background_color);
-            mPressedBackgroundColor = a.getColor(R.styleable.TagGroup_pressedBackgroundColor, default_pressed_background_color);
-            mBorderStrokeWidth = a.getDimension(R.styleable.TagGroup_borderStrokeWidth, default_border_stroke_width);
-            mTextSize = a.getDimension(R.styleable.TagGroup_textSize, default_text_size);
-            mHorizontalSpacing = (int) a.getDimension(R.styleable.TagGroup_horizontalSpacing, default_horizontal_spacing);
-            mVerticalSpacing = (int) a.getDimension(R.styleable.TagGroup_verticalSpacing, default_vertical_spacing);
-            mHorizontalPadding = (int) a.getDimension(R.styleable.TagGroup_horizontalPadding, default_horizontal_padding);
-            mVerticalPadding = (int) a.getDimension(R.styleable.TagGroup_verticalPadding, default_vertical_padding);
+            inputHint = a.getText(R.styleable.TagGroup_inputHint);
+            borderColor = a.getColor(R.styleable.TagGroup_borderColor, default_border_color);
+            textColor = a.getColor(R.styleable.TagGroup_textColor, default_text_color);
+            backgroundColor = a.getColor(R.styleable.TagGroup_backgroundColor, default_background_color);
+            dashBorderColor = a.getColor(R.styleable.TagGroup_dashBorderColor, default_dash_border_color);
+            inputHintColor = a.getColor(R.styleable.TagGroup_inputHintColor, default_input_hint_color);
+            inputTextColor = a.getColor(R.styleable.TagGroup_inputTextColor, default_input_text_color);
+            checkedBorderColor = a.getColor(R.styleable.TagGroup_checkedBorderColor, default_checked_border_color);
+            checkedTextColor = a.getColor(R.styleable.TagGroup_checkedTextColor, default_checked_text_color);
+            checkedMarkerColor = a.getColor(R.styleable.TagGroup_checkedMarkerColor, default_checked_marker_color);
+            checkedBackgroundColor = a.getColor(R.styleable.TagGroup_checkedBackgroundColor, default_checked_background_color);
+            pressedBackgroundColor = a.getColor(R.styleable.TagGroup_pressedBackgroundColor, default_pressed_background_color);
+            borderStrokeWidth = a.getDimension(R.styleable.TagGroup_borderStrokeWidth, default_border_stroke_width);
+            textSize = a.getDimension(R.styleable.TagGroup_textSize, default_text_size);
+            horizontalSpacing = (int) a.getDimension(R.styleable.TagGroup_horizontalSpacing, default_horizontal_spacing);
+            verticalSpacing = (int) a.getDimension(R.styleable.TagGroup_verticalSpacing, default_vertical_spacing);
+            horizontalPadding = (int) a.getDimension(R.styleable.TagGroup_horizontalPadding, default_horizontal_padding);
+            verticalPadding = (int) a.getDimension(R.styleable.TagGroup_verticalPadding, default_vertical_padding);
         } finally {
             a.recycle();
         }
 
-        setUpTagGroup();
-    }
-
-    protected void setUpTagGroup() {
         if (isAppendMode) {
-            // Append the initial INPUT state tag.
+            // Append the initial INPUT tag.
             appendInputTag();
 
-            // Set the TagGroup click listener to handle the end-input click.
+            // Set the click listener to detect the end-input event.
             setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -183,114 +180,17 @@ public class TagGroup extends ViewGroup {
     }
 
     /**
-     * Call this to submit the INPUT state tag.
+     * Call this to submit the INPUT tag.
      */
     public void submitTag() {
-        final TagView inputTag = getInputTagView();
+        final TagView inputTag = getInputTag();
         if (inputTag != null && inputTag.isInputAvailable()) {
             inputTag.endInput();
 
             if (mOnTagChangeListener != null) {
                 mOnTagChangeListener.onAppend(TagGroup.this, inputTag.getText().toString());
             }
-            appendInputTag(); // Append a new INPUT state tag.
-        }
-    }
-
-    public int getBrightColor() {
-        return mBrightColor;
-    }
-
-    public void setBrightColor(int brightColor) {
-        mBrightColor = brightColor;
-        invalidateAllTagsPaint();
-        invalidate();
-    }
-
-    public int getDimColor() {
-        return mDimColor;
-    }
-
-    public void setDimColor(int dimColor) {
-        mDimColor = dimColor;
-        invalidateAllTagsPaint();
-        invalidate();
-    }
-
-    public int getBackgroundColor() {
-        return mBackgroundColor;
-    }
-
-    public void setBackgroundColor(int backgroundColor) {
-        mBackgroundColor = backgroundColor;
-        invalidateAllTagsPaint();
-        invalidate();
-    }
-
-    public float getBorderStrokeWidth() {
-        return mBorderStrokeWidth;
-    }
-
-    public void setBorderStrokeWidth(float borderStrokeWidth) {
-        mBorderStrokeWidth = borderStrokeWidth;
-        invalidateAllTagsPaint();
-        requestLayout();
-    }
-
-    public float getTextSize() {
-        return mTextSize;
-    }
-
-    public void setTextSize(float textSize) {
-        mTextSize = textSize;
-        invalidateAllTagsPaint();
-        requestLayout();
-    }
-
-    public int getHorizontalSpacing() {
-        return mHorizontalSpacing;
-    }
-
-    public void setHorizontalSpacing(int horizontalSpacing) {
-        mHorizontalSpacing = horizontalSpacing;
-        requestLayout();
-    }
-
-    public int getVerticalSpacing() {
-        return mVerticalSpacing;
-    }
-
-    public void setVerticalSpacing(int verticalSpacing) {
-        mVerticalSpacing = verticalSpacing;
-        requestLayout();
-    }
-
-    public int getHorizontalPadding() {
-        return mHorizontalPadding;
-    }
-
-    public void setHorizontalPadding(int horizontalPadding) {
-        mHorizontalPadding = horizontalPadding;
-        requestLayout();
-    }
-
-    public int getVerticalPadding() {
-        return mVerticalPadding;
-    }
-
-    public void setVerticalPadding(int verticalPadding) {
-        mVerticalPadding = verticalPadding;
-        requestLayout();
-    }
-
-    /**
-     * Invalidate all tag views' paint in this group.
-     */
-    protected void invalidateAllTagsPaint() {
-        final int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            TagView tagView = getTagViewAt(i);
-            tagView.invalidatePaint();
+            appendInputTag();
         }
     }
 
@@ -320,13 +220,13 @@ public class TagGroup extends ViewGroup {
                 rowWidth += childWidth;
                 if (rowWidth > widthSize) { // Next line.
                     rowWidth = childWidth; // The next row width.
-                    height += rowMaxHeight + mVerticalSpacing;
+                    height += rowMaxHeight + verticalSpacing;
                     rowMaxHeight = childHeight; // The next row max height.
                     row++;
                 } else { // This line.
                     rowMaxHeight = Math.max(rowMaxHeight, childHeight);
                 }
-                rowWidth += mHorizontalSpacing;
+                rowWidth += horizontalSpacing;
             }
         }
         // Account for the last row height.
@@ -368,14 +268,14 @@ public class TagGroup extends ViewGroup {
             if (child.getVisibility() != GONE) {
                 if (childLeft + width > parentRight) { // Next line
                     childLeft = parentLeft;
-                    childTop += rowMaxHeight + mVerticalSpacing;
+                    childTop += rowMaxHeight + verticalSpacing;
                     rowMaxHeight = height;
                 } else {
                     rowMaxHeight = Math.max(rowMaxHeight, height);
                 }
                 child.layout(childLeft, childTop, childLeft + width, childTop + height);
 
-                childLeft += width + mHorizontalSpacing;
+                childLeft += width + horizontalSpacing;
             }
         }
     }
@@ -386,8 +286,8 @@ public class TagGroup extends ViewGroup {
         SavedState ss = new SavedState(superState);
         ss.tags = getTags();
         ss.checkedPosition = getCheckedTagIndex();
-        if (getInputTagView() != null) {
-            ss.input = getInputTagView().getText().toString();
+        if (getInputTag() != null) {
+            ss.input = getInputTag().getText().toString();
         }
         return ss;
     }
@@ -403,24 +303,24 @@ public class TagGroup extends ViewGroup {
         super.onRestoreInstanceState(ss.getSuperState());
 
         setTags(ss.tags);
-        TagView checkedTagView = getTagViewAt(ss.checkedPosition);
+        TagView checkedTagView = getTagAt(ss.checkedPosition);
         if (checkedTagView != null) {
             checkedTagView.setChecked(true);
         }
-        if (getInputTagView() != null) {
-            getInputTagView().setText(ss.input);
+        if (getInputTag() != null) {
+            getInputTag().setText(ss.input);
         }
     }
 
     /**
-     * Returns the INPUT state tag view in this group.
+     * Returns the INPUT tag view in this group.
      *
      * @return the INPUT state tag view or null if not exists
      */
-    protected TagView getInputTagView() {
+    protected TagView getInputTag() {
         if (isAppendMode) {
             final int inputTagIndex = getChildCount() - 1;
-            final TagView inputTag = getTagViewAt(inputTagIndex);
+            final TagView inputTag = getTagAt(inputTagIndex);
             if (inputTag != null && inputTag.mState == TagView.STATE_INPUT) {
                 return inputTag;
             } else {
@@ -436,8 +336,8 @@ public class TagGroup extends ViewGroup {
      *
      * @return the INPUT state tag view or null if not exists
      */
-    public String getInputTag() {
-        final TagView inputTagView = getInputTagView();
+    public String getInputTagText() {
+        final TagView inputTagView = getInputTag();
         if (inputTagView != null) {
             return inputTagView.getText().toString();
         }
@@ -451,48 +351,71 @@ public class TagGroup extends ViewGroup {
      */
     protected TagView getLastNormalTagView() {
         final int lastNormalTagIndex = isAppendMode ? getChildCount() - 2 : getChildCount() - 1;
-        TagView lastNormalTagView = getTagViewAt(lastNormalTagIndex);
+        TagView lastNormalTagView = getTagAt(lastNormalTagIndex);
         return lastNormalTagView;
     }
 
     /**
-     * Returns the NORMAL state tags array in group.
+     * Returns the tag array in group, except the INPUT tag.
      *
-     * @return the tag array
+     * @return the tag array.
      */
     public String[] getTags() {
         final int count = getChildCount();
         final List<String> tagList = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            final TagView tagView = getTagViewAt(i);
+            final TagView tagView = getTagAt(i);
             if (tagView.mState == TagView.STATE_NORMAL) {
                 tagList.add(tagView.getText().toString());
             }
         }
 
-        return tagList.toArray(new String[]{});
+        return tagList.toArray(new String[tagList.size()]);
+    }
+
+    /**
+     * @see #setTags(String...)
+     */
+    public void setTags(List<String> tagList) {
+        setTags(tagList.toArray(new String[tagList.size()]));
+    }
+
+    /**
+     * Set the tags. It will remove all previous tags first.
+     *
+     * @param tags the tag list to set.
+     */
+    public void setTags(String... tags) {
+        removeAllViews();
+        for (final String tag : tags) {
+            appendTag(tag);
+        }
+
+        if (isAppendMode) {
+            appendInputTag();
+        }
     }
 
     /**
      * Returns the tag view at the specified position in the group.
      *
-     * @param index the position at which to get the tag view from
+     * @param index the position at which to get the tag view from.
      * @return the tag view at the specified position or null if the position
-     * does not exists within this group
+     * does not exists within this group.
      */
-    protected TagView getTagViewAt(int index) {
+    protected TagView getTagAt(int index) {
         return (TagView) getChildAt(index);
     }
 
     /**
      * Returns the checked tag view in the group.
      *
-     * @return the checked tag view or null if it does not exists within this group
+     * @return the checked tag view or null if not exists.
      */
-    protected TagView getCheckedTagView() {
+    protected TagView getCheckedTag() {
         final int checkedTagIndex = getCheckedTagIndex();
-        if (checkedTagIndex != -1) { // exists
-            return getTagViewAt(checkedTagIndex);
+        if (checkedTagIndex != -1) {
+            return getTagAt(checkedTagIndex);
         }
         return null;
     }
@@ -500,13 +423,13 @@ public class TagGroup extends ViewGroup {
     /**
      * Return the checked tag index.
      *
-     * @return the checked tag index, or -1 if there is no checked tag exists
+     * @return the checked tag index, or -1 if not exists.
      */
     protected int getCheckedTagIndex() {
         final int count = getChildCount();
         for (int i = 0; i < count; i++) {
-            final TagView tagView = getTagViewAt(i);
-            if (tagView.isChecked) {
+            final TagView tag = getTagAt(i);
+            if (tag.isChecked) {
                 return i;
             }
         }
@@ -522,7 +445,6 @@ public class TagGroup extends ViewGroup {
         mOnTagChangeListener = l;
     }
 
-
     /**
      * @see #appendInputTag(String)
      */
@@ -531,60 +453,30 @@ public class TagGroup extends ViewGroup {
     }
 
     /**
-     * Append a INPUT state tag to this group. It will check the group state first.
+     * Append a INPUT tag to this group. It will throw an exception if there has a previous INPUT tag.
      *
-     * @param tag the tag text
+     * @param tag the tag text.
      */
     protected void appendInputTag(String tag) {
-        TagView lastTag = getInputTagView();
-        if (lastTag != null) {
-            throw new IllegalStateException("Already has a INPUT state tag in group. " +
-                    "You must call endInput() before you append new one.");
+        final TagView previousInputTag = getInputTag();
+        if (previousInputTag != null) {
+            throw new IllegalStateException("Already has a INPUT tag in group.");
         }
 
-        TagView tagView = new TagView(getContext(), TagView.STATE_INPUT, tag);
-        tagView.setOnClickListener(new OnTagClickListener());
-        addView(tagView);
+        final TagView newInputTag = new TagView(getContext(), TagView.STATE_INPUT, tag);
+        newInputTag.setOnClickListener(mOnTagClickListener);
+        addView(newInputTag);
     }
 
     /**
-     * @see #setTags(String...)
-     */
-    public void setTags(List<String> tagList) {
-        setTags(tagList.toArray(new String[]{}));
-    }
-
-    /**
-     * Set the NORMAL state tag to this group. It will remove all tags first.
+     * Append tag to this group.
      *
-     * @param tags the tag list to set
-     */
-    public void setTags(String... tags) {
-        removeAllViews();
-        for (final String tag : tags) {
-            appendTag(tag);
-        }
-
-        if (isAppendMode) {
-            appendInputTag();
-        }
-    }
-
-    /**
-     * Append NORMAL state tag to this group.
-     *
-     * @param tag the tag to append
+     * @param tag the tag to append.
      */
     protected void appendTag(CharSequence tag) {
-        if (isAppendMode) {
-            final int appendIndex = getChildCount();
-            final TagView tagView = new TagView(getContext(), TagView.STATE_NORMAL, tag);
-            tagView.setOnClickListener(new OnTagClickListener());
-            addView(tagView, appendIndex);
-        } else {
-            final TagView tagView = new TagView(getContext(), TagView.STATE_NORMAL, tag);
-            addView(tagView);
-        }
+        final TagView newTag = new TagView(getContext(), TagView.STATE_NORMAL, tag);
+        newTag.setOnClickListener(mOnTagClickListener);
+        addView(newTag);
     }
 
     public float dp2px(float dp) {
@@ -632,16 +524,22 @@ public class TagGroup extends ViewGroup {
         public LayoutParams(int width, int height) {
             super(width, height);
         }
-
-        public LayoutParams(ViewGroup.LayoutParams source) {
-            super(source);
-        }
     }
 
     /**
      * For {@link TagGroup} save and restore state.
      */
     static class SavedState extends BaseSavedState {
+        public static final Parcelable.Creator<SavedState> CREATOR =
+                new Parcelable.Creator<SavedState>() {
+                    public SavedState createFromParcel(Parcel in) {
+                        return new SavedState(in);
+                    }
+
+                    public SavedState[] newArray(int size) {
+                        return new SavedState[size];
+                    }
+                };
         int tagCount;
         String[] tags;
         int checkedPosition;
@@ -669,17 +567,6 @@ public class TagGroup extends ViewGroup {
             dest.writeInt(checkedPosition);
             dest.writeString(input);
         }
-
-        public static final Parcelable.Creator<SavedState> CREATOR =
-                new Parcelable.Creator<SavedState>() {
-                    public SavedState createFromParcel(Parcel in) {
-                        return new SavedState(in);
-                    }
-
-                    public SavedState[] newArray(int size) {
-                        return new SavedState[size];
-                    }
-                };
     }
 
     /**
@@ -688,32 +575,39 @@ public class TagGroup extends ViewGroup {
     class OnTagClickListener implements OnClickListener {
         @Override
         public void onClick(View v) {
-            final TagView clickedTagView = (TagView) v;
-            if (clickedTagView.mState == TagView.STATE_INPUT) {
-                // If the clicked tag is in INPUT state,
-                // uncheck the previous checked tag if exists.
-                final TagView checkedTagView = getCheckedTagView();
-                if (checkedTagView != null) {
-                    checkedTagView.setChecked(false);
-                }
-            } else {
-                // If the clicked tag is checked, remove the tag
-                // and dispatch the tag group changed event.
-                if (clickedTagView.isChecked) {
-                    removeView(clickedTagView);
-                    if (mOnTagChangeListener != null) {
-                        mOnTagChangeListener.onDelete(TagGroup.this, clickedTagView.getText().toString());
+            final TagView tag = (TagView) v;
+            if (isAppendMode) {
+                if (tag.mState == TagView.STATE_INPUT) {
+                    // If the clicked tag is in INPUT state, uncheck the previous checked tag if exists.
+                    final TagView checkedTag = getCheckedTag();
+                    if (checkedTag != null) {
+                        checkedTag.setChecked(false);
                     }
                 } else {
-                    // If the clicked tag is unchecked, uncheck the previous checked
-                    // tag if exists, then set the clicked tag checked.
-                    final TagView checkedTagView = getCheckedTagView();
-                    if (checkedTagView != null) {
-                        checkedTagView.setChecked(false);
+                    // If the clicked tag is currently checked, delete the tag.
+                    if (tag.isChecked) {
+                        deleteTag(tag);
+                    } else {
+                        // If the clicked tag is unchecked, uncheck the previous checked tag if exists,
+                        // then check the clicked tag.
+                        final TagView checkedTag = getCheckedTag();
+                        if (checkedTag != null) {
+                            checkedTag.setChecked(false);
+                        }
+                        tag.setChecked(true);
                     }
-                    clickedTagView.setChecked(true);
                 }
+            } else {
+                // TODO Dispatch tag click event.
+                Log.i("TagGroup", "Tag " + tag.getText() + " clicked.");
             }
+        }
+    }
+
+    protected void deleteTag(TagView tagView) {
+        removeView(tagView);
+        if (mOnTagChangeListener != null) {
+            mOnTagChangeListener.onDelete(TagGroup.this, tagView.getText().toString());
         }
     }
 
@@ -724,116 +618,73 @@ public class TagGroup extends ViewGroup {
         public static final int STATE_NORMAL = 1;
         public static final int STATE_INPUT = 2;
 
-        /**
-         * The current state.
-         */
+        /** The offset to the text. */
+        private static final int CHECKED_MARKER_OFFSET = 3;
+        /** The stroke width of the checked marker */
+        private static final int CHECKED_MARKER_STROKE_WIDTH = 4;
+
+        /** The current state. */
         private int mState;
 
-        /**
-         * Indicates the tag if checked.
-         */
+        /** Indicates the tag if checked. */
         private boolean isChecked = false;
 
-        /**
-         * Indicates the tag if pressed.
-         */
+        /** Indicates the tag if pressed. */
         private boolean isPressed = false;
 
-        /**
-         * The paint of tag outline border and text.
-         */
-        private Paint mPaint;
+        private Paint mBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        private Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        private Paint mCheckedMarkerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        /**
-         * The paint of the checked mark.
-         */
-        private Paint mMarkPaint;
+        {
+            mBorderPaint.setStyle(Paint.Style.STROKE);
+            mBorderPaint.setStrokeWidth(borderStrokeWidth);
+            mBackgroundPaint.setStyle(Paint.Style.FILL);
+            mCheckedMarkerPaint.setStyle(Paint.Style.FILL);
+            mCheckedMarkerPaint.setStrokeWidth(CHECKED_MARKER_STROKE_WIDTH);
+            mCheckedMarkerPaint.setColor(checkedMarkerColor);
+        }
 
-        /**
-         * Use this paint to draw the tag background.
-         */
-        private Paint mBackgroundPaint;
+        /** The rect for the tag's left corner drawing. */
+        private RectF mLeftCornerRectF = new RectF();
 
-        /**
-         * The rect for the tag's left corner drawing.
-         */
-        private RectF mLeftCornerRectF;
+        /** The rect for the tag's right corner drawing. */
+        private RectF mRightCornerRectF = new RectF();
 
-        /**
-         * The rect for the tag's right corner drawing.
-         */
-        private RectF mRightCornerRectF;
+        /** The rect for the tag's horizontal blank fill area. */
+        private RectF mHorizontalBlankFillRectF = new RectF();
 
-        /**
-         * The rect for the tag's horizontal blank fill area.
-         */
-        private RectF mHorizontalBlankFillRectF;
+        /** The rect for the tag's vertical blank fill area. */
+        private RectF mVerticalBlankFillRectF = new RectF();
 
-        /**
-         * The rect for the tag's vertical blank fill area.
-         */
-        private RectF mVerticalBlankFillRectF;
+        /** The rect for the checked mark draw bound. */
+        private RectF mCheckedMarkerBound = new RectF();
 
-        /**
-         * The rect for the checked mark draw bound.
-         */
-        private RectF mCheckedMarkDrawBound;
-
-        /**
-         * Used to detect the touch event.
-         */
+        /** Used to detect the touch event. */
         private Rect mOutRect = new Rect();
 
-        /**
-         * The offset to the text.
-         */
-        private int mCheckedMarkOffset;
+        /** The path for draw the tag's outline border. */
+        private Path mBorderPath = new Path();
 
-        /**
-         * The path for draw the tag's outline border.
-         */
-        private Path mBorderPath;
-
-        /**
-         * The path effect provide draw the dash border.
-         */
-        private PathEffect mPathEffect;
+        /** The path effect provide draw the dash border. */
+        private PathEffect mPathEffect = new DashPathEffect(new float[]{10, 5}, 0);
 
         public TagView(Context context, int state, CharSequence text) {
             super(context);
-            mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            mMarkPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            mMarkPaint.setColor(Color.WHITE);
-            mMarkPaint.setStrokeWidth(4);
-            mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            mBackgroundPaint.setColor(mBackgroundColor);
-
-            mLeftCornerRectF = new RectF();
-            mRightCornerRectF = new RectF();
-
-            mHorizontalBlankFillRectF = new RectF();
-            mVerticalBlankFillRectF = new RectF();
-
-            mCheckedMarkDrawBound = new RectF();
-            mCheckedMarkOffset = 3;
-
-            mBorderPath = new Path();
-            mPathEffect = new DashPathEffect(new float[]{10, 5}, 0);
-
-            setPadding(mHorizontalPadding, mVerticalPadding, mHorizontalPadding, mVerticalPadding);
+            setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding);
             setLayoutParams(new TagGroup.LayoutParams(TagGroup.LayoutParams.WRAP_CONTENT,
                     TagGroup.LayoutParams.WRAP_CONTENT));
 
             setGravity(Gravity.CENTER);
             setText(text);
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
 
             mState = state;
 
             setClickable(isAppendMode);
             setFocusable(state == STATE_INPUT);
             setFocusableInTouchMode(state == STATE_INPUT);
-            setHint(state == STATE_INPUT ? mInputTagHint : null);
+            setHint(state == STATE_INPUT ? inputHint : null);
             setMovementMethod(state == STATE_INPUT ? ArrowKeyMovementMethod.getInstance() : null);
 
             if (state == STATE_INPUT) {
@@ -876,7 +727,7 @@ public class TagGroup extends ViewGroup {
                                             mOnTagChangeListener.onDelete(TagGroup.this, lastNormalTagView.getText().toString());
                                         }
                                     } else {
-                                        final TagView checkedTagView = getCheckedTagView();
+                                        final TagView checkedTagView = getCheckedTag();
                                         if (checkedTagView != null) {
                                             checkedTagView.setChecked(false);
                                         }
@@ -895,7 +746,7 @@ public class TagGroup extends ViewGroup {
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                         // When the INPUT state tag changed, uncheck the checked tag if exists.
-                        final TagView checkedTagView = getCheckedTagView();
+                        final TagView checkedTagView = getCheckedTag();
                         if (checkedTagView != null) {
                             checkedTagView.setChecked(false);
                         }
@@ -922,11 +773,11 @@ public class TagGroup extends ViewGroup {
         public void setChecked(boolean checked) {
             isChecked = checked;
             // Make the checked mark drawing region.
-            setPadding(mHorizontalPadding,
-                    mVerticalPadding,
-                    isChecked ? (int) (mHorizontalPadding + getHeight() / 2.5f + mCheckedMarkOffset)
-                            : mHorizontalPadding,
-                    mVerticalPadding);
+            setPadding(horizontalPadding,
+                    verticalPadding,
+                    isChecked ? (int) (horizontalPadding + getHeight() / 2.5f + CHECKED_MARKER_OFFSET)
+                            : horizontalPadding,
+                    verticalPadding);
             invalidatePaint();
         }
 
@@ -962,32 +813,33 @@ public class TagGroup extends ViewGroup {
         }
 
         private void invalidatePaint() {
-            if (mState == STATE_NORMAL) {
-                if (isChecked) {
-                    mPaint.setStyle(Paint.Style.FILL);
-                    mPaint.setColor(mBrightColor);
-                    mPaint.setPathEffect(null);
-                    setTextColor(Color.WHITE);
+            if (isAppendMode) {
+                if (mState == STATE_INPUT) {
+                    mBorderPaint.setColor(dashBorderColor);
+                    mBorderPaint.setPathEffect(mPathEffect);
+                    mBackgroundPaint.setColor(backgroundColor);
+                    setHintTextColor(inputHintColor);
+                    setTextColor(inputTextColor);
                 } else {
-                    mPaint.setStyle(Paint.Style.STROKE);
-                    mPaint.setStrokeWidth(mBorderStrokeWidth);
-                    mPaint.setColor(mBrightColor);
-                    mPaint.setPathEffect(null);
-                    setTextColor(mBrightColor);
+                    mBorderPaint.setPathEffect(null);
+                    if (isChecked) {
+                        mBorderPaint.setColor(checkedBorderColor);
+                        mBackgroundPaint.setColor(checkedBackgroundColor);
+                        setTextColor(checkedTextColor);
+                    } else {
+                        mBorderPaint.setColor(borderColor);
+                        mBackgroundPaint.setColor(backgroundColor);
+                        setTextColor(textColor);
+                    }
                 }
-
-            } else if (mState == STATE_INPUT) {
-                mPaint.setStyle(Paint.Style.STROKE);
-                mPaint.setStrokeWidth(mBorderStrokeWidth);
-                mPaint.setColor(mDimColor);
-                mPaint.setPathEffect(mPathEffect);
-                setTextColor(mDimColor);
+            } else {
+                mBorderPaint.setColor(borderColor);
+                mBackgroundPaint.setColor(backgroundColor);
+                setTextColor(textColor);
             }
 
             if (isPressed) {
-                mBackgroundPaint.setColor(mPressedBackgroundColor);
-            } else {
-                mBackgroundPaint.setColor(mBackgroundColor);
+                mBackgroundPaint.setColor(pressedBackgroundColor);
             }
         }
 
@@ -1001,22 +853,22 @@ public class TagGroup extends ViewGroup {
             canvas.drawRect(mVerticalBlankFillRectF, mBackgroundPaint);
 
             if (isChecked) {
-                canvas.drawArc(mLeftCornerRectF, -180, 90, true, mPaint);
-                canvas.drawArc(mLeftCornerRectF, -270, 90, true, mPaint);
-                canvas.drawArc(mRightCornerRectF, -90, 90, true, mPaint);
-                canvas.drawArc(mRightCornerRectF, 0, 90, true, mPaint);
-                canvas.drawRect(mHorizontalBlankFillRectF, mPaint);
-                canvas.drawRect(mVerticalBlankFillRectF, mPaint);
+                // canvas.drawArc(mLeftCornerRectF, -180, 90, true, mBorderPaint);
+                // canvas.drawArc(mLeftCornerRectF, -270, 90, true, mBorderPaint);
+                // canvas.drawArc(mRightCornerRectF, -90, 90, true, mBorderPaint);
+                // canvas.drawArc(mRightCornerRectF, 0, 90, true, mBorderPaint);
+                // canvas.drawRect(mHorizontalBlankFillRectF, mPaint);
+                // canvas.drawRect(mVerticalBlankFillRectF, mPaint);
 
                 canvas.save();
-                canvas.rotate(45, mCheckedMarkDrawBound.centerX(), mCheckedMarkDrawBound.centerY());
-                canvas.drawLine(mCheckedMarkDrawBound.left, mCheckedMarkDrawBound.centerY(),
-                        mCheckedMarkDrawBound.right, mCheckedMarkDrawBound.centerY(), mMarkPaint);
-                canvas.drawLine(mCheckedMarkDrawBound.centerX(), mCheckedMarkDrawBound.top,
-                        mCheckedMarkDrawBound.centerX(), mCheckedMarkDrawBound.bottom, mMarkPaint);
+                canvas.rotate(45, mCheckedMarkerBound.centerX(), mCheckedMarkerBound.centerY());
+                canvas.drawLine(mCheckedMarkerBound.left, mCheckedMarkerBound.centerY(),
+                        mCheckedMarkerBound.right, mCheckedMarkerBound.centerY(), mCheckedMarkerPaint);
+                canvas.drawLine(mCheckedMarkerBound.centerX(), mCheckedMarkerBound.top,
+                        mCheckedMarkerBound.centerX(), mCheckedMarkerBound.bottom, mCheckedMarkerPaint);
                 canvas.restore();
             } else {
-                canvas.drawPath(mBorderPath, mPaint);
+                canvas.drawPath(mBorderPath, mBorderPaint);
             }
             super.onDraw(canvas);
         }
@@ -1024,11 +876,10 @@ public class TagGroup extends ViewGroup {
         @Override
         protected void onSizeChanged(int w, int h, int oldw, int oldh) {
             super.onSizeChanged(w, h, oldw, oldh);
-            // Cast to int
-            int left = (int) mBorderStrokeWidth;
-            int top = (int) mBorderStrokeWidth;
-            int right = (int) (left + w - mBorderStrokeWidth * 2);
-            int bottom = (int) (top + h - mBorderStrokeWidth * 2);
+            int left = (int) borderStrokeWidth;
+            int top = (int) borderStrokeWidth;
+            int right = (int) (left + w - borderStrokeWidth * 2);
+            int bottom = (int) (top + h - borderStrokeWidth * 2);
 
             int d = bottom - top;
 
@@ -1059,25 +910,24 @@ public class TagGroup extends ViewGroup {
 
             int m = (int) (h / 2.5f);
             h = bottom - top;
-            mCheckedMarkDrawBound.set(right - m - mHorizontalPadding + mCheckedMarkOffset,
+            mCheckedMarkerBound.set(right - m - horizontalPadding + CHECKED_MARKER_OFFSET,
                     top + h / 2 - m / 2,
-                    right - mHorizontalPadding + mCheckedMarkOffset,
+                    right - horizontalPadding + CHECKED_MARKER_OFFSET,
                     bottom - h / 2 + m / 2);
 
             // Ensure the checked mark drawing region is correct across screen orientation changes.
             if (isChecked) {
-                setPadding(mHorizontalPadding,
-                        mVerticalPadding,
-                        isChecked ? (int) (mHorizontalPadding + h / 2.5f + mCheckedMarkOffset)
-                                : mHorizontalPadding,
-                        mVerticalPadding);
+                setPadding(horizontalPadding,
+                        verticalPadding,
+                        (int) (horizontalPadding + h / 2.5f + CHECKED_MARKER_OFFSET),
+                        verticalPadding);
             }
         }
 
         @Override
         public boolean onTouchEvent(MotionEvent event) {
             if (mState == STATE_INPUT) {
-                // The INPUT state tag doesn't change background color on the touch event.
+                // The INPUT tag doesn't change background color on the touch event.
                 return super.onTouchEvent(event);
             }
 
@@ -1104,7 +954,7 @@ public class TagGroup extends ViewGroup {
                     break;
                 }
             }
-            return true;
+            return super.onTouchEvent(event);
         }
 
         @Override

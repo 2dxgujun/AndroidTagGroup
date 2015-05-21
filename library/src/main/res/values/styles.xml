@@ -5,10 +5,17 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="isAppendMode">false</item>
-        <item name="inputTagHint">@string/add_tag</item>
-        <item name="brightColor">#49C120</item>
-        <item name="dimColor">#AAAAAA</item>
+        <item name="inputHint">@string/add_tag</item>
+        <item name="borderColor">#49C120</item>
+        <item name="textColor">#49C120</item>
         <item name="backgroundColor">#FFFFFF</item>
+        <item name="dashBorderColor">#AAAAAA</item>
+        <item name="inputHintColor">#80000000</item>
+        <item name="inputTextColor">#DE000000</item>
+        <item name="checkedBorderColor">#49C120</item>
+        <item name="checkedTextColor">#FFFFFF</item>
+        <item name="checkedMarkerColor">#FFFFFF</item>
+        <item name="checkedBackgroundColor">#49C120</item>
         <item name="pressedBackgroundColor">#EDEDED</item>
         <item name="borderStrokeWidth">0.5dp</item>
         <item name="textSize">13sp</item>
@@ -36,50 +43,16 @@
     </style>
 
     <style name="TagGroup.Beauty_Red" parent="TagGroup">
-        <item name="brightColor">#FF3D7F</item>
+        <item name="borderColor">#FF3D7F</item>
+        <item name="textColor">#FF3D7F</item>
+        <item name="checkedBorderColor">#FF3D7F</item>
     </style>
 
-    <style name="TagGroup.Small.Beauty_Red" parent="TagGroup.Small">
-        <item name="brightColor">#FF3D7F</item>
-    </style>
-
-    <style name="TagGroup.Large.Beauty_Red" parent="TagGroup.Large">
-        <item name="brightColor">#FF3D7F</item>
-    </style>
-
-    <style name="TagGroup.Holo_Dark" parent="TagGroup">
-        <item name="brightColor">#303030</item>
-    </style>
-
-    <style name="TagGroup.Small.Holo_Dark" parent="TagGroup.Small">
-        <item name="brightColor">#303030</item>
-    </style>
-
-    <style name="TagGroup.Large.Holo_Dark" parent="TagGroup.Large">
-        <item name="brightColor">#303030</item>
-    </style>
-
-    <style name="TagGroup.Light_Blue" parent="TagGroup">
-        <item name="brightColor">#33B5E5</item>
-    </style>
-
-    <style name="TagGroup.Small.Light_Blue" parent="TagGroup.Small">
-        <item name="brightColor">#33B5E5</item>
-    </style>
-
-    <style name="TagGroup.Large.Light_Blue" parent="TagGroup.Large">
-        <item name="brightColor">#33B5E5</item>
-    </style>
-
-    <style name="TagGroup.Indigo" parent="TagGroup">
-        <item name="brightColor">#3F51B5</item>
-    </style>
-
-    <style name="TagGroup.Small.Indigo" parent="TagGroup.Small">
-        <item name="brightColor">#3F51B5</item>
-    </style>
-
-    <style name="TagGroup.Large.Indigo" parent="TagGroup.Large">
-        <item name="brightColor">#3F51B5</item>
+    <style name="TagGroup.Beauty_Red.Inverse" parent="TagGroup">
+        <item name="borderColor">#FF3D7F</item>
+        <item name="textColor">#FFFFFF</item>
+        <item name="backgroundColor">#FF3D7F</item>
+        <item name="checkedBackgroundColor">#FF3D7F</item>
+        <item name="pressedBackgroundColor">#FF2165</item>
     </style>
 </resources>
