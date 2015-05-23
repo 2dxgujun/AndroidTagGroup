@@ -17,7 +17,7 @@ Also you can contribute new idea to me.
 ![screenshot2](http://ww4.sinaimg.cn/large/bce2dea9jw1esbsbngv8fj20u005w75v.jpg)
 ![screenshot3](http://ww4.sinaimg.cn/large/bce2dea9jw1esbsbmoagij20u005sabl.jpg)
 
-[Download Demo](https://github.com/2dxgujun/AndroidTagGroup/releases/download/v1.3/AndroidTagGroup-Demo-v1.3.apk)
+[Download Demo](https://github.com/2dxgujun/AndroidTagGroup/releases/download/v1.4/AndroidTagGroup-Demo-v1.4.apk)
 
 # Usage
 
@@ -26,7 +26,7 @@ Also you can contribute new idea to me.
 #### Gradle
 ```groovy
 dependencies {
-   compile 'me.gujun.android.taggroup:library:1.3@aar'
+   compile 'me.gujun.android.taggroup:library:1.4@aar'
 }
 ```
 
@@ -35,7 +35,7 @@ dependencies {
 <dependency>
     <groupId>me.gujun.android.taggroup</groupId>
     <artifactId>library</artifactId>
-    <version>1.3</version>
+    <version>1.4</version>
     <type>apklib</type>
 </dependency>
 ```
@@ -59,6 +59,8 @@ Use `setTags(...)` to set the initial tags in the group.
 
 To "submit" a new tag as user press "Enter" or tap the blank area of the tag group, also you can "submit" a new tag via `submitTag()`.
 
+**Note**: Google keyboard (a few soft keyboard not honour the key event) currently not supported "Enter" key to "submit" a new tag.
+
 #### How to delete a tag?
 
 To delete a tag as user press "Backspace" key or double-tap the tag which you want to delete.
@@ -67,8 +69,6 @@ To delete a tag as user press "Backspace" key or double-tap the tag which you wa
 
 Implement a callback interface: `TagGroup.OnTagClickListener`, and set the listener via `setOnTagClickListener()`.
 
-
-**Note**: Google keyboard (a few soft keyboard not honour the key event) currently not supported "Enter" key to "submit" a new tag.
 
 # Build
 
@@ -84,27 +84,27 @@ There are several attributes you can set:
 
 ![Dimension illustrate](http://ww2.sinaimg.cn/large/bce2dea9gw1epov0i8x6kj20rk054q4g.jpg)
 
-|       attr        	|     default      |                         mean                          	 |
-|:--------------------- |:---------------- |:------------------------------------------------------- |
-| isAppendMode      	| false            | Determine the TagGroup mode, APPEND or single DISPLAY.  |
-| inputHint   	        | Add Tag/添加标签  | The hint of the INPUT tag.                              |
-| borderColor	        | #49C120          | The tag outline border color.                           |
-| textColor          	| #49C120          | The tag text color.                           	         |
-| backgroundColor       | #FFFFFF          | The tag background color.                               |
-| dashBorderColor       | #AAAAAA          | The tag dash outline border color.                      |
-| inputHintColor        | #80000000        | The input tag hint text color.                          |
-| inputTextColor        | #DE000000        | The input tag type text color..                         |
-| checkedBorderColor    | #49C120          | The checked tag outline border color.                   |
-| checkedTextColor      | #FFFFFF          | The checked text color.                                 |
-| checkedMarkerColor    | #FFFFFF          | The checked marker color.                               |
-| checkedBackgroundColor| #49C120          | The checked tag background color.                       |
-| pressedBackgroundColor| #EDEDED          | The tag background color when the tag is being pressed. |
-| borderStrokeWidth     | 0.5dp            | The tag outline border stroke width.        	         |
-| textSize          	| 13sp             | The tag text size.                                  	 |
-| horizontalSpacing     | 8dp              | The horizontal tag spacing.(Mark1)                      |
-| verticalSpacing  	    | 4dp              | The vertical tag spacing.(Mark2)                      	 |
-| horizontalPadding	    | 12dp             | The horizontal tag padding.(Mark3)                      |
-| verticalPadding  	    | 3dp              | The vertical tag padding.(Mark4)                        |
+|           attr        	|     default      |                         mean                          	 |
+|:------------------------- |:---------------- |:------------------------------------------------------- |
+| atg_isAppendMode      	| false            | Determine the TagGroup mode, APPEND or single DISPLAY.  |
+| atg_inputHint   	        | Add Tag/添加标签  | The hint of the INPUT tag.                              |
+| atg_borderColor	        | #49C120          | The tag outline border color.                           |
+| atg_textColor          	| #49C120          | The tag text color.                           	         |
+| atg_backgroundColor       | #FFFFFF          | The tag background color.                               |
+| atg_dashBorderColor       | #AAAAAA          | The tag dash outline border color.                      |
+| atg_inputHintColor        | #80000000        | The input tag hint text color.                          |
+| atg_inputTextColor        | #DE000000        | The input tag type text color..                         |
+| atg_checkedBorderColor    | #49C120          | The checked tag outline border color.                   |
+| atg_checkedTextColor      | #FFFFFF          | The checked text color.                                 |
+| atg_checkedMarkerColor    | #FFFFFF          | The checked marker color.                               |
+| atg_checkedBackgroundColor| #49C120          | The checked tag background color.                       |
+| atg_pressedBackgroundColor| #EDEDED          | The tag background color when the tag is being pressed. |
+| atg_borderStrokeWidth     | 0.5dp            | The tag outline border stroke width.        	         |
+| atg_textSize          	| 13sp             | The tag text size.                                  	 |
+| atg_horizontalSpacing     | 8dp              | The horizontal tag spacing.(Mark1)                      |
+| atg_verticalSpacing  	    | 4dp              | The vertical tag spacing.(Mark2)                      	 |
+| atg_horizontalPadding	    | 12dp             | The horizontal tag padding.(Mark3)                      |
+| atg_verticalPadding  	    | 3dp              | The vertical tag padding.(Mark4)                        |
 
 # Developed By
 
