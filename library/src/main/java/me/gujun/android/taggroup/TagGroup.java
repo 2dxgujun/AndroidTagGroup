@@ -154,25 +154,25 @@ public class TagGroup extends ViewGroup {
         // Load styled attributes.
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TagGroup, defStyleAttr, R.style.TagGroup);
         try {
-            isAppendMode = a.getBoolean(R.styleable.TagGroup_isAppendMode, false);
-            inputHint = a.getText(R.styleable.TagGroup_inputHint);
-            borderColor = a.getColor(R.styleable.TagGroup_borderColor, default_border_color);
-            textColor = a.getColor(R.styleable.TagGroup_textColor, default_text_color);
-            backgroundColor = a.getColor(R.styleable.TagGroup_backgroundColor, default_background_color);
-            dashBorderColor = a.getColor(R.styleable.TagGroup_dashBorderColor, default_dash_border_color);
-            inputHintColor = a.getColor(R.styleable.TagGroup_inputHintColor, default_input_hint_color);
-            inputTextColor = a.getColor(R.styleable.TagGroup_inputTextColor, default_input_text_color);
-            checkedBorderColor = a.getColor(R.styleable.TagGroup_checkedBorderColor, default_checked_border_color);
-            checkedTextColor = a.getColor(R.styleable.TagGroup_checkedTextColor, default_checked_text_color);
-            checkedMarkerColor = a.getColor(R.styleable.TagGroup_checkedMarkerColor, default_checked_marker_color);
-            checkedBackgroundColor = a.getColor(R.styleable.TagGroup_checkedBackgroundColor, default_checked_background_color);
-            pressedBackgroundColor = a.getColor(R.styleable.TagGroup_pressedBackgroundColor, default_pressed_background_color);
-            borderStrokeWidth = a.getDimension(R.styleable.TagGroup_borderStrokeWidth, default_border_stroke_width);
-            textSize = a.getDimension(R.styleable.TagGroup_textSize, default_text_size);
-            horizontalSpacing = (int) a.getDimension(R.styleable.TagGroup_horizontalSpacing, default_horizontal_spacing);
-            verticalSpacing = (int) a.getDimension(R.styleable.TagGroup_verticalSpacing, default_vertical_spacing);
-            horizontalPadding = (int) a.getDimension(R.styleable.TagGroup_horizontalPadding, default_horizontal_padding);
-            verticalPadding = (int) a.getDimension(R.styleable.TagGroup_verticalPadding, default_vertical_padding);
+            isAppendMode = a.getBoolean(R.styleable.TagGroup_atg_isAppendMode, false);
+            inputHint = a.getText(R.styleable.TagGroup_atg_inputHint);
+            borderColor = a.getColor(R.styleable.TagGroup_atg_borderColor, default_border_color);
+            textColor = a.getColor(R.styleable.TagGroup_atg_textColor, default_text_color);
+            backgroundColor = a.getColor(R.styleable.TagGroup_atg_backgroundColor, default_background_color);
+            dashBorderColor = a.getColor(R.styleable.TagGroup_atg_dashBorderColor, default_dash_border_color);
+            inputHintColor = a.getColor(R.styleable.TagGroup_atg_inputHintColor, default_input_hint_color);
+            inputTextColor = a.getColor(R.styleable.TagGroup_atg_inputTextColor, default_input_text_color);
+            checkedBorderColor = a.getColor(R.styleable.TagGroup_atg_checkedBorderColor, default_checked_border_color);
+            checkedTextColor = a.getColor(R.styleable.TagGroup_atg_checkedTextColor, default_checked_text_color);
+            checkedMarkerColor = a.getColor(R.styleable.TagGroup_atg_checkedMarkerColor, default_checked_marker_color);
+            checkedBackgroundColor = a.getColor(R.styleable.TagGroup_atg_checkedBackgroundColor, default_checked_background_color);
+            pressedBackgroundColor = a.getColor(R.styleable.TagGroup_atg_pressedBackgroundColor, default_pressed_background_color);
+            borderStrokeWidth = a.getDimension(R.styleable.TagGroup_atg_borderStrokeWidth, default_border_stroke_width);
+            textSize = a.getDimension(R.styleable.TagGroup_atg_textSize, default_text_size);
+            horizontalSpacing = (int) a.getDimension(R.styleable.TagGroup_atg_horizontalSpacing, default_horizontal_spacing);
+            verticalSpacing = (int) a.getDimension(R.styleable.TagGroup_atg_verticalSpacing, default_vertical_spacing);
+            horizontalPadding = (int) a.getDimension(R.styleable.TagGroup_atg_horizontalPadding, default_horizontal_padding);
+            verticalPadding = (int) a.getDimension(R.styleable.TagGroup_atg_verticalPadding, default_vertical_padding);
         } finally {
             a.recycle();
         }
