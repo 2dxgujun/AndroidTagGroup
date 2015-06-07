@@ -134,6 +134,9 @@ public class TagGroup extends ViewGroup {
     /** Listener used to handle tag click event. */
     private InternalTagClickListener mInternalTagClickListener = new InternalTagClickListener();
 
+    /** If RTL is forced, default is false */
+    private boolean isRTL;
+
     public TagGroup(Context context) {
         this(context, null);
     }
@@ -173,6 +176,7 @@ public class TagGroup extends ViewGroup {
             verticalSpacing = (int) a.getDimension(R.styleable.TagGroup_atg_verticalSpacing, default_vertical_spacing);
             horizontalPadding = (int) a.getDimension(R.styleable.TagGroup_atg_horizontalPadding, default_horizontal_padding);
             verticalPadding = (int) a.getDimension(R.styleable.TagGroup_atg_verticalPadding, default_vertical_padding);
+            isRTL = false;
         } finally {
             a.recycle();
         }
@@ -267,6 +271,7 @@ public class TagGroup extends ViewGroup {
         final int parentBottom = b - t - getPaddingBottom();
 
         int childLeft = parentLeft;
+        int childRight = parentRight;
         int childTop = parentTop;
 
         int rowMaxHeight = 0;
@@ -278,16 +283,29 @@ public class TagGroup extends ViewGroup {
             final int height = child.getMeasuredHeight();
 
             if (child.getVisibility() != GONE) {
-                if (childLeft + width > parentRight) { // Next line
-                    childLeft = parentLeft;
-                    childTop += rowMaxHeight + verticalSpacing;
-                    rowMaxHeight = height;
-                } else {
-                    rowMaxHeight = Math.max(rowMaxHeight, height);
+                if(isRTL){
+                    if (childRight - width < parentLeft) { // Next line
+                        childRight = parentRight;
+                        childTop += rowMaxHeight + verticalSpacing;
+                        rowMaxHeight = height;
+                    } else {
+                        rowMaxHeight = Math.max(rowMaxHeight, height);
+                    }
+                    child.layout(childRight - width, childTop, childRight, childTop + height);
+    
+                    childRight -= width + horizontalSpacing;   
+                }else{
+                    if (childLeft + width > parentRight) { // Next line
+                        childLeft = parentLeft;
+                        childTop += rowMaxHeight + verticalSpacing;
+                        rowMaxHeight = height;
+                    } else {
+                        rowMaxHeight = Math.max(rowMaxHeight, height);
+                    }
+                    child.layout(childLeft, childTop, childLeft + width, childTop + height);
+    
+                    childLeft += width + horizontalSpacing;
                 }
-                child.layout(childLeft, childTop, childLeft + width, childTop + height);
-
-                childLeft += width + horizontalSpacing;
             }
         }
     }
