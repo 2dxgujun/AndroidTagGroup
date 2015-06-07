@@ -209,6 +209,13 @@ public class TagGroup extends ViewGroup {
             appendInputTag();
         }
     }
+    
+    /**
+     * Call this to force RTL.
+     */
+    public void setRTL(boolean _rtl){
+        this.isRTL = _rtl;
+    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
