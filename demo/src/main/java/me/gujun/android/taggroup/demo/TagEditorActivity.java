@@ -28,13 +28,13 @@ public class TagEditorActivity extends ActionBarActivity {
         mTagGroup.setOnTagTextEntryListener(new TagGroup.OnTagTextEntryListener() {
             @Override
             public void onTextEntry(AutoCompleteTextView tagView, String text) {
-                if (text.equals("b")) {
+                if (text.equals("A")) {
                     tagView.setAdapter(new ArrayAdapter<>(TagEditorActivity.this, android.R.layout.simple_list_item_1, new String[]{"Au", "Bu", "Cy"}));
-                } else if (text.equals("bl")) {
+                } else if (text.equals("Au")) {
                     tagView.setAdapter(new ArrayAdapter<>(TagEditorActivity.this, android.R.layout.simple_list_item_1, new String[]{"Aus", "Bul", "Cyp"}));
-                } else if (text.equals("bla")) {
+                } else if (text.equals("Aus")) {
                     tagView.setAdapter(new ArrayAdapter<>(TagEditorActivity.this, android.R.layout.simple_list_item_1, new String[]{"Aust", "Bulg", "Cypr"}));
-                } else if (text.equals("blag")) {
+                } else if (text.equals("Aust")) {
                     tagView.setAdapter(new ArrayAdapter<>(TagEditorActivity.this, android.R.layout.simple_list_item_1, new String[]{"Australia", "Bulgaria", "Cyprus"}));
                 }
             }
