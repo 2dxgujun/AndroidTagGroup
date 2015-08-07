@@ -352,7 +352,7 @@ public class TagGroup extends ViewGroup {
      *
      * @return the INPUT state tag view or null if not exists
      */
-    protected String getInputTagText() {
+    public String getInputTagText() {
         final TagView inputTagView = getInputTag();
         if (inputTagView != null) {
             return inputTagView.getText().toString();
