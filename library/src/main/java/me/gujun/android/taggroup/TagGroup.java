@@ -17,7 +17,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.ArrowKeyMovementMethod;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -27,7 +26,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputConnectionWrapper;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
@@ -128,8 +126,6 @@ public class TagGroup extends ViewGroup {
     /** The vertical tag padding, default is 3.0dp. */
     private int verticalPadding;
 
-    private AutoCompleteTextView tagView;
-
     /** Listener used to dispatch tag change event. */
     private OnTagChangeListener mOnTagChangeListener;
 
@@ -139,7 +135,8 @@ public class TagGroup extends ViewGroup {
     /** Listener used to handle tag click event. */
     private InternalTagClickListener mInternalTagClickListener = new InternalTagClickListener();
 
-    public OnTagCharEntryListener onTagCharEntryListener;
+    /** Listener used to handle tag text entry event. */
+    public OnTagTextEntryListener onTagTextEntryListener;
 
     public TagGroup(Context context) {
         this(context, null);
@@ -336,7 +333,7 @@ public class TagGroup extends ViewGroup {
      *
      * @return the INPUT state tag view or null if not exists
      */
-    public TagView getInputTag() {
+    protected TagView getInputTag() {
         if (isAppendMode) {
             final int inputTagIndex = getChildCount() - 1;
             final TagView inputTag = getTagAt(inputTagIndex);
@@ -355,7 +352,7 @@ public class TagGroup extends ViewGroup {
      *
      * @return the INPUT state tag view or null if not exists
      */
-    public String getInputTagText() {
+    protected String getInputTagText() {
         final TagView inputTagView = getInputTag();
         if (inputTagView != null) {
             return inputTagView.getText().toString();
@@ -372,10 +369,6 @@ public class TagGroup extends ViewGroup {
         final int lastNormalTagIndex = isAppendMode ? getChildCount() - 2 : getChildCount() - 1;
         TagView lastNormalTagView = getTagAt(lastNormalTagIndex);
         return lastNormalTagView;
-    }
-
-    public AutoCompleteTextView getTagView() {
-        return tagView;
     }
 
     /**
@@ -469,6 +462,15 @@ public class TagGroup extends ViewGroup {
     }
 
     /**
+     * Register a callback to be invoked when a tag text is entered.
+     *
+     * @param l the callback that will be used to inform text entry event
+     */
+    public void setOnTagTextEntryListener(OnTagTextEntryListener l) {
+        this.onTagTextEntryListener = l;
+    }
+
+    /**
      * @see #appendInputTag(String)
      */
     protected void appendInputTag() {
@@ -533,10 +535,6 @@ public class TagGroup extends ViewGroup {
         }
     }
 
-    public void setOnTagCharEntryListener(OnTagCharEntryListener listener) {
-        this.onTagCharEntryListener = listener;
-    }
-
     /**
      * Interface definition for a callback to be invoked when a tag group is changed.
      */
@@ -568,8 +566,8 @@ public class TagGroup extends ViewGroup {
         void onTagClick(String tag);
     }
 
-    public interface OnTagCharEntryListener {
-        void onCharEntry(String text);
+    public interface OnTagTextEntryListener {
+        void onTextEntry(AutoCompleteTextView tagView, String text);
     }
 
     /**
@@ -769,8 +767,7 @@ public class TagGroup extends ViewGroup {
 
                     @Override
                     public void afterTextChanged(Editable s) {
-                        tagView = TagView.this;
-                        onTagCharEntryListener.onCharEntry(s.toString());
+                        onTagTextEntryListener.onTextEntry(TagView.this, s.toString());
                     }
                 });
 
