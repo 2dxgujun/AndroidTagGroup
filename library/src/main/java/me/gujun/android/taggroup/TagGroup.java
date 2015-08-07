@@ -13,6 +13,7 @@ import android.graphics.RectF;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.ArrowKeyMovementMethod;
@@ -26,6 +27,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputConnectionWrapper;
+import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -133,6 +135,9 @@ public class TagGroup extends ViewGroup {
 
     /** Listener used to handle tag click event. */
     private InternalTagClickListener mInternalTagClickListener = new InternalTagClickListener();
+
+    /** Listener used to handle tag text entry event. */
+    public OnTagTextEntryListener onTagTextEntryListener;
 
     public TagGroup(Context context) {
         this(context, null);
@@ -458,6 +463,15 @@ public class TagGroup extends ViewGroup {
     }
 
     /**
+     * Register a callback to be invoked when a tag text is entered.
+     *
+     * @param l the callback that will be used to inform text entry event
+     */
+    public void setOnTagTextEntryListener(OnTagTextEntryListener l) {
+        this.onTagTextEntryListener = l;
+    }
+
+    /**
      * @see #appendInputTag(String)
      */
     protected void appendInputTag() {
@@ -551,6 +565,10 @@ public class TagGroup extends ViewGroup {
          * @param tag The tag text of the tag that was clicked.
          */
         void onTagClick(String tag);
+    }
+
+    public interface OnTagTextEntryListener {
+        void onTextEntry(AutoCompleteTextView tagView, String text);
     }
 
     /**
@@ -648,7 +666,7 @@ public class TagGroup extends ViewGroup {
     /**
      * The tag view which has two states can be either NORMAL or INPUT.
      */
-    class TagView extends TextView {
+    class TagView extends AutoCompleteTextView {
         public static final int STATE_NORMAL = 1;
         public static final int STATE_INPUT = 2;
 
@@ -717,6 +735,8 @@ public class TagGroup extends ViewGroup {
             setGravity(Gravity.CENTER);
             setText(text);
             setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+            setRawInputType(InputType.TYPE_CLASS_TEXT);
+            setImeOptions(EditorInfo.IME_ACTION_GO);
 
             mState = state;
 
@@ -736,6 +756,21 @@ public class TagGroup extends ViewGroup {
 
             if (state == STATE_INPUT) {
                 requestFocus();
+
+                addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        if (onTagTextEntryListener != null)  onTagTextEntryListener.onTextEntry(TagView.this, s.toString());
+                    }
+                });
 
                 // Handle the ENTER key down.
                 setOnEditorActionListener(new OnEditorActionListener() {
