@@ -60,8 +60,6 @@ Use `setTags(...)` to set the initial tags in the group.
 
 To "submit" a new tag as user press "Enter" or tap the blank area of the tag group, also you can "submit" a new tag via `submitTag()`.
 
-**Note**: Google keyboard (a few soft keyboard not honour the key event) currently not supported "Enter" key to "submit" a new tag.
-
 #### How to delete a tag?
 
 To delete a tag as user press "Backspace" key or double-tap the tag which you want to delete.
