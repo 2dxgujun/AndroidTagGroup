@@ -1,15 +1,20 @@
 apply plugin: 'com.android.library'
 android {
-    compileSdkVersion 21
-    buildToolsVersion '21.1.1'
+    compileSdkVersion 23
+    buildToolsVersion '23.0.1'
     defaultConfig {
         minSdkVersion 8
-        targetSdkVersion 21
+        targetSdkVersion 23
     }
     lintOptions {
         abortOnError false
     }
     productFlavors {
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
     }
 }
 // Used to push in maven

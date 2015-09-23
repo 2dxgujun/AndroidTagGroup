@@ -13,6 +13,7 @@ import android.graphics.RectF;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.ArrowKeyMovementMethod;
@@ -438,13 +439,6 @@ public class TagGroup extends ViewGroup {
     }
 
     /**
-     * @see #setTags(String...)
-     */
-    public void setTags(List<String> tagList) {
-        setTags(tagList.toArray(new String[tagList.size()]));
-    }
-
-    /**
      * Set the tags. It will remove all previous tags first.
      *
      * @param tags the tag list to set.
@@ -461,6 +455,13 @@ public class TagGroup extends ViewGroup {
         if (isAppendMode) {
             appendInputTag();
         }
+    }
+
+    /**
+     * @see #setTags(String...)
+     */
+    public void setTags(List<String> tagList) {
+        setTags(tagList.toArray(new String[tagList.size()]));
     }
 
     /**
@@ -848,6 +849,9 @@ public class TagGroup extends ViewGroup {
 
             if (state == STATE_INPUT) {
                 requestFocus();
+                //Replace Enter (new line) button with Action Go
+                setRawInputType(InputType.TYPE_CLASS_TEXT);
+                setImeOptions(EditorInfo.IME_ACTION_GO);
 
                 // Handle the ENTER key down.
                 setOnEditorActionListener(new OnEditorActionListener() {
