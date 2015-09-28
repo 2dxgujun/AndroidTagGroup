@@ -27,7 +27,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputConnectionWrapper;
 import android.widget.TextView;
-
+import android.text.InputType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -717,7 +717,7 @@ public class TagGroup extends ViewGroup {
             setGravity(Gravity.CENTER);
             setText(text);
             setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-
+            setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);//prevent showing dictionary suggestion
             mState = state;
 
             setClickable(isAppendMode);
