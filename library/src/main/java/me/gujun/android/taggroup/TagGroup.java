@@ -717,7 +717,7 @@ public class TagGroup extends ViewGroup {
             setGravity(Gravity.CENTER);
             setText(text);
             setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-
+            setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);//prevent showing dictionary suggestion
             mState = state;
 
             setClickable(isAppendMode);
