@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="Coral">#E05E5E</color>
+    <color name="BurntOrange">#FF792C</color>
+
+    <color name="Charcoal">#595959</color>
+    <color name="DarkGrey">#878787</color>
+    <color name="MediumGrey">#C6C6C6</color>
+    <color name="LightGrey">#E6E7E8</color>
+
+    <color name="Blue">#05A8BD</color>
+    <color name="LightBurntOrange">#FFDDDA</color>
+    <color name="BlackAlpha">#55000000</color>
+    <color name="Black20">#20000000</color>
+    <color name="LightShade">#F4F4F4</color>
+
+    <color name="LightBlue">#7AF0FD</color>
+    <color name="LightYellow">#D6E49A</color>
+    <color name="LightPurple">#CFD9FF</color>
+
+    <color name="SemiTransparent">#50000000</color>
+</resources>

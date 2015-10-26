@@ -1,5 +1,6 @@
 package me.gujun.android.taggroup;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -10,6 +11,7 @@ import android.graphics.Path;
 import android.graphics.PathEffect;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.Editable;
@@ -17,6 +19,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.ArrowKeyMovementMethod;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -26,10 +29,21 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputConnectionWrapper;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import me.gujun.android.taggroup.Adapter.ContactListAutoCompleteAdapter;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subjects.BehaviorSubject;
+import rx.Observable;
 
 /**
  * A <code>TagGroup</code> is a special layout with a set of tags.
@@ -68,70 +82,123 @@ public class TagGroup extends ViewGroup {
     private final float default_horizontal_padding;
     private final float default_vertical_padding;
 
-    /** Indicates whether this TagGroup is set up to APPEND mode or DISPLAY mode. Default is false. */
+    private final int contactCount = 5;
+    private ContactListAutoCompleteAdapter adapter;
+    private ArrayList<ContactData> selectedContactDataList = new ArrayList<>();
+    private ArrayList<ContactData> contactDataList = new ArrayList<>();
+
+
+    /**
+     * Indicates whether this TagGroup is set up to APPEND mode or DISPLAY mode. Default is false.
+     */
     private boolean isAppendMode;
 
-    /** The text to be displayed when the text of the INPUT tag is empty. */
+    /**
+     * The text to be displayed when the text of the INPUT tag is empty.
+     */
     private CharSequence inputHint;
 
-    /** The tag outline border color. */
+    /**
+     * The tag outline border color.
+     */
     private int borderColor;
 
-    /** The tag text color. */
+    /**
+     * The tag text color.
+     */
     private int textColor;
 
-    /** The tag background color. */
+    /**
+     * The tag background color.
+     */
     private int backgroundColor;
 
-    /** The dash outline border color. */
+    /**
+     * The dash outline border color.
+     */
     private int dashBorderColor;
 
-    /** The  input tag hint text color. */
+    /**
+     * The  input tag hint text color.
+     */
     private int inputHintColor;
 
-    /** The input tag type text color. */
+    /**
+     * The input tag type text color.
+     */
     private int inputTextColor;
 
-    /** The checked tag outline border color. */
+    /**
+     * The checked tag outline border color.
+     */
     private int checkedBorderColor;
 
-    /** The check text color */
+    /**
+     * The check text color
+     */
     private int checkedTextColor;
 
-    /** The checked marker color. */
+    /**
+     * The checked marker color.
+     */
     private int checkedMarkerColor;
 
-    /** The checked tag background color. */
+    /**
+     * The checked tag background color.
+     */
     private int checkedBackgroundColor;
 
-    /** The tag background color, when the tag is being pressed. */
+    /**
+     * The tag background color, when the tag is being pressed.
+     */
     private int pressedBackgroundColor;
 
-    /** The tag outline border stroke width, default is 0.5dp. */
+    /**
+     * The tag outline border stroke width, default is 0.5dp.
+     */
     private float borderStrokeWidth;
 
-    /** The tag text size, default is 13sp. */
+    /**
+     * The tag text size, default is 13sp.
+     */
     private float textSize;
 
-    /** The horizontal tag spacing, default is 8.0dp. */
+    /**
+     * The horizontal tag spacing, default is 8.0dp.
+     */
     private int horizontalSpacing;
 
-    /** The vertical tag spacing, default is 4.0dp. */
+    /**
+     * The vertical tag spacing, default is 4.0dp.
+     */
     private int verticalSpacing;
 
-    /** The horizontal tag padding, default is 12.0dp. */
+    /**
+     * The horizontal tag padding, default is 12.0dp.
+     */
     private int horizontalPadding;
 
-    /** The vertical tag padding, default is 3.0dp. */
+    /**
+     * The vertical tag padding, default is 3.0dp.
+     */
     private int verticalPadding;
 
-    /** Listener used to dispatch tag change event. */
+    /**
+     * Listener used to dispatch tag change event.
+     */
     private OnTagChangeListener mOnTagChangeListener;
 
-    /** Listener used to dispatch tag click event. */
+    /**
+     * Listener used to dispatch tag click event.
+     */
     private OnTagClickListener mOnTagClickListener;
 
-    /** Listener used to handle tag click event. */
+    private AutoCompleteTextView autoCompleteTextView;
+    private Subscription subscription;
+
+    /**
+     * Listener used to handle tag click event.
+     */
     private InternalTagClickListener mInternalTagClickListener = new InternalTagClickListener();
 
     public TagGroup(Context context) {
@@ -180,24 +247,21 @@ public class TagGroup extends ViewGroup {
         if (isAppendMode) {
             // Append the initial INPUT tag.
             appendInputTag();
-
-            // Set the click listener to detect the end-input event.
-            setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    submitTag();
-                }
-            });
         }
+        this.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showSoftKeyboard(autoCompleteTextView);
+            }
+        });
     }
 
     /**
      * Call this to submit the INPUT tag.
      */
     public void submitTag() {
-        final TagView inputTag = getInputTag();
-        if (inputTag != null && inputTag.isInputAvailable()) {
-            inputTag.endInput();
+        final AutoCompleteTextView inputTag = getInputTag();
+        if (inputTag != null) {
 
             if (mOnTagChangeListener != null) {
                 mOnTagChangeListener.onAppend(TagGroup.this, inputTag.getText().toString());
@@ -329,15 +393,9 @@ public class TagGroup extends ViewGroup {
      *
      * @return the INPUT state tag view or null if not exists
      */
-    protected TagView getInputTag() {
+    protected AutoCompleteTextView getInputTag() {
         if (isAppendMode) {
-            final int inputTagIndex = getChildCount() - 1;
-            final TagView inputTag = getTagAt(inputTagIndex);
-            if (inputTag != null && inputTag.mState == TagView.STATE_INPUT) {
-                return inputTag;
-            } else {
-                return null;
-            }
+            return autoCompleteTextView;
         } else {
             return null;
         }
@@ -349,7 +407,7 @@ public class TagGroup extends ViewGroup {
      * @return the INPUT state tag view or null if not exists
      */
     public String getInputTagText() {
-        final TagView inputTagView = getInputTag();
+        final AutoCompleteTextView inputTagView = getInputTag();
         if (inputTagView != null) {
             return inputTagView.getText().toString();
         }
@@ -376,9 +434,15 @@ public class TagGroup extends ViewGroup {
         final int count = getChildCount();
         final List<String> tagList = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            final TagView tagView = getTagAt(i);
-            if (tagView.mState == TagView.STATE_NORMAL) {
-                tagList.add(tagView.getText().toString());
+
+            if (i == count - 1) {
+                //Do nothing it is
+
+            } else {
+                final TagView tagView = getTagAt(i);
+                if (tagView.mState == TagView.STATE_NORMAL) {
+                    tagList.add(tagView.getText().toString());
+                }
             }
         }
 
@@ -398,7 +462,9 @@ public class TagGroup extends ViewGroup {
      * @param tags the tag list to set.
      */
     public void setTags(String... tags) {
+
         removeAllViews();
+
         for (final String tag : tags) {
             appendTag(tag);
         }
@@ -439,7 +505,7 @@ public class TagGroup extends ViewGroup {
      */
     protected int getCheckedTagIndex() {
         final int count = getChildCount();
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < count - 1; i++) {
             final TagView tag = getTagAt(i);
             if (tag.isChecked) {
                 return i;
@@ -448,6 +514,13 @@ public class TagGroup extends ViewGroup {
         return -1;
     }
 
+    public static boolean isValidEmail(CharSequence target) {
+        try {
+            return target != null && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+        } catch (NullPointerException exception) {
+            return false;
+        }
+    }
     /**
      * Register a callback to be invoked when this tag group is changed.
      *
@@ -470,14 +543,166 @@ public class TagGroup extends ViewGroup {
      * @param tag the tag text.
      */
     protected void appendInputTag(String tag) {
-        final TagView previousInputTag = getInputTag();
-        if (previousInputTag != null) {
-            throw new IllegalStateException("Already has a INPUT tag in group.");
+        if (autoCompleteTextView == null) {
+            autoCompleteTextView = new AutoCompleteTextView(getContext());
+            autoCompleteTextView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+            autoCompleteTextView.setBackgroundColor(Color.TRANSPARENT);
+            autoCompleteTextView.setInputType(EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES);
+            autoCompleteTextView.setMinWidth(dipToPx(getContext(), 30));
+            autoCompleteTextView.setDropDownBackgroundResource(android.R.color.transparent);
+            autoCompleteTextView.setDropDownWidth(getResources().getDisplayMetrics().widthPixels);
+
+            adapter = new ContactListAutoCompleteAdapter(getContext(), R.layout.auto_complete_contact_data_item_row,this);
+            autoCompleteTextView.setAdapter(adapter);
+
+            autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
+                ContactData contactData = contactDataList.get(position);
+                selectedContactDataList.add(contactData);
+                adapter.add(contactData);
+                contactDataList.add(contactData);
+
+                hideKeyboard();
+                autoCompleteTextView.setText("");
+                adapter.addContact(contactData);
+
+                adapter.clear();
+                contactDataList.clear();
+            });
+
+            getEditableString()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .debounce(2, TimeUnit.SECONDS)
+                    .subscribe(editableStr -> {
+                        adapter.contactDataMainList.clear();
+                        contactDataList.clear();
+                        fetchContactListData(editableStr);
+                    });
+
+            autoCompleteTextView.setOnEditorActionListener((v, actionId, event) -> {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    final String emailID = autoCompleteTextView.getText().toString().trim();
+                    if (emailID.length() > 0 && !emailID.equals("") && isValidEmail(emailID)) {
+                        ContactData data = new ContactData(null, emailID, null);
+                        autoCompleteTextView.setText("");
+                        adapter.addContact(data);
+                    }
+                    hideKeyboard();
+                }
+                return false;
+            });
+
+
+            GradientDrawable shape = new GradientDrawable();
+            shape.setCornerRadius(8);
+            shape.setColor(Color.WHITE);
+            autoCompleteTextView.setBackground(shape);
+
+
+            setOnTagChangeListener(new TagGroup.OnTagChangeListener() {
+                @Override
+                public void onAppend(TagGroup tagGroup, String tag) {
+                }
+
+                @Override
+                public void onDelete(TagGroup tagGroup, String tag) {
+                    for (ContactData data : selectedContactDataList) {
+                        if (data.getEmailID().equals(tag)) {
+                            adapter.add(data);
+                            contactDataList.add(data);
+                            selectedContactDataList.remove(data);
+                            break;
+                        }
+                    }
+                }
+            });
+
         }
 
-        final TagView newInputTag = new TagView(getContext(), TagView.STATE_INPUT, tag);
-        newInputTag.setOnClickListener(mInternalTagClickListener);
-        addView(newInputTag);
+        addView(autoCompleteTextView);
+        autoCompleteTextView.requestFocus();
+    }
+
+    public Observable<String> getEditableString() {
+        String currentText = String.valueOf(autoCompleteTextView.getText());
+        final BehaviorSubject<String> subject = BehaviorSubject.create(currentText.trim());
+        autoCompleteTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.toString().trim().length() > 1) {
+                    subject.onNext(editable.toString().trim());
+                }
+            }
+        });
+        return subject;
+    }
+    public void hideKeyboard() {
+        InputMethodManager
+                inputMethodManager = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        if (inputMethodManager != null)
+            inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+    }
+
+    public void showSoftKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        view.requestFocus();
+        inputMethodManager.showSoftInput(view, 0);
+    }
+
+
+    public void fetchContactListData(String str) {
+        if (subscription != null)
+            subscription.unsubscribe();
+
+        subscription = adapter.readContacts(str)
+                .take(contactCount)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ContactData>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(ContactData contactData) {
+                        if (contactData != null && !isEmailExistOnList(contactData.getEmailID())) {
+                            adapter.add(contactData);
+                            contactDataList.add(contactData);
+                        } else {
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+    }
+
+    public boolean isEmailExistOnList(String email) {
+        boolean isExist = false;
+        for (ContactData data : contactDataList) {
+            if (data.getEmailID().equals(email)) {
+                isExist = true;
+                break;
+            }
+        }
+
+        for (ContactData data : selectedContactDataList) {
+            if (data.getEmailID().equals(email)) {
+                isExist = true;
+                break;
+            }
+        }
+        return isExist;
     }
 
     /**
@@ -485,7 +710,7 @@ public class TagGroup extends ViewGroup {
      *
      * @param tag the tag to append.
      */
-    protected void appendTag(CharSequence tag) {
+    protected void appendTag(String tag) {
         final TagView newTag = new TagView(getContext(), TagView.STATE_NORMAL, tag);
         newTag.setOnClickListener(mInternalTagClickListener);
         addView(newTag);
@@ -652,19 +877,29 @@ public class TagGroup extends ViewGroup {
         public static final int STATE_NORMAL = 1;
         public static final int STATE_INPUT = 2;
 
-        /** The offset to the text. */
+        /**
+         * The offset to the text.
+         */
         private static final int CHECKED_MARKER_OFFSET = 3;
 
-        /** The stroke width of the checked marker */
+        /**
+         * The stroke width of the checked marker
+         */
         private static final int CHECKED_MARKER_STROKE_WIDTH = 4;
 
-        /** The current state. */
+        /**
+         * The current state.
+         */
         private int mState;
 
-        /** Indicates the tag if checked. */
+        /**
+         * Indicates the tag if checked.
+         */
         private boolean isChecked = false;
 
-        /** Indicates the tag if pressed. */
+        /**
+         * Indicates the tag if pressed.
+         */
         private boolean isPressed = false;
 
         private Paint mBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -673,28 +908,44 @@ public class TagGroup extends ViewGroup {
 
         private Paint mCheckedMarkerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        /** The rect for the tag's left corner drawing. */
+        /**
+         * The rect for the tag's left corner drawing.
+         */
         private RectF mLeftCornerRectF = new RectF();
 
-        /** The rect for the tag's right corner drawing. */
+        /**
+         * The rect for the tag's right corner drawing.
+         */
         private RectF mRightCornerRectF = new RectF();
 
-        /** The rect for the tag's horizontal blank fill area. */
+        /**
+         * The rect for the tag's horizontal blank fill area.
+         */
         private RectF mHorizontalBlankFillRectF = new RectF();
 
-        /** The rect for the tag's vertical blank fill area. */
+        /**
+         * The rect for the tag's vertical blank fill area.
+         */
         private RectF mVerticalBlankFillRectF = new RectF();
 
-        /** The rect for the checked mark draw bound. */
+        /**
+         * The rect for the checked mark draw bound.
+         */
         private RectF mCheckedMarkerBound = new RectF();
 
-        /** Used to detect the touch event. */
+        /**
+         * Used to detect the touch event.
+         */
         private Rect mOutRect = new Rect();
 
-        /** The path for draw the tag's outline border. */
+        /**
+         * The path for draw the tag's outline border.
+         */
         private Path mBorderPath = new Path();
 
-        /** The path effect provide draw the dash border. */
+        /**
+         * The path effect provide draw the dash border.
+         */
         private PathEffect mPathEffect = new DashPathEffect(new float[]{10, 5}, 0);
 
         {
@@ -707,7 +958,7 @@ public class TagGroup extends ViewGroup {
         }
 
 
-        public TagView(Context context, final int state, CharSequence text) {
+        public TagView(Context context, final int state, String text) {
             super(context);
             setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding);
             setLayoutParams(new TagGroup.LayoutParams(
@@ -1021,5 +1272,10 @@ public class TagGroup extends ViewGroup {
                 return super.deleteSurroundingText(beforeLength, afterLength);
             }
         }
+    }
+
+    public static int dipToPx(Context c, float dipValue) {
+        DisplayMetrics metrics = c.getResources().getDisplayMetrics();
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, metrics);
     }
 }
