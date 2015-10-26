@@ -1,10 +1,28 @@
 apply plugin: 'com.android.library'
+apply plugin: 'me.tatarka.retrolambda'
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'me.tatarka:gradle-retrolambda:3.2.2'
+    }
+}
+
 android {
-    compileSdkVersion 21
-    buildToolsVersion '21.1.1'
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     defaultConfig {
         minSdkVersion 8
-        targetSdkVersion 21
+        targetSdkVersion 23
     }
     lintOptions {
         abortOnError false
@@ -12,7 +30,13 @@ android {
     productFlavors {
     }
 }
+
+
 // Used to push in maven
 apply from: '../maven-push.gradle'
 dependencies {
+    retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.0.5'
+
+    compile 'io.reactivex:rxjava:1.0.13'
+    compile 'io.reactivex:rxandroid:0.24.0'
 }
