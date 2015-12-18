@@ -12,5 +12,8 @@ android:
 
     - sys-img-x86-android-23
 
+  licenses:
+    - 'android-sdk-license-.+'
+
 before_install:
     - chmod +x gradlew
