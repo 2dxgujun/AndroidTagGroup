@@ -444,7 +444,7 @@ public class TagGroup extends ViewGroup {
      * @param tags the tag list to set.
      */
     public void setTags(String... tags) {
-        if (limitation != -1 && tags.length >= limitation) {
+        if (limitation != -1 && tags.length > limitation) {
             throw new IllegalStateException(String.format("There is a limitation (%1$d) in adding tags.", limitation));
         }
         removeAllViews();
@@ -539,9 +539,33 @@ public class TagGroup extends ViewGroup {
         }
 
         final TagView newInputTag = new TagView(getContext(), TagView.STATE_INPUT, tag);
+
+        newInputTag.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                CharSequence sequence = newInputTag.getText();
+
+                if (sequence.toString().length() >= 12) {
+                    newInputTag.setText(sequence.toString().substring(0, 11));
+                    newInputTag.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
+                }
+            }
+        });
         // If limitation exceed, disable the input and invoke a callback.
         if (limitation != -1 && getTags().length >= limitation) {
-            mOnTagLimitationExceedListener.onLimitationExceed();
+            if (mOnTagLimitationExceedListener != null) {
+                mOnTagLimitationExceedListener.onLimitationExceed();
+            }
             newInputTag.setEnabled(false);
         }
         newInputTag.setOnClickListener(mInternalTagClickListener);
@@ -1133,6 +1157,11 @@ public class TagGroup extends ViewGroup {
         private class ZanyInputConnection extends InputConnectionWrapper {
             public ZanyInputConnection(android.view.inputmethod.InputConnection target, boolean mutable) {
                 super(target, mutable);
+            }
+
+            @Override
+            public boolean sendKeyEvent(KeyEvent event) {
+                return super.sendKeyEvent(event);
             }
 
             @Override
