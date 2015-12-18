@@ -47,7 +47,7 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        mDefaultTagGroup = (TagGroup) findViewById(R.id.tag_group);
+        mDefaultTagGroup = (TagGroup) findViewById(R.id.tagGroup);
         mSmallTagGroup = (TagGroup) findViewById(R.id.tag_group_small);
         mLargeTagGroup = (TagGroup) findViewById(R.id.tag_group_large);
         mBeautyTagGroup = (TagGroup) findViewById(R.id.tag_group_beauty);

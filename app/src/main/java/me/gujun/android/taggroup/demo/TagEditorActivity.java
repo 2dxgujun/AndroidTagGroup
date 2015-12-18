@@ -21,7 +21,7 @@ public class TagEditorActivity extends ActionBarActivity {
         mTagsManager = TagsManager.getInstance(getApplicationContext());
         String[] tags = mTagsManager.getTags();
 
-        mTagGroup = (TagGroup) findViewById(R.id.tag_group);
+        mTagGroup = (TagGroup) findViewById(R.id.tagGroup);
         mTagGroup.setTags(tags);
     }
 

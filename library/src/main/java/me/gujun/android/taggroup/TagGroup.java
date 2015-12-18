@@ -299,35 +299,13 @@ public class TagGroup extends ViewGroup {
     }
 
     /**
-     * Returns the INPUT state tag in this group.
+     * Return the last NORMAL state tag view in this group.
      *
-     * @return the INPUT state tag view or null if not exists
+     * @return the last NORMAL state tag view or null if not exists
      */
-    public String getInputTagText() {
-        final TagView inputTagView = getInputTag();
-        if (inputTagView != null) {
-            return inputTagView.getText().toString();
-        }
-        return null;
-    }
-
-    /**
-     * Returns the INPUT tag view in this group.
-     *
-     * @return the INPUT state tag view or null if not exists
-     */
-    protected TagView getInputTag() {
-        if (mIsAppendMode) {
-            final int inputTagIndex = getChildCount() - 1;
-            final TagView inputTag = getTagAt(inputTagIndex);
-            if (inputTag != null && inputTag.mState == TagView.STATE_INPUT) {
-                return inputTag;
-            } else {
-                return null;
-            }
-        } else {
-            return null;
-        }
+    protected TagView getLastNormalTagView() {
+        final int lastNormalTagIndex = mIsAppendMode ? getChildCount() - 2 : getChildCount() - 1;
+        return getTagAt(lastNormalTagIndex);
     }
 
     /**
@@ -339,67 +317,17 @@ public class TagGroup extends ViewGroup {
      */
     protected TagView getTagAt(int index) {
         return (TagView) getChildAt(index);
-    }
-
-    /**
-     * Return the last NORMAL state tag view in this group.
+    }    /**
+     * Returns the INPUT state tag in this group.
      *
-     * @return the last NORMAL state tag view or null if not exists
+     * @return the INPUT state tag view or null if not exists
      */
-    protected TagView getLastNormalTagView() {
-        final int lastNormalTagIndex = mIsAppendMode ? getChildCount() - 2 : getChildCount() - 1;
-        return getTagAt(lastNormalTagIndex);
-    }    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-        final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-        final int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-
-        measureChildren(widthMeasureSpec, heightMeasureSpec);
-
-        int width;
-        int height = 0;
-
-        int row = 0; // The row counter.
-        int rowWidth = 0; // Calc the current row width.
-        int rowMaxHeight = 0; // Calc the max tag height, in current row.
-
-        final int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            final View child = getChildAt(i);
-            final int childWidth = child.getMeasuredWidth();
-            final int childHeight = child.getMeasuredHeight();
-
-            if (child.getVisibility() != GONE) {
-                rowWidth += childWidth;
-                if (rowWidth > widthSize) { // Next line.
-                    rowWidth = childWidth; // The next row width.
-                    height += rowMaxHeight + mVerticalSpacing;
-                    rowMaxHeight = childHeight; // The next row max height.
-                    row++;
-                } else { // This line.
-                    rowMaxHeight = Math.max(rowMaxHeight, childHeight);
-                }
-                rowWidth += mHorizontalSpacing;
-            }
+    public String getInputTagText() {
+        final TagView inputTagView = getInputTag();
+        if (inputTagView != null) {
+            return inputTagView.getText().toString();
         }
-        // Account for the last row height.
-        height += rowMaxHeight;
-
-        // Account for the padding too.
-        height += getPaddingTop() + getPaddingBottom();
-
-        // If the tags grouped in one row, set the width to wrap the tags.
-        if (row == 0) {
-            width = rowWidth;
-            width += getPaddingLeft() + getPaddingRight();
-        } else {// If the tags grouped exceed one line, set the width to match the parent.
-            width = widthSize;
-        }
-
-        setMeasuredDimension(widthMode == MeasureSpec.EXACTLY ? widthSize : width,
-                heightMode == MeasureSpec.EXACTLY ? heightSize : height);
+        return null;
     }
 
     /**
@@ -454,21 +382,62 @@ public class TagGroup extends ViewGroup {
     public float dp2px(float dp) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 getResources().getDisplayMetrics());
+    }    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        final int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+
+        measureChildren(widthMeasureSpec, heightMeasureSpec);
+
+        int width;
+        int height = 0;
+
+        int row = 0; // The row counter.
+        int rowWidth = 0; // Calc the current row width.
+        int rowMaxHeight = 0; // Calc the max tag height, in current row.
+
+        final int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            final View child = getChildAt(i);
+            final int childWidth = child.getMeasuredWidth();
+            final int childHeight = child.getMeasuredHeight();
+
+            if (child.getVisibility() != GONE) {
+                rowWidth += childWidth;
+                if (rowWidth > widthSize) { // Next line.
+                    rowWidth = childWidth; // The next row width.
+                    height += rowMaxHeight + mVerticalSpacing;
+                    rowMaxHeight = childHeight; // The next row max height.
+                    row++;
+                } else { // This line.
+                    rowMaxHeight = Math.max(rowMaxHeight, childHeight);
+                }
+                rowWidth += mHorizontalSpacing;
+            }
+        }
+        // Account for the last row height.
+        height += rowMaxHeight;
+
+        // Account for the padding too.
+        height += getPaddingTop() + getPaddingBottom();
+
+        // If the tags grouped in one row, set the width to wrap the tags.
+        if (row == 0) {
+            width = rowWidth;
+            width += getPaddingLeft() + getPaddingRight();
+        } else {// If the tags grouped exceed one line, set the width to match the parent.
+            width = widthSize;
+        }
+
+        setMeasuredDimension(widthMode == MeasureSpec.EXACTLY ? widthSize : width,
+                heightMode == MeasureSpec.EXACTLY ? heightSize : height);
     }
 
     public float sp2px(float sp) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,
                 getResources().getDisplayMetrics());
-    }    @Override
-    public Parcelable onSaveInstanceState() {
-        Parcelable superState = super.onSaveInstanceState();
-        SavedState ss = new SavedState(superState);
-        ss.tags = getTags();
-        ss.checkedPosition = getCheckedTagIndex();
-        if (getInputTag() != null) {
-            ss.input = getInputTag().getText().toString();
-        }
-        return ss;
     }
 
     /**
@@ -489,6 +458,25 @@ public class TagGroup extends ViewGroup {
             if (!getInputTag().isEnabled()) {
                 getInputTag().setEnabled(true);
             }
+        }
+    }
+
+    /**
+     * Returns the INPUT tag view in this group.
+     *
+     * @return the INPUT state tag view or null if not exists
+     */
+    protected TagView getInputTag() {
+        if (mIsAppendMode) {
+            final int inputTagIndex = getChildCount() - 1;
+            final TagView inputTag = getTagAt(inputTagIndex);
+            if (inputTag != null && inputTag.mState == TagView.STATE_INPUT) {
+                return inputTag;
+            } else {
+                return null;
+            }
+        } else {
+            return null;
         }
     }
 
@@ -544,24 +532,6 @@ public class TagGroup extends ViewGroup {
         public LayoutParams(int width, int height) {
             super(width, height);
         }
-    }    @Override
-    public void onRestoreInstanceState(Parcelable state) {
-        if (!(state instanceof SavedState)) {
-            super.onRestoreInstanceState(state);
-            return;
-        }
-
-        SavedState ss = (SavedState) state;
-        super.onRestoreInstanceState(ss.getSuperState());
-
-        setTags(ss.tags);
-        TagView checkedTagView = getTagAt(ss.checkedPosition);
-        if (checkedTagView != null) {
-            checkedTagView.setChecked(true);
-        }
-        if (getInputTag() != null) {
-            getInputTag().setText(ss.input);
-        }
     }
 
     /**
@@ -605,6 +575,16 @@ public class TagGroup extends ViewGroup {
             dest.writeInt(checkedPosition);
             dest.writeString(input);
         }
+    }    @Override
+    public Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+        SavedState ss = new SavedState(superState);
+        ss.tags = getTags();
+        ss.checkedPosition = getCheckedTagIndex();
+        if (getInputTag() != null) {
+            ss.input = getInputTag().getText().toString();
+        }
+        return ss;
     }
 
     /**
@@ -1071,6 +1051,27 @@ public class TagGroup extends ViewGroup {
 
 
 
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        if (!(state instanceof SavedState)) {
+            super.onRestoreInstanceState(state);
+            return;
+        }
+
+        SavedState ss = (SavedState) state;
+        super.onRestoreInstanceState(ss.getSuperState());
+
+        setTags(ss.tags);
+        TagView checkedTagView = getTagAt(ss.checkedPosition);
+        if (checkedTagView != null) {
+            checkedTagView.setChecked(true);
+        }
+        if (getInputTag() != null) {
+            getInputTag().setText(ss.input);
+        }
+    }
+
+
     /**
      * Returns the tag array in group, except the INPUT tag.
      *
@@ -1153,10 +1154,8 @@ public class TagGroup extends ViewGroup {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    CharSequence sequence = newInputTag.getText();
-
-                    if (sequence.toString().length() >= mCharsLimitation) {
-                        newInputTag.setText(sequence.toString().substring(0, mCharsLimitation - 1));
+                    if (getInputTagText().length() - 1 == mCharsLimitation) {
+                        newInputTag.setText(getInputTagText().substring(0, mCharsLimitation));
                         newInputTag.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
                     }
                 }
