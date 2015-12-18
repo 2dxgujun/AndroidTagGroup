@@ -75,6 +75,11 @@ public class MainActivity extends ActionBarActivity {
         mBeautyInverseTagGroup.setOnTagClickListener(mTagClickListener);
     }
 
+    protected void launchTagEditorActivity() {
+        Intent intent = new Intent(MainActivity.this, TagEditorActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -100,11 +105,6 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
         return false;
-    }
-
-    protected void launchTagEditorActivity() {
-        Intent intent = new Intent(MainActivity.this, TagEditorActivity.class);
-        startActivity(intent);
     }
 
     class MyTagGroupOnClickListener implements View.OnClickListener {

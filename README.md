@@ -106,7 +106,8 @@ There are several attributes you can set:
 | atg_verticalSpacing  	    | 4dp              | The vertical tag spacing.(Mark2)                      	 |
 | atg_horizontalPadding	    | 12dp             | The horizontal tag padding.(Mark3)                      |
 | atg_verticalPadding  	    | 3dp              | The vertical tag padding.(Mark4)                        |
-| atg_limitation  	        | -1 (no limitation)                | Adding tags limitation                                  |
+| atg_tagsLimitation  	    | -1 (no limitation)                | Adding tags limitation                                  |
+| atg_charsLimitation  	    | -1 (no limitation)                | Characters limitation                                  |
 
 # Developed By
 

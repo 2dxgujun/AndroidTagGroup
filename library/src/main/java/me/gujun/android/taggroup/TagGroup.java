@@ -68,101 +68,102 @@ public class TagGroup extends ViewGroup {
     private final float default_vertical_spacing;
     private final float default_horizontal_padding;
     private final float default_vertical_padding;
+    private final int mCharsLimitation;
 
     /**
      * Indicates whether this TagGroup is set up to APPEND mode or DISPLAY mode. Default is false.
      */
-    private boolean isAppendMode;
+    private boolean mIsAppendMode;
 
     /**
      * The text to be displayed when the text of the INPUT tag is empty.
      */
-    private CharSequence inputHint;
+    private CharSequence mInputHint;
 
     /**
      * The tag outline border color.
      */
-    private int borderColor;
+    private int mBorderColor;
 
     /**
      * The tag text color.
      */
-    private int textColor;
+    private int mTextColor;
 
     /**
      * The tag background color.
      */
-    private int backgroundColor;
+    private int mBackgroundColor;
 
     /**
      * The dash outline border color.
      */
-    private int dashBorderColor;
+    private int mDashBorderColor;
 
     /**
      * The  input tag hint text color.
      */
-    private int inputHintColor;
+    private int mInputHintColor;
 
     /**
      * The input tag type text color.
      */
-    private int inputTextColor;
+    private int mInputTextColor;
 
     /**
      * The checked tag outline border color.
      */
-    private int checkedBorderColor;
+    private int mCheckedBorderColor;
 
     /**
      * The check text color
      */
-    private int checkedTextColor;
+    private int mCheckedTextColor;
 
     /**
      * The checked marker color.
      */
-    private int checkedMarkerColor;
+    private int mCheckedMarkerColor;
 
     /**
      * The checked tag background color.
      */
-    private int checkedBackgroundColor;
+    private int mCheckedBackgroundColor;
 
     /**
      * The tag background color, when the tag is being pressed.
      */
-    private int pressedBackgroundColor;
+    private int mPressedBackgroundColor;
 
     /**
      * The tag outline border stroke width, default is 0.5dp.
      */
-    private float borderStrokeWidth;
+    private float mBorderStrokeWidth;
 
     /**
      * The tag text size, default is 13sp.
      */
-    private float textSize;
+    private float mTextSize;
 
     /**
      * The horizontal tag spacing, default is 8.0dp.
      */
-    private int horizontalSpacing;
+    private int mHorizontalSpacing;
 
     /**
      * The vertical tag spacing, default is 4.0dp.
      */
-    private int verticalSpacing;
+    private int mVerticalSpacing;
 
     /**
      * The horizontal tag padding, default is 12.0dp.
      */
-    private int horizontalPadding;
+    private int mHorizontalPadding;
 
     /**
      * The vertical tag padding, default is 3.0dp.
      */
-    private int verticalPadding;
+    private int mVerticalPadding;
 
     /**
      * Listener used to dispatch tag change event.
@@ -179,7 +180,7 @@ public class TagGroup extends ViewGroup {
     /**
      * Adding tags limitation.
      */
-    private int limitation = -1;
+    private int mTagsLimitation = -1;
 
     /**
      * Listener used to handle tag click event.
@@ -206,31 +207,32 @@ public class TagGroup extends ViewGroup {
         // Load styled attributes.
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TagGroup, defStyleAttr, R.style.TagGroup);
         try {
-            isAppendMode = a.getBoolean(R.styleable.TagGroup_atg_isAppendMode, false);
-            inputHint = a.getText(R.styleable.TagGroup_atg_inputHint);
-            borderColor = a.getColor(R.styleable.TagGroup_atg_borderColor, default_border_color);
-            textColor = a.getColor(R.styleable.TagGroup_atg_textColor, default_text_color);
-            backgroundColor = a.getColor(R.styleable.TagGroup_atg_backgroundColor, default_background_color);
-            dashBorderColor = a.getColor(R.styleable.TagGroup_atg_dashBorderColor, default_dash_border_color);
-            inputHintColor = a.getColor(R.styleable.TagGroup_atg_inputHintColor, default_input_hint_color);
-            inputTextColor = a.getColor(R.styleable.TagGroup_atg_inputTextColor, default_input_text_color);
-            checkedBorderColor = a.getColor(R.styleable.TagGroup_atg_checkedBorderColor, default_checked_border_color);
-            checkedTextColor = a.getColor(R.styleable.TagGroup_atg_checkedTextColor, default_checked_text_color);
-            checkedMarkerColor = a.getColor(R.styleable.TagGroup_atg_checkedMarkerColor, default_checked_marker_color);
-            checkedBackgroundColor = a.getColor(R.styleable.TagGroup_atg_checkedBackgroundColor, default_checked_background_color);
-            pressedBackgroundColor = a.getColor(R.styleable.TagGroup_atg_pressedBackgroundColor, default_pressed_background_color);
-            borderStrokeWidth = a.getDimension(R.styleable.TagGroup_atg_borderStrokeWidth, default_border_stroke_width);
-            textSize = a.getDimension(R.styleable.TagGroup_atg_textSize, default_text_size);
-            horizontalSpacing = (int) a.getDimension(R.styleable.TagGroup_atg_horizontalSpacing, default_horizontal_spacing);
-            verticalSpacing = (int) a.getDimension(R.styleable.TagGroup_atg_verticalSpacing, default_vertical_spacing);
-            horizontalPadding = (int) a.getDimension(R.styleable.TagGroup_atg_horizontalPadding, default_horizontal_padding);
-            verticalPadding = (int) a.getDimension(R.styleable.TagGroup_atg_verticalPadding, default_vertical_padding);
-            limitation = a.getInteger(R.styleable.TagGroup_atg_limitation, -1);
+            mIsAppendMode = a.getBoolean(R.styleable.TagGroup_atg_isAppendMode, false);
+            mInputHint = a.getText(R.styleable.TagGroup_atg_inputHint);
+            mBorderColor = a.getColor(R.styleable.TagGroup_atg_borderColor, default_border_color);
+            mTextColor = a.getColor(R.styleable.TagGroup_atg_textColor, default_text_color);
+            mBackgroundColor = a.getColor(R.styleable.TagGroup_atg_backgroundColor, default_background_color);
+            mDashBorderColor = a.getColor(R.styleable.TagGroup_atg_dashBorderColor, default_dash_border_color);
+            mInputHintColor = a.getColor(R.styleable.TagGroup_atg_inputHintColor, default_input_hint_color);
+            mInputTextColor = a.getColor(R.styleable.TagGroup_atg_inputTextColor, default_input_text_color);
+            mCheckedBorderColor = a.getColor(R.styleable.TagGroup_atg_checkedBorderColor, default_checked_border_color);
+            mCheckedTextColor = a.getColor(R.styleable.TagGroup_atg_checkedTextColor, default_checked_text_color);
+            mCheckedMarkerColor = a.getColor(R.styleable.TagGroup_atg_checkedMarkerColor, default_checked_marker_color);
+            mCheckedBackgroundColor = a.getColor(R.styleable.TagGroup_atg_checkedBackgroundColor, default_checked_background_color);
+            mPressedBackgroundColor = a.getColor(R.styleable.TagGroup_atg_pressedBackgroundColor, default_pressed_background_color);
+            mBorderStrokeWidth = a.getDimension(R.styleable.TagGroup_atg_borderStrokeWidth, default_border_stroke_width);
+            mTextSize = a.getDimension(R.styleable.TagGroup_atg_textSize, default_text_size);
+            mHorizontalSpacing = (int) a.getDimension(R.styleable.TagGroup_atg_horizontalSpacing, default_horizontal_spacing);
+            mVerticalSpacing = (int) a.getDimension(R.styleable.TagGroup_atg_verticalSpacing, default_vertical_spacing);
+            mHorizontalPadding = (int) a.getDimension(R.styleable.TagGroup_atg_horizontalPadding, default_horizontal_padding);
+            mVerticalPadding = (int) a.getDimension(R.styleable.TagGroup_atg_verticalPadding, default_vertical_padding);
+            mTagsLimitation = a.getInteger(R.styleable.TagGroup_atg_tagsLimitation, -1);
+            mCharsLimitation = a.getInteger(R.styleable.TagGroup_atg_charsLimitation, -1);
         } finally {
             a.recycle();
         }
 
-        if (isAppendMode) {
+        if (mIsAppendMode) {
             // Append the initial INPUT tag.
             appendInputTag();
 
@@ -260,6 +262,94 @@ public class TagGroup extends ViewGroup {
     }
 
     @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        final int parentLeft = getPaddingLeft();
+        final int parentRight = r - l - getPaddingRight();
+        final int parentTop = getPaddingTop();
+
+        int childLeft = parentLeft;
+        int childTop = parentTop;
+
+        int rowMaxHeight = 0;
+
+        final int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            final View child = getChildAt(i);
+            final int width = child.getMeasuredWidth();
+            final int height = child.getMeasuredHeight();
+
+            if (child.getVisibility() != GONE) {
+                if (childLeft + width > parentRight) { // Next line
+                    childLeft = parentLeft;
+                    childTop += rowMaxHeight + mVerticalSpacing;
+                    rowMaxHeight = height;
+                } else {
+                    rowMaxHeight = Math.max(rowMaxHeight, height);
+                }
+                child.layout(childLeft, childTop, childLeft + width, childTop + height);
+
+                childLeft += width + mHorizontalSpacing;
+            }
+        }
+    }
+
+    @Override
+    public ViewGroup.LayoutParams generateLayoutParams(AttributeSet attrs) {
+        return new TagGroup.LayoutParams(getContext(), attrs);
+    }
+
+    /**
+     * Returns the INPUT state tag in this group.
+     *
+     * @return the INPUT state tag view or null if not exists
+     */
+    public String getInputTagText() {
+        final TagView inputTagView = getInputTag();
+        if (inputTagView != null) {
+            return inputTagView.getText().toString();
+        }
+        return null;
+    }
+
+    /**
+     * Returns the INPUT tag view in this group.
+     *
+     * @return the INPUT state tag view or null if not exists
+     */
+    protected TagView getInputTag() {
+        if (mIsAppendMode) {
+            final int inputTagIndex = getChildCount() - 1;
+            final TagView inputTag = getTagAt(inputTagIndex);
+            if (inputTag != null && inputTag.mState == TagView.STATE_INPUT) {
+                return inputTag;
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the tag view at the specified position in the group.
+     *
+     * @param index the position at which to get the tag view from.
+     * @return the tag view at the specified position or null if the position
+     * does not exists within this group.
+     */
+    protected TagView getTagAt(int index) {
+        return (TagView) getChildAt(index);
+    }
+
+    /**
+     * Return the last NORMAL state tag view in this group.
+     *
+     * @return the last NORMAL state tag view or null if not exists
+     */
+    protected TagView getLastNormalTagView() {
+        final int lastNormalTagIndex = mIsAppendMode ? getChildCount() - 2 : getChildCount() - 1;
+        return getTagAt(lastNormalTagIndex);
+    }    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
@@ -268,7 +358,7 @@ public class TagGroup extends ViewGroup {
 
         measureChildren(widthMeasureSpec, heightMeasureSpec);
 
-        int width = 0;
+        int width;
         int height = 0;
 
         int row = 0; // The row counter.
@@ -285,13 +375,13 @@ public class TagGroup extends ViewGroup {
                 rowWidth += childWidth;
                 if (rowWidth > widthSize) { // Next line.
                     rowWidth = childWidth; // The next row width.
-                    height += rowMaxHeight + verticalSpacing;
+                    height += rowMaxHeight + mVerticalSpacing;
                     rowMaxHeight = childHeight; // The next row max height.
                     row++;
                 } else { // This line.
                     rowMaxHeight = Math.max(rowMaxHeight, childHeight);
                 }
-                rowWidth += horizontalSpacing;
+                rowWidth += mHorizontalSpacing;
             }
         }
         // Account for the last row height.
@@ -310,169 +400,6 @@ public class TagGroup extends ViewGroup {
 
         setMeasuredDimension(widthMode == MeasureSpec.EXACTLY ? widthSize : width,
                 heightMode == MeasureSpec.EXACTLY ? heightSize : height);
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        final int parentLeft = getPaddingLeft();
-        final int parentRight = r - l - getPaddingRight();
-        final int parentTop = getPaddingTop();
-        final int parentBottom = b - t - getPaddingBottom();
-
-        int childLeft = parentLeft;
-        int childTop = parentTop;
-
-        int rowMaxHeight = 0;
-
-        final int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            final View child = getChildAt(i);
-            final int width = child.getMeasuredWidth();
-            final int height = child.getMeasuredHeight();
-
-            if (child.getVisibility() != GONE) {
-                if (childLeft + width > parentRight) { // Next line
-                    childLeft = parentLeft;
-                    childTop += rowMaxHeight + verticalSpacing;
-                    rowMaxHeight = height;
-                } else {
-                    rowMaxHeight = Math.max(rowMaxHeight, height);
-                }
-                child.layout(childLeft, childTop, childLeft + width, childTop + height);
-
-                childLeft += width + horizontalSpacing;
-            }
-        }
-    }
-
-    @Override
-    public Parcelable onSaveInstanceState() {
-        Parcelable superState = super.onSaveInstanceState();
-        SavedState ss = new SavedState(superState);
-        ss.tags = getTags();
-        ss.checkedPosition = getCheckedTagIndex();
-        if (getInputTag() != null) {
-            ss.input = getInputTag().getText().toString();
-        }
-        return ss;
-    }
-
-    @Override
-    public void onRestoreInstanceState(Parcelable state) {
-        if (!(state instanceof SavedState)) {
-            super.onRestoreInstanceState(state);
-            return;
-        }
-
-        SavedState ss = (SavedState) state;
-        super.onRestoreInstanceState(ss.getSuperState());
-
-        setTags(ss.tags);
-        TagView checkedTagView = getTagAt(ss.checkedPosition);
-        if (checkedTagView != null) {
-            checkedTagView.setChecked(true);
-        }
-        if (getInputTag() != null) {
-            getInputTag().setText(ss.input);
-        }
-    }
-
-    /**
-     * Returns the INPUT tag view in this group.
-     *
-     * @return the INPUT state tag view or null if not exists
-     */
-    protected TagView getInputTag() {
-        if (isAppendMode) {
-            final int inputTagIndex = getChildCount() - 1;
-            final TagView inputTag = getTagAt(inputTagIndex);
-            if (inputTag != null && inputTag.mState == TagView.STATE_INPUT) {
-                return inputTag;
-            } else {
-                return null;
-            }
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Returns the INPUT state tag in this group.
-     *
-     * @return the INPUT state tag view or null if not exists
-     */
-    public String getInputTagText() {
-        final TagView inputTagView = getInputTag();
-        if (inputTagView != null) {
-            return inputTagView.getText().toString();
-        }
-        return null;
-    }
-
-    /**
-     * Return the last NORMAL state tag view in this group.
-     *
-     * @return the last NORMAL state tag view or null if not exists
-     */
-    protected TagView getLastNormalTagView() {
-        final int lastNormalTagIndex = isAppendMode ? getChildCount() - 2 : getChildCount() - 1;
-        TagView lastNormalTagView = getTagAt(lastNormalTagIndex);
-        return lastNormalTagView;
-    }
-
-    /**
-     * Returns the tag array in group, except the INPUT tag.
-     *
-     * @return the tag array.
-     */
-    public String[] getTags() {
-        final int count = getChildCount();
-        final List<String> tagList = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
-            final TagView tagView = getTagAt(i);
-            if (tagView.mState == TagView.STATE_NORMAL) {
-                tagList.add(tagView.getText().toString());
-            }
-        }
-
-        return tagList.toArray(new String[tagList.size()]);
-    }
-
-    /**
-     * Set the tags. It will remove all previous tags first.
-     *
-     * @param tags the tag list to set.
-     */
-    public void setTags(String... tags) {
-        if (limitation != -1 && tags.length > limitation) {
-            throw new IllegalStateException(String.format("There is a limitation (%1$d) in adding tags.", limitation));
-        }
-        removeAllViews();
-        for (final String tag : tags) {
-            appendTag(tag);
-        }
-
-        if (isAppendMode) {
-            appendInputTag();
-        }
-    }
-
-    /**
-     * @see #setTags(String...)
-     */
-    public void setTags(List<String> tagList) {
-        setTags(tagList.toArray(new String[tagList.size()]));
-    }
-
-    /**
-     * Returns the tag view at the specified position in the group.
-     *
-     * @param index the position at which to get the tag view from.
-     * @return the tag view at the specified position or null if the position
-     * does not exists within this group.
-     */
-    protected TagView getTagAt(int index) {
-        return (TagView) getChildAt(index);
     }
 
     /**
@@ -520,71 +447,8 @@ public class TagGroup extends ViewGroup {
         mOnTagLimitationExceedListener = l;
     }
 
-    /**
-     * @see #appendInputTag(String)
-     */
-    protected void appendInputTag() {
-        appendInputTag(null);
-    }
-
-    /**
-     * Append a INPUT tag to this group. It will throw an exception if there has a previous INPUT tag.
-     *
-     * @param tag the tag text.
-     */
-    protected void appendInputTag(String tag) {
-        final TagView previousInputTag = getInputTag();
-        if (previousInputTag != null) {
-            throw new IllegalStateException("Already has an INPUT tag in group.");
-        }
-
-        final TagView newInputTag = new TagView(getContext(), TagView.STATE_INPUT, tag);
-
-        newInputTag.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                CharSequence sequence = newInputTag.getText();
-
-                if (sequence.toString().length() >= 12) {
-                    newInputTag.setText(sequence.toString().substring(0, 11));
-                    newInputTag.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
-                }
-            }
-        });
-        // If limitation exceed, disable the input and invoke a callback.
-        if (limitation != -1 && getTags().length >= limitation) {
-            if (mOnTagLimitationExceedListener != null) {
-                mOnTagLimitationExceedListener.onLimitationExceed();
-            }
-            newInputTag.setEnabled(false);
-        }
-        newInputTag.setOnClickListener(mInternalTagClickListener);
-        addView(newInputTag);
-    }
-
-    public void setLimitation(int limitation) {
-        this.limitation = limitation;
-    }
-
-    /**
-     * Append tag to this group.
-     *
-     * @param tag the tag to append.
-     */
-    protected void appendTag(CharSequence tag) {
-        final TagView newTag = new TagView(getContext(), TagView.STATE_NORMAL, tag);
-        newTag.setOnClickListener(mInternalTagClickListener);
-        addView(newTag);
+    public void setTagsLimitation(int tagsLimitation) {
+        this.mTagsLimitation = tagsLimitation;
     }
 
     public float dp2px(float dp) {
@@ -595,11 +459,16 @@ public class TagGroup extends ViewGroup {
     public float sp2px(float sp) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,
                 getResources().getDisplayMetrics());
-    }
-
-    @Override
-    public ViewGroup.LayoutParams generateLayoutParams(AttributeSet attrs) {
-        return new TagGroup.LayoutParams(getContext(), attrs);
+    }    @Override
+    public Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+        SavedState ss = new SavedState(superState);
+        ss.tags = getTags();
+        ss.checkedPosition = getCheckedTagIndex();
+        if (getInputTag() != null) {
+            ss.input = getInputTag().getText().toString();
+        }
+        return ss;
     }
 
     /**
@@ -675,6 +544,24 @@ public class TagGroup extends ViewGroup {
         public LayoutParams(int width, int height) {
             super(width, height);
         }
+    }    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        if (!(state instanceof SavedState)) {
+            super.onRestoreInstanceState(state);
+            return;
+        }
+
+        SavedState ss = (SavedState) state;
+        super.onRestoreInstanceState(ss.getSuperState());
+
+        setTags(ss.tags);
+        TagView checkedTagView = getTagAt(ss.checkedPosition);
+        if (checkedTagView != null) {
+            checkedTagView.setChecked(true);
+        }
+        if (getInputTag() != null) {
+            getInputTag().setText(ss.input);
+        }
     }
 
     /**
@@ -727,7 +614,7 @@ public class TagGroup extends ViewGroup {
         @Override
         public void onClick(View v) {
             final TagView tag = (TagView) v;
-            if (isAppendMode) {
+            if (mIsAppendMode) {
                 if (tag.mState == TagView.STATE_INPUT) {
                     // If the clicked tag is in INPUT state, uncheck the previous checked tag if exists.
                     final TagView checkedTag = getCheckedTag();
@@ -836,31 +723,31 @@ public class TagGroup extends ViewGroup {
 
         {
             mBorderPaint.setStyle(Paint.Style.STROKE);
-            mBorderPaint.setStrokeWidth(borderStrokeWidth);
+            mBorderPaint.setStrokeWidth(mBorderStrokeWidth);
             mBackgroundPaint.setStyle(Paint.Style.FILL);
             mCheckedMarkerPaint.setStyle(Paint.Style.FILL);
             mCheckedMarkerPaint.setStrokeWidth(CHECKED_MARKER_STROKE_WIDTH);
-            mCheckedMarkerPaint.setColor(checkedMarkerColor);
+            mCheckedMarkerPaint.setColor(mCheckedMarkerColor);
         }
 
 
         public TagView(Context context, final int state, CharSequence text) {
             super(context);
-            setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding);
+            setPadding(mHorizontalPadding, mVerticalPadding, mHorizontalPadding, mVerticalPadding);
             setLayoutParams(new TagGroup.LayoutParams(
                     TagGroup.LayoutParams.WRAP_CONTENT,
                     TagGroup.LayoutParams.WRAP_CONTENT));
 
             setGravity(Gravity.CENTER);
             setText(text);
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
 
             mState = state;
 
-            setClickable(isAppendMode);
+            setClickable(mIsAppendMode);
             setFocusable(state == STATE_INPUT);
             setFocusableInTouchMode(state == STATE_INPUT);
-            setHint(state == STATE_INPUT ? inputHint : null);
+            setHint(state == STATE_INPUT ? mInputHint : null);
             setMovementMethod(state == STATE_INPUT ? ArrowKeyMovementMethod.getInstance() : null);
 
             // Interrupted long click event to avoid PAUSE popup.
@@ -953,19 +840,12 @@ public class TagGroup extends ViewGroup {
         }
 
         /**
-         * Set whether this tag view is in the checked state.
+         * Indicates whether the input content is available.
          *
-         * @param checked true is checked, false otherwise
+         * @return True if the input content is available, false otherwise.
          */
-        public void setChecked(boolean checked) {
-            isChecked = checked;
-            // Make the checked mark drawing region.
-            setPadding(horizontalPadding,
-                    verticalPadding,
-                    isChecked ? (int) (horizontalPadding + getHeight() / 2.5f + CHECKED_MARKER_OFFSET)
-                            : horizontalPadding,
-                    verticalPadding);
-            invalidatePaint();
+        public boolean isInputAvailable() {
+            return getText() != null && getText().length() > 0;
         }
 
         /**
@@ -985,49 +865,56 @@ public class TagGroup extends ViewGroup {
             requestLayout();
         }
 
-        @Override
-        protected boolean getDefaultEditable() {
-            return true;
-        }
-
         /**
-         * Indicates whether the input content is available.
+         * Set whether this tag view is in the checked state.
          *
-         * @return True if the input content is available, false otherwise.
+         * @param checked true is checked, false otherwise
          */
-        public boolean isInputAvailable() {
-            return getText() != null && getText().length() > 0;
+        public void setChecked(boolean checked) {
+            isChecked = checked;
+            // Make the checked mark drawing region.
+            setPadding(mHorizontalPadding,
+                    mVerticalPadding,
+                    isChecked ? (int) (mHorizontalPadding + getHeight() / 2.5f + CHECKED_MARKER_OFFSET)
+                            : mHorizontalPadding,
+                    mVerticalPadding);
+            invalidatePaint();
         }
 
         private void invalidatePaint() {
-            if (isAppendMode) {
+            if (mIsAppendMode) {
                 if (mState == STATE_INPUT) {
-                    mBorderPaint.setColor(dashBorderColor);
+                    mBorderPaint.setColor(mDashBorderColor);
                     mBorderPaint.setPathEffect(mPathEffect);
-                    mBackgroundPaint.setColor(backgroundColor);
-                    setHintTextColor(inputHintColor);
-                    setTextColor(inputTextColor);
+                    mBackgroundPaint.setColor(mBackgroundColor);
+                    setHintTextColor(mInputHintColor);
+                    setTextColor(mInputTextColor);
                 } else {
                     mBorderPaint.setPathEffect(null);
                     if (isChecked) {
-                        mBorderPaint.setColor(checkedBorderColor);
-                        mBackgroundPaint.setColor(checkedBackgroundColor);
-                        setTextColor(checkedTextColor);
+                        mBorderPaint.setColor(mCheckedBorderColor);
+                        mBackgroundPaint.setColor(mCheckedBackgroundColor);
+                        setTextColor(mCheckedTextColor);
                     } else {
-                        mBorderPaint.setColor(borderColor);
-                        mBackgroundPaint.setColor(backgroundColor);
-                        setTextColor(textColor);
+                        mBorderPaint.setColor(mBorderColor);
+                        mBackgroundPaint.setColor(mBackgroundColor);
+                        setTextColor(mTextColor);
                     }
                 }
             } else {
-                mBorderPaint.setColor(borderColor);
-                mBackgroundPaint.setColor(backgroundColor);
-                setTextColor(textColor);
+                mBorderPaint.setColor(mBorderColor);
+                mBackgroundPaint.setColor(mBackgroundColor);
+                setTextColor(mTextColor);
             }
 
             if (isPressed) {
-                mBackgroundPaint.setColor(pressedBackgroundColor);
+                mBackgroundPaint.setColor(mPressedBackgroundColor);
             }
+        }
+
+        @Override
+        protected boolean getDefaultEditable() {
+            return true;
         }
 
         @Override
@@ -1053,54 +940,17 @@ public class TagGroup extends ViewGroup {
         }
 
         @Override
-        protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-            super.onSizeChanged(w, h, oldw, oldh);
-            int left = (int) borderStrokeWidth;
-            int top = (int) borderStrokeWidth;
-            int right = (int) (left + w - borderStrokeWidth * 2);
-            int bottom = (int) (top + h - borderStrokeWidth * 2);
-
-            int d = bottom - top;
-
-            mLeftCornerRectF.set(left, top, left + d, top + d);
-            mRightCornerRectF.set(right - d, top, right, top + d);
-
-            mBorderPath.reset();
-            mBorderPath.addArc(mLeftCornerRectF, -180, 90);
-            mBorderPath.addArc(mLeftCornerRectF, -270, 90);
-            mBorderPath.addArc(mRightCornerRectF, -90, 90);
-            mBorderPath.addArc(mRightCornerRectF, 0, 90);
-
-            int l = (int) (d / 2.0f);
-            mBorderPath.moveTo(left + l, top);
-            mBorderPath.lineTo(right - l, top);
-
-            mBorderPath.moveTo(left + l, bottom);
-            mBorderPath.lineTo(right - l, bottom);
-
-            mBorderPath.moveTo(left, top + l);
-            mBorderPath.lineTo(left, bottom - l);
-
-            mBorderPath.moveTo(right, top + l);
-            mBorderPath.lineTo(right, bottom - l);
-
-            mHorizontalBlankFillRectF.set(left, top + l, right, bottom - l);
-            mVerticalBlankFillRectF.set(left + l, top, right - l, bottom);
-
-            int m = (int) (h / 2.5f);
-            h = bottom - top;
-            mCheckedMarkerBound.set(right - m - horizontalPadding + CHECKED_MARKER_OFFSET,
-                    top + h / 2 - m / 2,
-                    right - horizontalPadding + CHECKED_MARKER_OFFSET,
-                    bottom - h / 2 + m / 2);
-
-            // Ensure the checked mark drawing region is correct across screen orientation changes.
-            if (isChecked) {
-                setPadding(horizontalPadding,
-                        verticalPadding,
-                        (int) (horizontalPadding + h / 2.5f + CHECKED_MARKER_OFFSET),
-                        verticalPadding);
+        public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
+            /*
+            Following line returns null if the view is not enabled
+            We need to check if the returned value is null or not because of enabling or disabling the input view for
+            have the limitation feature.
+             */
+            InputConnection inputConnection = super.onCreateInputConnection(outAttrs);
+            if (inputConnection != null) {
+                return new ZanyInputConnection(super.onCreateInputConnection(outAttrs), true);
             }
+            return null;
         }
 
         @Override
@@ -1137,17 +987,54 @@ public class TagGroup extends ViewGroup {
         }
 
         @Override
-        public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
-            /*
-            Following line returns null if the view is not enabled
-            We need to check if the returned value is null or not because of enabling or disabling the input view for
-            have the limitation feature.
-             */
-            InputConnection inputConnection = super.onCreateInputConnection(outAttrs);
-            if (inputConnection != null) {
-                return new ZanyInputConnection(super.onCreateInputConnection(outAttrs), true);
+        protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+            super.onSizeChanged(w, h, oldw, oldh);
+            int left = (int) mBorderStrokeWidth;
+            int top = (int) mBorderStrokeWidth;
+            int right = (int) (left + w - mBorderStrokeWidth * 2);
+            int bottom = (int) (top + h - mBorderStrokeWidth * 2);
+
+            int d = bottom - top;
+
+            mLeftCornerRectF.set(left, top, left + d, top + d);
+            mRightCornerRectF.set(right - d, top, right, top + d);
+
+            mBorderPath.reset();
+            mBorderPath.addArc(mLeftCornerRectF, -180, 90);
+            mBorderPath.addArc(mLeftCornerRectF, -270, 90);
+            mBorderPath.addArc(mRightCornerRectF, -90, 90);
+            mBorderPath.addArc(mRightCornerRectF, 0, 90);
+
+            int l = (int) (d / 2.0f);
+            mBorderPath.moveTo(left + l, top);
+            mBorderPath.lineTo(right - l, top);
+
+            mBorderPath.moveTo(left + l, bottom);
+            mBorderPath.lineTo(right - l, bottom);
+
+            mBorderPath.moveTo(left, top + l);
+            mBorderPath.lineTo(left, bottom - l);
+
+            mBorderPath.moveTo(right, top + l);
+            mBorderPath.lineTo(right, bottom - l);
+
+            mHorizontalBlankFillRectF.set(left, top + l, right, bottom - l);
+            mVerticalBlankFillRectF.set(left + l, top, right - l, bottom);
+
+            int m = (int) (h / 2.5f);
+            h = bottom - top;
+            mCheckedMarkerBound.set(right - m - mHorizontalPadding + CHECKED_MARKER_OFFSET,
+                    top + h / 2 - m / 2,
+                    right - mHorizontalPadding + CHECKED_MARKER_OFFSET,
+                    bottom - h / 2 + m / 2);
+
+            // Ensure the checked mark drawing region is correct across screen orientation changes.
+            if (isChecked) {
+                setPadding(mHorizontalPadding,
+                        mVerticalPadding,
+                        (int) (mHorizontalPadding + h / 2.5f + CHECKED_MARKER_OFFSET),
+                        mVerticalPadding);
             }
-            return null;
         }
 
         /**
@@ -1160,11 +1047,6 @@ public class TagGroup extends ViewGroup {
             }
 
             @Override
-            public boolean sendKeyEvent(KeyEvent event) {
-                return super.sendKeyEvent(event);
-            }
-
-            @Override
             public boolean deleteSurroundingText(int beforeLength, int afterLength) {
                 // magic: in latest Android, deleteSurroundingText(1, 0) will be called for backspace
                 if (beforeLength == 1 && afterLength == 0) {
@@ -1174,6 +1056,135 @@ public class TagGroup extends ViewGroup {
                 }
                 return super.deleteSurroundingText(beforeLength, afterLength);
             }
+
+            @Override
+            public boolean sendKeyEvent(KeyEvent event) {
+                return super.sendKeyEvent(event);
+            }
         }
     }
+
+
+
+
+
+
+
+
+    /**
+     * Returns the tag array in group, except the INPUT tag.
+     *
+     * @return the tag array.
+     */
+    public String[] getTags() {
+        final int count = getChildCount();
+        final List<String> tagList = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            final TagView tagView = getTagAt(i);
+            if (tagView.mState == TagView.STATE_NORMAL) {
+                tagList.add(tagView.getText().toString());
+            }
+        }
+
+        return tagList.toArray(new String[tagList.size()]);
+    }
+
+
+    /**
+     * Set the tags. It will remove all previous tags first.
+     *
+     * @param tags the tag list to set.
+     */
+    public void setTags(String... tags) {
+        if (mTagsLimitation != -1 && tags.length > mTagsLimitation) {
+            throw new IllegalStateException(String.format("There is a limitation (%1$d) in adding tags.", mTagsLimitation));
+        }
+        removeAllViews();
+        for (final String tag : tags) {
+            appendTag(tag);
+        }
+
+        if (mIsAppendMode) {
+            appendInputTag();
+        }
+    }
+
+
+    /**
+     * @see #setTags(String...)
+     */
+    public void setTags(List<String> tagList) {
+        setTags(tagList.toArray(new String[tagList.size()]));
+    }
+
+
+    /**
+     * @see #appendInputTag(String)
+     */
+    protected void appendInputTag() {
+        appendInputTag(null);
+    }
+
+
+    /**
+     * Append a INPUT tag to this group. It will throw an exception if there has a previous INPUT tag.
+     *
+     * @param tag the tag text.
+     */
+    protected void appendInputTag(String tag) {
+        final TagView previousInputTag = getInputTag();
+        if (previousInputTag != null) {
+            throw new IllegalStateException("Already has an INPUT tag in group.");
+        }
+
+        final TagView newInputTag = new TagView(getContext(), TagView.STATE_INPUT, tag);
+
+        if (mCharsLimitation != -1) {
+            newInputTag.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    CharSequence sequence = newInputTag.getText();
+
+                    if (sequence.toString().length() >= mCharsLimitation) {
+                        newInputTag.setText(sequence.toString().substring(0, mCharsLimitation - 1));
+                        newInputTag.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
+                    }
+                }
+            });
+        }
+
+        // If limitation exceed, disable the input and invoke a callback.
+        if (mTagsLimitation != -1 && getTags().length >= mTagsLimitation) {
+            if (mOnTagLimitationExceedListener != null) {
+                mOnTagLimitationExceedListener.onLimitationExceed();
+            }
+            newInputTag.setEnabled(false);
+        }
+        newInputTag.setOnClickListener(mInternalTagClickListener);
+        addView(newInputTag);
+    }
+
+
+    /**
+     * Append tag to this group.
+     *
+     * @param tag the tag to append.
+     */
+    protected void appendTag(CharSequence tag) {
+        final TagView newTag = new TagView(getContext(), TagView.STATE_NORMAL, tag);
+        newTag.setOnClickListener(mInternalTagClickListener);
+        addView(newTag);
+    }
+
+
 }
