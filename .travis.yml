@@ -1,7 +1,11 @@
 language: android
+jdk: oraclejdk7
 branches:
   only:
     - master
+env:
+  global:
+    - ADB_INSTALL_TIMEOUT=8 # minutes (2 minutes by default)
 android:
   components:
     - tools
@@ -9,6 +13,8 @@ android:
     - android-23
 
     - extra-android-m2repository
+
+    - sys-img-x86-android-23
 
   licenses:
     - 'android-sdk-license-.+'
