@@ -18,6 +18,7 @@ android {
     }
     productFlavors {
     }
+    // Travis CI needed
     lintOptions {
         abortOnError false
     }
