@@ -1,5 +1,5 @@
 <resources>
-    <declare-styleable name="TagGroup">
+    <declare-styleable name="AndroidTagGroup">
         <!-- Whether the tag group is in append mode. -->
         <attr name="atg_isAppendMode" format="boolean"/>
         <!-- If the tag group is in append mode, what the hint of input tag. -->

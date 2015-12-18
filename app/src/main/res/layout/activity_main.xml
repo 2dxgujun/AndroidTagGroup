@@ -24,9 +24,9 @@
         android:text="@string/add_tags"
         android:textColor="@android:color/darker_gray"/>
 
-    <me.gujun.android.taggroup.TagGroup
-        android:id="@+id/tagGroup"
-        style="@style/TagGroup"
+    <me.gujun.android.taggroup.AndroidTagGroup
+        android:id="@+id/androidTagGroup"
+        style="@style/AndroidTagGroup"
         android:layout_marginTop="10dp"/>
 
     <View
@@ -37,7 +37,7 @@
         android:layout_marginTop="5dp"
         android:background="#DDD"/>
 
-    <me.gujun.android.taggroup.TagGroup
+    <me.gujun.android.taggroup.AndroidTagGroup
         android:id="@+id/tag_group_beauty"
         style="@style/TagGroup.Beauty_Red"
         android:layout_marginTop="5dp"/>
@@ -50,7 +50,7 @@
         android:layout_marginTop="5dp"
         android:background="#DDD"/>
 
-    <me.gujun.android.taggroup.TagGroup
+    <me.gujun.android.taggroup.AndroidTagGroup
         android:id="@+id/tag_group_beauty_inverse"
         style="@style/TagGroup.Beauty_Red.Inverse"
         android:layout_marginTop="5dp"/>
@@ -62,7 +62,7 @@
         android:text="@string/tags_small"
         android:textSize="14sp"/>
 
-    <me.gujun.android.taggroup.TagGroup
+    <me.gujun.android.taggroup.AndroidTagGroup
         android:id="@+id/tag_group_small"
         style="@style/TagGroup.Small"
         android:layout_marginTop="10dp"/>
@@ -74,7 +74,7 @@
         android:text="@string/tags_large"
         android:textSize="18sp"/>
 
-    <me.gujun.android.taggroup.TagGroup
+    <me.gujun.android.taggroup.AndroidTagGroup
         android:id="@+id/tag_group_large"
         style="@style/TagGroup.Large"
         android:layout_marginTop="10dp"/>

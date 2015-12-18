@@ -9,22 +9,22 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import me.gujun.android.taggroup.TagGroup;
+import me.gujun.android.taggroup.AndroidTagGroup;
 import me.gujun.android.taggroup.demo.db.TagsManager;
 
 
 public class MainActivity extends ActionBarActivity {
     private TextView mPromptText;
 
-    private TagGroup mDefaultTagGroup;
-    private TagGroup mSmallTagGroup;
-    private TagGroup mLargeTagGroup;
-    private TagGroup mBeautyTagGroup;
-    private TagGroup mBeautyInverseTagGroup;
+    private AndroidTagGroup mDefaultAndroidTagGroup;
+    private AndroidTagGroup mSmallAndroidTagGroup;
+    private AndroidTagGroup mLargeAndroidTagGroup;
+    private AndroidTagGroup mBeautyAndroidTagGroup;
+    private AndroidTagGroup mBeautyInverseAndroidTagGroup;
 
     private TagsManager mTagsManager;
 
-    private TagGroup.OnTagClickListener mTagClickListener = new TagGroup.OnTagClickListener() {
+    private AndroidTagGroup.OnTagClickListener mTagClickListener = new AndroidTagGroup.OnTagClickListener() {
         @Override
         public void onTagClick(String tag) {
             Toast.makeText(MainActivity.this, tag, Toast.LENGTH_SHORT).show();
@@ -47,32 +47,32 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        mDefaultTagGroup = (TagGroup) findViewById(R.id.tagGroup);
-        mSmallTagGroup = (TagGroup) findViewById(R.id.tag_group_small);
-        mLargeTagGroup = (TagGroup) findViewById(R.id.tag_group_large);
-        mBeautyTagGroup = (TagGroup) findViewById(R.id.tag_group_beauty);
-        mBeautyInverseTagGroup = (TagGroup) findViewById(R.id.tag_group_beauty_inverse);
+        mDefaultAndroidTagGroup = (AndroidTagGroup) findViewById(R.id.androidTagGroup);
+        mSmallAndroidTagGroup = (AndroidTagGroup) findViewById(R.id.tag_group_small);
+        mLargeAndroidTagGroup = (AndroidTagGroup) findViewById(R.id.tag_group_large);
+        mBeautyAndroidTagGroup = (AndroidTagGroup) findViewById(R.id.tag_group_beauty);
+        mBeautyInverseAndroidTagGroup = (AndroidTagGroup) findViewById(R.id.tag_group_beauty_inverse);
         if (tags != null && tags.length > 0) {
-            mDefaultTagGroup.setTags(tags);
-            mSmallTagGroup.setTags(tags);
-            mLargeTagGroup.setTags(tags);
-            mBeautyTagGroup.setTags(tags);
-            mBeautyInverseTagGroup.setTags(tags);
+            mDefaultAndroidTagGroup.setTags(tags);
+            mSmallAndroidTagGroup.setTags(tags);
+            mLargeAndroidTagGroup.setTags(tags);
+            mBeautyAndroidTagGroup.setTags(tags);
+            mBeautyInverseAndroidTagGroup.setTags(tags);
         }
 
         MyTagGroupOnClickListener tgClickListener = new MyTagGroupOnClickListener();
 
-        mDefaultTagGroup.setOnClickListener(tgClickListener);
-        mSmallTagGroup.setOnClickListener(tgClickListener);
-        mLargeTagGroup.setOnClickListener(tgClickListener);
-        mBeautyTagGroup.setOnClickListener(tgClickListener);
-        mBeautyInverseTagGroup.setOnClickListener(tgClickListener);
+        mDefaultAndroidTagGroup.setOnClickListener(tgClickListener);
+        mSmallAndroidTagGroup.setOnClickListener(tgClickListener);
+        mLargeAndroidTagGroup.setOnClickListener(tgClickListener);
+        mBeautyAndroidTagGroup.setOnClickListener(tgClickListener);
+        mBeautyInverseAndroidTagGroup.setOnClickListener(tgClickListener);
 
-        mDefaultTagGroup.setOnTagClickListener(mTagClickListener);
-        mSmallTagGroup.setOnTagClickListener(mTagClickListener);
-        mLargeTagGroup.setOnTagClickListener(mTagClickListener);
-        mBeautyTagGroup.setOnTagClickListener(mTagClickListener);
-        mBeautyInverseTagGroup.setOnTagClickListener(mTagClickListener);
+        mDefaultAndroidTagGroup.setOnTagClickListener(mTagClickListener);
+        mSmallAndroidTagGroup.setOnTagClickListener(mTagClickListener);
+        mLargeAndroidTagGroup.setOnTagClickListener(mTagClickListener);
+        mBeautyAndroidTagGroup.setOnTagClickListener(mTagClickListener);
+        mBeautyInverseAndroidTagGroup.setOnTagClickListener(mTagClickListener);
     }
 
     protected void launchTagEditorActivity() {
@@ -85,11 +85,11 @@ public class MainActivity extends ActionBarActivity {
         super.onResume();
         String[] tags = mTagsManager.getTags();
         mPromptText.setVisibility((tags == null || tags.length == 0) ? View.VISIBLE : View.GONE);
-        mDefaultTagGroup.setTags(tags);
-        mSmallTagGroup.setTags(tags);
-        mLargeTagGroup.setTags(tags);
-        mBeautyTagGroup.setTags(tags);
-        mBeautyInverseTagGroup.setTags(tags);
+        mDefaultAndroidTagGroup.setTags(tags);
+        mSmallAndroidTagGroup.setTags(tags);
+        mLargeAndroidTagGroup.setTags(tags);
+        mBeautyAndroidTagGroup.setTags(tags);
+        mBeautyInverseAndroidTagGroup.setTags(tags);
     }
 
     @Override

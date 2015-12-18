@@ -50,7 +50,7 @@ import java.util.List;
  * @version 2.0
  * @since 2015-2-3 14:16:32
  */
-public class TagGroup extends ViewGroup {
+public class AndroidTagGroup extends ViewGroup {
     private final int default_border_color = Color.rgb(0x49, 0xC1, 0x20);
     private final int default_text_color = Color.rgb(0x49, 0xC1, 0x20);
     private final int default_background_color = Color.WHITE;
@@ -187,15 +187,15 @@ public class TagGroup extends ViewGroup {
      */
     private InternalTagClickListener mInternalTagClickListener = new InternalTagClickListener();
 
-    public TagGroup(Context context) {
+    public AndroidTagGroup(Context context) {
         this(context, null);
     }
 
-    public TagGroup(Context context, AttributeSet attrs) {
+    public AndroidTagGroup(Context context, AttributeSet attrs) {
         this(context, attrs, R.attr.tagGroupStyle);
     }
 
-    public TagGroup(Context context, AttributeSet attrs, int defStyleAttr) {
+    public AndroidTagGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         default_border_stroke_width = dp2px(0.5f);
         default_text_size = sp2px(13.0f);
@@ -205,29 +205,29 @@ public class TagGroup extends ViewGroup {
         default_vertical_padding = dp2px(3.0f);
 
         // Load styled attributes.
-        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TagGroup, defStyleAttr, R.style.TagGroup);
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AndroidTagGroup, defStyleAttr, R.style.AndroidTagGroup);
         try {
-            mIsAppendMode = a.getBoolean(R.styleable.TagGroup_atg_isAppendMode, false);
-            mInputHint = a.getText(R.styleable.TagGroup_atg_inputHint);
-            mBorderColor = a.getColor(R.styleable.TagGroup_atg_borderColor, default_border_color);
-            mTextColor = a.getColor(R.styleable.TagGroup_atg_textColor, default_text_color);
-            mBackgroundColor = a.getColor(R.styleable.TagGroup_atg_backgroundColor, default_background_color);
-            mDashBorderColor = a.getColor(R.styleable.TagGroup_atg_dashBorderColor, default_dash_border_color);
-            mInputHintColor = a.getColor(R.styleable.TagGroup_atg_inputHintColor, default_input_hint_color);
-            mInputTextColor = a.getColor(R.styleable.TagGroup_atg_inputTextColor, default_input_text_color);
-            mCheckedBorderColor = a.getColor(R.styleable.TagGroup_atg_checkedBorderColor, default_checked_border_color);
-            mCheckedTextColor = a.getColor(R.styleable.TagGroup_atg_checkedTextColor, default_checked_text_color);
-            mCheckedMarkerColor = a.getColor(R.styleable.TagGroup_atg_checkedMarkerColor, default_checked_marker_color);
-            mCheckedBackgroundColor = a.getColor(R.styleable.TagGroup_atg_checkedBackgroundColor, default_checked_background_color);
-            mPressedBackgroundColor = a.getColor(R.styleable.TagGroup_atg_pressedBackgroundColor, default_pressed_background_color);
-            mBorderStrokeWidth = a.getDimension(R.styleable.TagGroup_atg_borderStrokeWidth, default_border_stroke_width);
-            mTextSize = a.getDimension(R.styleable.TagGroup_atg_textSize, default_text_size);
-            mHorizontalSpacing = (int) a.getDimension(R.styleable.TagGroup_atg_horizontalSpacing, default_horizontal_spacing);
-            mVerticalSpacing = (int) a.getDimension(R.styleable.TagGroup_atg_verticalSpacing, default_vertical_spacing);
-            mHorizontalPadding = (int) a.getDimension(R.styleable.TagGroup_atg_horizontalPadding, default_horizontal_padding);
-            mVerticalPadding = (int) a.getDimension(R.styleable.TagGroup_atg_verticalPadding, default_vertical_padding);
-            mTagsLimitation = a.getInteger(R.styleable.TagGroup_atg_tagsLimitation, -1);
-            mCharsLimitation = a.getInteger(R.styleable.TagGroup_atg_charsLimitation, -1);
+            mIsAppendMode = a.getBoolean(R.styleable.AndroidTagGroup_atg_isAppendMode, false);
+            mInputHint = a.getText(R.styleable.AndroidTagGroup_atg_inputHint);
+            mBorderColor = a.getColor(R.styleable.AndroidTagGroup_atg_borderColor, default_border_color);
+            mTextColor = a.getColor(R.styleable.AndroidTagGroup_atg_textColor, default_text_color);
+            mBackgroundColor = a.getColor(R.styleable.AndroidTagGroup_atg_backgroundColor, default_background_color);
+            mDashBorderColor = a.getColor(R.styleable.AndroidTagGroup_atg_dashBorderColor, default_dash_border_color);
+            mInputHintColor = a.getColor(R.styleable.AndroidTagGroup_atg_inputHintColor, default_input_hint_color);
+            mInputTextColor = a.getColor(R.styleable.AndroidTagGroup_atg_inputTextColor, default_input_text_color);
+            mCheckedBorderColor = a.getColor(R.styleable.AndroidTagGroup_atg_checkedBorderColor, default_checked_border_color);
+            mCheckedTextColor = a.getColor(R.styleable.AndroidTagGroup_atg_checkedTextColor, default_checked_text_color);
+            mCheckedMarkerColor = a.getColor(R.styleable.AndroidTagGroup_atg_checkedMarkerColor, default_checked_marker_color);
+            mCheckedBackgroundColor = a.getColor(R.styleable.AndroidTagGroup_atg_checkedBackgroundColor, default_checked_background_color);
+            mPressedBackgroundColor = a.getColor(R.styleable.AndroidTagGroup_atg_pressedBackgroundColor, default_pressed_background_color);
+            mBorderStrokeWidth = a.getDimension(R.styleable.AndroidTagGroup_atg_borderStrokeWidth, default_border_stroke_width);
+            mTextSize = a.getDimension(R.styleable.AndroidTagGroup_atg_textSize, default_text_size);
+            mHorizontalSpacing = (int) a.getDimension(R.styleable.AndroidTagGroup_atg_horizontalSpacing, default_horizontal_spacing);
+            mVerticalSpacing = (int) a.getDimension(R.styleable.AndroidTagGroup_atg_verticalSpacing, default_vertical_spacing);
+            mHorizontalPadding = (int) a.getDimension(R.styleable.AndroidTagGroup_atg_horizontalPadding, default_horizontal_padding);
+            mVerticalPadding = (int) a.getDimension(R.styleable.AndroidTagGroup_atg_verticalPadding, default_vertical_padding);
+            mTagsLimitation = a.getInteger(R.styleable.AndroidTagGroup_atg_tagsLimitation, -1);
+            mCharsLimitation = a.getInteger(R.styleable.AndroidTagGroup_atg_charsLimitation, -1);
         } finally {
             a.recycle();
         }
@@ -255,7 +255,7 @@ public class TagGroup extends ViewGroup {
             inputTag.endInput();
 
             if (mOnTagChangeListener != null) {
-                mOnTagChangeListener.onAppend(TagGroup.this, inputTag.getText().toString());
+                mOnTagChangeListener.onAppend(AndroidTagGroup.this, inputTag.getText().toString());
             }
             appendInputTag();
         }
@@ -295,7 +295,7 @@ public class TagGroup extends ViewGroup {
 
     @Override
     public ViewGroup.LayoutParams generateLayoutParams(AttributeSet attrs) {
-        return new TagGroup.LayoutParams(getContext(), attrs);
+        return new AndroidTagGroup.LayoutParams(getContext(), attrs);
     }
 
     /**
@@ -452,7 +452,7 @@ public class TagGroup extends ViewGroup {
     protected void deleteTag(TagView tagView) {
         removeView(tagView);
         if (mOnTagChangeListener != null) {
-            mOnTagChangeListener.onDelete(TagGroup.this, tagView.getText().toString());
+            mOnTagChangeListener.onDelete(AndroidTagGroup.this, tagView.getText().toString());
         }
         if (getInputTag().mState == TagView.STATE_INPUT) {
             if (!getInputTag().isEnabled()) {
@@ -499,14 +499,14 @@ public class TagGroup extends ViewGroup {
          *
          * @param tag the appended tag.
          */
-        void onAppend(TagGroup tagGroup, String tag);
+        void onAppend(AndroidTagGroup androidTagGroup, String tag);
 
         /**
          * Called when a tag has been deleted from the the group.
          *
          * @param tag the deleted tag.
          */
-        void onDelete(TagGroup tagGroup, String tag);
+        void onDelete(AndroidTagGroup androidTagGroup, String tag);
     }
 
     /**
@@ -535,7 +535,7 @@ public class TagGroup extends ViewGroup {
     }
 
     /**
-     * For {@link TagGroup} save and restore state.
+     * For {@link AndroidTagGroup} save and restore state.
      */
     static class SavedState extends BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR =
@@ -714,9 +714,9 @@ public class TagGroup extends ViewGroup {
         public TagView(Context context, final int state, CharSequence text) {
             super(context);
             setPadding(mHorizontalPadding, mVerticalPadding, mHorizontalPadding, mVerticalPadding);
-            setLayoutParams(new TagGroup.LayoutParams(
-                    TagGroup.LayoutParams.WRAP_CONTENT,
-                    TagGroup.LayoutParams.WRAP_CONTENT));
+            setLayoutParams(new AndroidTagGroup.LayoutParams(
+                    AndroidTagGroup.LayoutParams.WRAP_CONTENT,
+                    AndroidTagGroup.LayoutParams.WRAP_CONTENT));
 
             setGravity(Gravity.CENTER);
             setText(text);
@@ -756,7 +756,7 @@ public class TagGroup extends ViewGroup {
                                 // the event, then append a new INPUT state tag.
                                 endInput();
                                 if (mOnTagChangeListener != null) {
-                                    mOnTagChangeListener.onAppend(TagGroup.this, getText().toString());
+                                    mOnTagChangeListener.onAppend(AndroidTagGroup.this, getText().toString());
                                 }
                                 appendInputTag();
                             }
@@ -778,7 +778,7 @@ public class TagGroup extends ViewGroup {
                                     if (lastNormalTagView.isChecked) {
                                         removeView(lastNormalTagView);
                                         if (mOnTagChangeListener != null) {
-                                            mOnTagChangeListener.onDelete(TagGroup.this, lastNormalTagView.getText().toString());
+                                            mOnTagChangeListener.onDelete(AndroidTagGroup.this, lastNormalTagView.getText().toString());
                                         }
                                     } else {
                                         final TagView checkedTagView = getCheckedTag();

@@ -6,9 +6,9 @@
     android:orientation="vertical"
     android:padding="@dimen/activity_vertical_margin">
 
-    <me.gujun.android.taggroup.TagGroup
-        android:id="@+id/tagGroup"
-        style="@style/TagGroup"
+    <me.gujun.android.taggroup.AndroidTagGroup
+        android:id="@+id/androidTagGroup"
+        style="@style/AndroidTagGroup"
         app:atg_charsLimitation="6"
         app:atg_isAppendMode="true"
         app:atg_tagsLimitation="4"/>

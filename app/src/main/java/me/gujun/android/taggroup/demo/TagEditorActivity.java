@@ -5,12 +5,12 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import me.gujun.android.taggroup.TagGroup;
+import me.gujun.android.taggroup.AndroidTagGroup;
 import me.gujun.android.taggroup.demo.db.TagsManager;
 
 
 public class TagEditorActivity extends ActionBarActivity {
-    private TagGroup mTagGroup;
+    private AndroidTagGroup mAndroidTagGroup;
     private TagsManager mTagsManager;
 
     @Override
@@ -21,8 +21,8 @@ public class TagEditorActivity extends ActionBarActivity {
         mTagsManager = TagsManager.getInstance(getApplicationContext());
         String[] tags = mTagsManager.getTags();
 
-        mTagGroup = (TagGroup) findViewById(R.id.tagGroup);
-        mTagGroup.setTags(tags);
+        mAndroidTagGroup = (AndroidTagGroup) findViewById(R.id.androidTagGroup);
+        mAndroidTagGroup.setTags(tags);
     }
 
     @Override
@@ -34,11 +34,11 @@ public class TagEditorActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            mTagsManager.updateTags(mTagGroup.getTags());
+            mTagsManager.updateTags(mAndroidTagGroup.getTags());
             finish();
             return true;
         } else if (item.getItemId() == R.id.action_submit) {
-            mTagGroup.submitTag();
+            mAndroidTagGroup.submitTag();
             return true;
         }
         return false;
@@ -46,7 +46,7 @@ public class TagEditorActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        mTagsManager.updateTags(mTagGroup.getTags());
+        mTagsManager.updateTags(mAndroidTagGroup.getTags());
         super.onBackPressed();
     }
 }
