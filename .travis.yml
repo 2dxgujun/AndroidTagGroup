@@ -14,7 +14,7 @@ android:
 
     - extra-android-m2repository
 
-    - sys-img-x86-android-23
+    - sys-img-armeabi-v7a-android-21
 
   licenses:
     - 'android-sdk-license-.+'
