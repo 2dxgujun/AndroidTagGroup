@@ -1,5 +1,6 @@
 language: android
 jdk: oraclejdk7
+sudo: false
 branches:
   only:
     - master
@@ -14,7 +15,7 @@ android:
 
     - extra-android-m2repository
 
-    - sys-img-armeabi-v7a-android-21
+    - sys-img-x86-android-23
 
   licenses:
     - 'android-sdk-license-.+'
