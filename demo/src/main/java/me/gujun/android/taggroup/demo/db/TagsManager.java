@@ -4,9 +4,15 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
+
+import me.gujun.android.taggroup.demo.R;
 
 /**
  * Manage the tags from SQLite database.
@@ -64,5 +70,18 @@ public class TagsManager {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.delete(TagsTable.TABLE_NAME, null, null);
         db.close();
+    }
+    public String[] getAutoCompleteData(Context context,String _query) {
+        //Return countries
+        String[] data = context.getResources().getStringArray(R.array.countries_array);
+        String query = _query.toLowerCase();
+        ArrayList<String> filtredData = new ArrayList<>();
+
+        for (String d : data) {
+            if(d.toLowerCase().startsWith(query))
+                filtredData.add(d);
+        }
+
+        return  filtredData.toArray(new String[filtredData.size()]);
     }
 }

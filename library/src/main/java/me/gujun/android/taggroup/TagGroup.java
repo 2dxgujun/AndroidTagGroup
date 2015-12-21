@@ -13,6 +13,7 @@ import android.graphics.RectF;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.ArrowKeyMovementMethod;
@@ -26,6 +27,8 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputConnectionWrapper;
+import android.widget.ArrayAdapter;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -68,71 +71,123 @@ public class TagGroup extends ViewGroup {
     private final float default_horizontal_padding;
     private final float default_vertical_padding;
 
-    /** Indicates whether this TagGroup is set up to APPEND mode or DISPLAY mode. Default is false. */
+    /**
+     * Indicates whether this TagGroup is set up to APPEND mode or DISPLAY mode. Default is false.
+     */
     private boolean isAppendMode;
 
-    /** The text to be displayed when the text of the INPUT tag is empty. */
+    /**
+     * The text to be displayed when the text of the INPUT tag is empty.
+     */
     private CharSequence inputHint;
 
-    /** The tag outline border color. */
+    /**
+     * The tag outline border color.
+     */
     private int borderColor;
 
-    /** The tag text color. */
+    /**
+     * The tag text color.
+     */
     private int textColor;
 
-    /** The tag background color. */
+    /**
+     * The tag background color.
+     */
     private int backgroundColor;
 
-    /** The dash outline border color. */
+    /**
+     * The dash outline border color.
+     */
     private int dashBorderColor;
 
-    /** The  input tag hint text color. */
+    /**
+     * The  input tag hint text color.
+     */
     private int inputHintColor;
 
-    /** The input tag type text color. */
+    /**
+     * The input tag type text color.
+     */
     private int inputTextColor;
 
-    /** The checked tag outline border color. */
+    /**
+     * The checked tag outline border color.
+     */
     private int checkedBorderColor;
 
-    /** The check text color */
+    /**
+     * The check text color
+     */
     private int checkedTextColor;
 
-    /** The checked marker color. */
+    /**
+     * The checked marker color.
+     */
     private int checkedMarkerColor;
 
-    /** The checked tag background color. */
+    /**
+     * The checked tag background color.
+     */
     private int checkedBackgroundColor;
 
-    /** The tag background color, when the tag is being pressed. */
+    /**
+     * The tag background color, when the tag is being pressed.
+     */
     private int pressedBackgroundColor;
 
-    /** The tag outline border stroke width, default is 0.5dp. */
+    /**
+     * The tag outline border stroke width, default is 0.5dp.
+     */
     private float borderStrokeWidth;
 
-    /** The tag text size, default is 13sp. */
+    /**
+     * The tag text size, default is 13sp.
+     */
     private float textSize;
 
-    /** The horizontal tag spacing, default is 8.0dp. */
+    /**
+     * The horizontal tag spacing, default is 8.0dp.
+     */
     private int horizontalSpacing;
 
-    /** The vertical tag spacing, default is 4.0dp. */
+    /**
+     * The vertical tag spacing, default is 4.0dp.
+     */
     private int verticalSpacing;
 
-    /** The horizontal tag padding, default is 12.0dp. */
+    /**
+     * The horizontal tag padding, default is 12.0dp.
+     */
     private int horizontalPadding;
 
-    /** The vertical tag padding, default is 3.0dp. */
+    /**
+     * The vertical tag padding, default is 3.0dp.
+     */
     private int verticalPadding;
 
-    /** Listener used to dispatch tag change event. */
+    /**
+     * Listener used to dispatch tag change event.
+     */
     private OnTagChangeListener mOnTagChangeListener;
 
-    /** Listener used to dispatch tag click event. */
+    /**
+     * Listener used to dispatch tag click event.
+     */
     private OnTagClickListener mOnTagClickListener;
 
-    /** Listener used to handle tag click event. */
+    /**
+     * Listener used to handle tag click event.
+     */
     private InternalTagClickListener mInternalTagClickListener = new InternalTagClickListener();
+    /**
+     * if without space, add tag when space char is typed
+     */
+    private boolean tagsWithoutSpace = true;
+    /**
+     * The auto complete list adapter
+     */
+    private ArrayAdapter<String> autoCompleteAdapter = null;
 
     public TagGroup(Context context) {
         this(context, null);
@@ -189,6 +244,32 @@ public class TagGroup extends ViewGroup {
                 }
             });
         }
+    }
+
+    public boolean isTagsWithoutSpace() {
+        return tagsWithoutSpace;
+    }
+
+    /**
+     * set tags without space
+     * if true, the tag is add when space is typed
+     * @param tagsWithoutSpace
+     */
+    public void setTagsWithoutSpace(boolean tagsWithoutSpace) {
+        this.tagsWithoutSpace = tagsWithoutSpace;
+    }
+
+    public ArrayAdapter<String> getAutoCompleteAdapter() {
+        return autoCompleteAdapter;
+    }
+
+    /**
+     * set the auto complete adapter
+     * this adapter is necessary when you want to autocomplete the tag's input
+     * @param autoCompleteAdapter
+     */
+    public void setAutoCompleteAdapter(ArrayAdapter<String> autoCompleteAdapter) {
+        this.autoCompleteAdapter = autoCompleteAdapter;
     }
 
     /**
@@ -477,6 +558,7 @@ public class TagGroup extends ViewGroup {
 
         final TagView newInputTag = new TagView(getContext(), TagView.STATE_INPUT, tag);
         newInputTag.setOnClickListener(mInternalTagClickListener);
+
         addView(newInputTag);
     }
 
@@ -648,23 +730,33 @@ public class TagGroup extends ViewGroup {
     /**
      * The tag view which has two states can be either NORMAL or INPUT.
      */
-    class TagView extends TextView {
+    class TagView extends MultiAutoCompleteTextView {
         public static final int STATE_NORMAL = 1;
         public static final int STATE_INPUT = 2;
 
-        /** The offset to the text. */
+        /**
+         * The offset to the text.
+         */
         private static final int CHECKED_MARKER_OFFSET = 3;
 
-        /** The stroke width of the checked marker */
+        /**
+         * The stroke width of the checked marker
+         */
         private static final int CHECKED_MARKER_STROKE_WIDTH = 4;
 
-        /** The current state. */
+        /**
+         * The current state.
+         */
         private int mState;
 
-        /** Indicates the tag if checked. */
+        /**
+         * Indicates the tag if checked.
+         */
         private boolean isChecked = false;
 
-        /** Indicates the tag if pressed. */
+        /**
+         * Indicates the tag if pressed.
+         */
         private boolean isPressed = false;
 
         private Paint mBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -673,28 +765,44 @@ public class TagGroup extends ViewGroup {
 
         private Paint mCheckedMarkerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        /** The rect for the tag's left corner drawing. */
+        /**
+         * The rect for the tag's left corner drawing.
+         */
         private RectF mLeftCornerRectF = new RectF();
 
-        /** The rect for the tag's right corner drawing. */
+        /**
+         * The rect for the tag's right corner drawing.
+         */
         private RectF mRightCornerRectF = new RectF();
 
-        /** The rect for the tag's horizontal blank fill area. */
+        /**
+         * The rect for the tag's horizontal blank fill area.
+         */
         private RectF mHorizontalBlankFillRectF = new RectF();
 
-        /** The rect for the tag's vertical blank fill area. */
+        /**
+         * The rect for the tag's vertical blank fill area.
+         */
         private RectF mVerticalBlankFillRectF = new RectF();
 
-        /** The rect for the checked mark draw bound. */
+        /**
+         * The rect for the checked mark draw bound.
+         */
         private RectF mCheckedMarkerBound = new RectF();
 
-        /** Used to detect the touch event. */
+        /**
+         * Used to detect the touch event.
+         */
         private Rect mOutRect = new Rect();
 
-        /** The path for draw the tag's outline border. */
+        /**
+         * The path for draw the tag's outline border.
+         */
         private Path mBorderPath = new Path();
 
-        /** The path effect provide draw the dash border. */
+        /**
+         * The path effect provide draw the dash border.
+         */
         private PathEffect mPathEffect = new DashPathEffect(new float[]{10, 5}, 0);
 
         {
@@ -707,7 +815,7 @@ public class TagGroup extends ViewGroup {
         }
 
 
-        public TagView(Context context, final int state, CharSequence text) {
+        public TagView(final Context context, final int state, CharSequence text) {
             super(context);
             setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding);
             setLayoutParams(new TagGroup.LayoutParams(
@@ -804,12 +912,51 @@ public class TagGroup extends ViewGroup {
                     }
 
                     @Override
-                    public void afterTextChanged(Editable s) {
+                    public synchronized void afterTextChanged(Editable s) {
+                        if (tagsWithoutSpace) {
+                            String trimmed = s.toString().trim();
+                            if (trimmed.length() >= 1 && s.toString().endsWith(" ")) {
+                                submitTag();
+                            } else {
+                                String[] spliteds = trimmed.split(" ");
+                                if (spliteds.length >= 2) {
+                                    for (int i = 0; i < spliteds.length; i++) {
+                                        String t = spliteds[i];
+                                        if (TextUtils.isEmpty(t.trim()))
+                                            continue;
+                                        if (i == 0) {//this first is current tag
+                                            if (mOnTagChangeListener != null) {
+                                                mOnTagChangeListener.onAppend(TagGroup.this, t);
+                                            }
+                                            //setText(t);
+                                            s.clear();
+                                            s.append(t);
+                                            endInput();
+                                        } else if (i == spliteds.length - 1) {//the new current tag is the str after the last space
+                                            appendInputTag(t);
+                                        } else {
+                                            appendTag(t);
+                                            if (mOnTagChangeListener != null) {
+                                                mOnTagChangeListener.onAppend(TagGroup.this, t);
+                                            }
+                                        }
+                                    }
+
+                                }
+                            }
+
+                        }
                     }
                 });
             }
 
             invalidatePaint();
+
+            setInputType(getInputType() | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+            setTokenizer(new SpaceTokenizer());
+            setBackgroundDrawable(null);
+            if(autoCompleteAdapter!=null)
+                this.setAdapter(autoCompleteAdapter);
         }
 
         /**
