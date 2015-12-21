@@ -20,7 +20,7 @@ Use it in your own code:
 ```
 
 ```java
-TagGroup mTagGroup = (TagGroup) findViewById(R.id.androidTagGroup);
+AndroidTagGroup mTagGroup = (AndroidTagGroup) findViewById(R.id.androidTagGroup);
 mTagGroup.setTags(new String[]{"Tag 1", "Tag 2", "Tag 3"});
 ```
 
