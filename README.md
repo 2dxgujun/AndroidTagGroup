@@ -9,7 +9,7 @@ AndroidTagGroup is a special layout with a set of tags. You can use it to tag pe
 
 ## Usage
 ### Step 1
-Follow [these steps](https://jitpack.io/#alirezaaa/AndroidTagGroup/v1.4).
+Follow [these steps](https://jitpack.io/#alirezaaa/AndroidTagGroup/v1.7).
 
 ### Step 2
 Use it in your own code:
