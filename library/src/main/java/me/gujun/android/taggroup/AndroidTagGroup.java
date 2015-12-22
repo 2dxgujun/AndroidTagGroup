@@ -70,7 +70,7 @@ public class AndroidTagGroup extends ViewGroup {
     private final float mDefaultHorizontalPadding;
     private final float mDefaultVerticalPadding;
     // Characters limitation (Default: no limitation)
-    private int mCharsLimitation;
+    private int mCharsLimitation = -1;
     // Indicates whether this TagGroup is set up to APPEND mode or DISPLAY mode. Default is false.
     private boolean mIsAppendMode;
     // The text to be displayed when the text of the INPUT tag is empty.
