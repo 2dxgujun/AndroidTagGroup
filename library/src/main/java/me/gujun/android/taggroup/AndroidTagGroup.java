@@ -68,120 +68,96 @@ public class AndroidTagGroup extends ViewGroup {
     private final float default_vertical_spacing;
     private final float default_horizontal_padding;
     private final float default_vertical_padding;
-    private final int mCharsLimitation;
-
+    private int mCharsLimitation;
     /**
      * Indicates whether this TagGroup is set up to APPEND mode or DISPLAY mode. Default is false.
      */
     private boolean mIsAppendMode;
-
     /**
      * The text to be displayed when the text of the INPUT tag is empty.
      */
     private CharSequence mInputHint;
-
     /**
      * The tag outline border color.
      */
     private int mBorderColor;
-
     /**
      * The tag text color.
      */
     private int mTextColor;
-
     /**
      * The tag background color.
      */
     private int mBackgroundColor;
-
     /**
      * The dash outline border color.
      */
     private int mDashBorderColor;
-
     /**
      * The  input tag hint text color.
      */
     private int mInputHintColor;
-
     /**
      * The input tag type text color.
      */
     private int mInputTextColor;
-
     /**
      * The checked tag outline border color.
      */
     private int mCheckedBorderColor;
-
     /**
      * The check text color
      */
     private int mCheckedTextColor;
-
     /**
      * The checked marker color.
      */
     private int mCheckedMarkerColor;
-
     /**
      * The checked tag background color.
      */
     private int mCheckedBackgroundColor;
-
     /**
      * The tag background color, when the tag is being pressed.
      */
     private int mPressedBackgroundColor;
-
     /**
      * The tag outline border stroke width, default is 0.5dp.
      */
     private float mBorderStrokeWidth;
-
     /**
      * The tag text size, default is 13sp.
      */
     private float mTextSize;
-
     /**
      * The horizontal tag spacing, default is 8.0dp.
      */
     private int mHorizontalSpacing;
-
     /**
      * The vertical tag spacing, default is 4.0dp.
      */
     private int mVerticalSpacing;
-
     /**
      * The horizontal tag padding, default is 12.0dp.
      */
     private int mHorizontalPadding;
-
     /**
      * The vertical tag padding, default is 3.0dp.
      */
     private int mVerticalPadding;
-
     /**
      * Listener used to dispatch tag change event.
      */
     private OnTagChangeListener mOnTagChangeListener;
-
     private OnTagLimitationExceedListener mOnTagLimitationExceedListener;
-
     /**
      * Listener used to dispatch tag click event.
      */
     private OnTagClickListener mOnTagClickListener;
-
     /**
      * Adding tags limitation.
      */
     private int mTagsLimitation = -1;
-
     /**
      * Listener used to handle tag click event.
      */
@@ -244,6 +220,10 @@ public class AndroidTagGroup extends ViewGroup {
                 }
             });
         }
+    }
+
+    public void setCharsLimitation(int limitation) {
+        mCharsLimitation = limitation;
     }
 
     /**
@@ -317,17 +297,6 @@ public class AndroidTagGroup extends ViewGroup {
      */
     protected TagView getTagAt(int index) {
         return (TagView) getChildAt(index);
-    }    /**
-     * Returns the INPUT state tag in this group.
-     *
-     * @return the INPUT state tag view or null if not exists
-     */
-    public String getInputTagText() {
-        final TagView inputTagView = getInputTag();
-        if (inputTagView != null) {
-            return inputTagView.getText().toString();
-        }
-        return null;
     }
 
     /**
@@ -357,6 +326,17 @@ public class AndroidTagGroup extends ViewGroup {
             }
         }
         return -1;
+    }    /**
+     * Returns the INPUT state tag in this group.
+     *
+     * @return the INPUT state tag view or null if not exists
+     */
+    public String getInputTagText() {
+        final TagView inputTagView = getInputTag();
+        if (inputTagView != null) {
+            return inputTagView.getText().toString();
+        }
+        return null;
     }
 
     /**
@@ -382,6 +362,51 @@ public class AndroidTagGroup extends ViewGroup {
     public float dp2px(float dp) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 getResources().getDisplayMetrics());
+    }
+
+    public float sp2px(float sp) {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,
+                getResources().getDisplayMetrics());
+    }
+
+    /**
+     * Register a callback to be invoked when a tag is clicked.
+     *
+     * @param l the callback that will run.
+     */
+    public void setOnTagClickListener(OnTagClickListener l) {
+        mOnTagClickListener = l;
+    }
+
+    protected void deleteTag(TagView tagView) {
+        removeView(tagView);
+        if (mOnTagChangeListener != null) {
+            mOnTagChangeListener.onDelete(AndroidTagGroup.this, tagView.getText().toString());
+        }
+        if (getInputTag().mState == TagView.STATE_INPUT) {
+            if (!getInputTag().isEnabled()) {
+                getInputTag().setEnabled(true);
+            }
+        }
+    }
+
+    /**
+     * Returns the INPUT tag view in this group.
+     *
+     * @return the INPUT state tag view or null if not exists
+     */
+    protected TagView getInputTag() {
+        if (mIsAppendMode) {
+            final int inputTagIndex = getChildCount() - 1;
+            final TagView inputTag = getTagAt(inputTagIndex);
+            if (inputTag != null && inputTag.mState == TagView.STATE_INPUT) {
+                return inputTag;
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
@@ -433,51 +458,6 @@ public class AndroidTagGroup extends ViewGroup {
 
         setMeasuredDimension(widthMode == MeasureSpec.EXACTLY ? widthSize : width,
                 heightMode == MeasureSpec.EXACTLY ? heightSize : height);
-    }
-
-    public float sp2px(float sp) {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,
-                getResources().getDisplayMetrics());
-    }
-
-    /**
-     * Register a callback to be invoked when a tag is clicked.
-     *
-     * @param l the callback that will run.
-     */
-    public void setOnTagClickListener(OnTagClickListener l) {
-        mOnTagClickListener = l;
-    }
-
-    protected void deleteTag(TagView tagView) {
-        removeView(tagView);
-        if (mOnTagChangeListener != null) {
-            mOnTagChangeListener.onDelete(AndroidTagGroup.this, tagView.getText().toString());
-        }
-        if (getInputTag().mState == TagView.STATE_INPUT) {
-            if (!getInputTag().isEnabled()) {
-                getInputTag().setEnabled(true);
-            }
-        }
-    }
-
-    /**
-     * Returns the INPUT tag view in this group.
-     *
-     * @return the INPUT state tag view or null if not exists
-     */
-    protected TagView getInputTag() {
-        if (mIsAppendMode) {
-            final int inputTagIndex = getChildCount() - 1;
-            final TagView inputTag = getTagAt(inputTagIndex);
-            if (inputTag != null && inputTag.mState == TagView.STATE_INPUT) {
-                return inputTag;
-            } else {
-                return null;
-            }
-        } else {
-            return null;
-        }
     }
 
     /**
@@ -575,16 +555,6 @@ public class AndroidTagGroup extends ViewGroup {
             dest.writeInt(checkedPosition);
             dest.writeString(input);
         }
-    }    @Override
-    public Parcelable onSaveInstanceState() {
-        Parcelable superState = super.onSaveInstanceState();
-        SavedState ss = new SavedState(superState);
-        ss.tags = getTags();
-        ss.checkedPosition = getCheckedTagIndex();
-        if (getInputTag() != null) {
-            ss.input = getInputTag().getText().toString();
-        }
-        return ss;
     }
 
     /**
@@ -1048,7 +1018,17 @@ public class AndroidTagGroup extends ViewGroup {
 
 
 
-
+    @Override
+    public Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+        SavedState ss = new SavedState(superState);
+        ss.tags = getTags();
+        ss.checkedPosition = getCheckedTagIndex();
+        if (getInputTag() != null) {
+            ss.input = getInputTag().getText().toString();
+        }
+        return ss;
+    }
 
 
     @Override
