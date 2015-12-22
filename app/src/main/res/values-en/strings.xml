@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="app_name">TagGroup-Demo</string>
-    <string name="add_tags">Add Tags</string>
-    <string name="title_activity_tag_editor">Edit Tags</string>
-    <string name="tags_default">Tags (Default)</string>
-    <string name="tags_large">Tags (Large)</string>
-    <string name="tags_small">Tags (Small)</string>
-</resources>
