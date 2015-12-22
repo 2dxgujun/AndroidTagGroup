@@ -316,7 +316,7 @@ public class AndroidTagGroup extends ViewGroup {
 
     @Override
     public ViewGroup.LayoutParams generateLayoutParams(AttributeSet attrs) {
-        return new AndroidTagGroup.LayoutParams(getContext(), attrs);
+        return new LayoutParams(getContext(), attrs);
     }
 
     /**
@@ -461,19 +461,6 @@ public class AndroidTagGroup extends ViewGroup {
          * @param tag The tag text of the tag that was clicked.
          */
         void onTagClick(String tag);
-    }
-
-    /**
-     * Per-child layout information for layouts.
-     */
-    public static class LayoutParams extends ViewGroup.LayoutParams {
-        public LayoutParams(Context c, AttributeSet attrs) {
-            super(c, attrs);
-        }
-
-        public LayoutParams(int width, int height) {
-            super(width, height);
-        }
     }
 
     /**
@@ -646,9 +633,9 @@ public class AndroidTagGroup extends ViewGroup {
         public TagView(Context context, final int state, CharSequence text) {
             super(context);
             setPadding(mHorizontalPadding, mVerticalPadding, mHorizontalPadding, mVerticalPadding);
-            setLayoutParams(new AndroidTagGroup.LayoutParams(
-                    AndroidTagGroup.LayoutParams.WRAP_CONTENT,
-                    AndroidTagGroup.LayoutParams.WRAP_CONTENT));
+            setLayoutParams(new LayoutParams(
+                    LayoutParams.WRAP_CONTENT,
+                    LayoutParams.WRAP_CONTENT));
 
             setGravity(Gravity.CENTER);
             setText(text);
@@ -974,7 +961,9 @@ public class AndroidTagGroup extends ViewGroup {
                 return super.sendKeyEvent(event);
             }
         }
-    }    /**
+    }
+
+    /**
      * Returns the INPUT state tag in this group.
      *
      * @return the INPUT state tag view or null if not exists
@@ -986,8 +975,6 @@ public class AndroidTagGroup extends ViewGroup {
         }
         return null;
     }
-
-
 
 
     @Override
