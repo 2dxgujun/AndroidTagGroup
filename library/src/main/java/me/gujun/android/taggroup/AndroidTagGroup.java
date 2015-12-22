@@ -12,6 +12,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.ColorInt;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -128,12 +129,12 @@ public class AndroidTagGroup extends ViewGroup {
 
     public AndroidTagGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mDefaultBorderStrokeWidth = dp2px(0.5f);
-        mDefaultTextSize = sp2px(13.0f);
-        mDefaultHorizontalSpacing = dp2px(8.0f);
-        mDefaultVerticalSpacing = dp2px(4.0f);
-        mDefaultHorizontalPadding = dp2px(12.0f);
-        mDefaultVerticalPadding = dp2px(3.0f);
+        mDefaultBorderStrokeWidth = AndroidUtils.dp2px(getContext(), 0.5f);
+        mDefaultTextSize = AndroidUtils.sp2px(getContext(), 13.0f);
+        mDefaultHorizontalSpacing = AndroidUtils.dp2px(getContext(), 8.0f);
+        mDefaultVerticalSpacing = AndroidUtils.dp2px(getContext(), 4.0f);
+        mDefaultHorizontalPadding = AndroidUtils.dp2px(getContext(), 12.0f);
+        mDefaultVerticalPadding = AndroidUtils.dp2px(getContext(), 3.0f);
 
         // Load styled attributes.
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AndroidTagGroup, defStyleAttr, R.style.AndroidTagGroup);
@@ -175,6 +176,91 @@ public class AndroidTagGroup extends ViewGroup {
                 }
             });
         }
+    }
+
+    public void setAppendMode(boolean appendMode) {
+        mIsAppendMode = appendMode;
+    }
+
+    public void setInputHint(CharSequence inputHint) {
+        mInputHint = inputHint;
+    }
+
+    public void setBorderColor(@ColorInt int borderColor) {
+        mBorderColor = borderColor;
+    }
+
+    public void setTextColor(@ColorInt int textColor) {
+        mTextColor = textColor;
+    }
+
+    public void setViewBackgroundColor(@ColorInt int backgroundColor) {
+        mBackgroundColor = backgroundColor;
+    }
+
+    public void setDashBorderColor(@ColorInt int dashBorderColor) {
+        mDashBorderColor = dashBorderColor;
+    }
+
+    public void setInputHintColor(@ColorInt int inputHintColor) {
+        mInputHintColor = inputHintColor;
+    }
+
+    public void setInputTextColor(@ColorInt int inputTextColor) {
+        mInputTextColor = inputTextColor;
+    }
+
+    public void setCheckedBorderColor(@ColorInt int checkedBorderColor) {
+        mCheckedBorderColor = checkedBorderColor;
+    }
+
+    public void setCheckedTextColor(@ColorInt int checkedTextColor) {
+        mCheckedTextColor = checkedTextColor;
+    }
+
+    public void setCheckedMarkerColor(@ColorInt int checkedMarkerColor) {
+        mCheckedMarkerColor = checkedMarkerColor;
+    }
+
+    public void setCheckedBackgroundColor(@ColorInt int checkedBackgroundColor) {
+        mCheckedBackgroundColor = checkedBackgroundColor;
+    }
+
+    public void setPressedBackgroundColor(@ColorInt int pressedBackgroundColor) {
+        mPressedBackgroundColor = pressedBackgroundColor;
+    }
+
+    public void setBorderStrokeWidth(float borderStrokeWidth) {
+        mBorderStrokeWidth = borderStrokeWidth;
+    }
+
+    public void setTextSize(float textSize) {
+        mTextSize = textSize;
+    }
+
+    public void setHorizontalSpacing(int horizontalSpacing) {
+        mHorizontalSpacing = horizontalSpacing;
+    }
+
+    public void setVerticalSpacing(int verticalSpacing) {
+        mVerticalSpacing = verticalSpacing;
+    }
+
+    public void setHorizontalPadding(int horizontalPadding) {
+        mHorizontalPadding = horizontalPadding;
+    }
+
+    public void setVerticalPadding(int verticalPadding) {
+        mVerticalPadding = verticalPadding;
+    }
+
+    /**
+     * Register a callback to be invoked when limitation exceed.
+     *
+     * @param onTagLimitationExceedListener
+     */
+    public void setOnTagLimitationExceedListener(OnTagLimitationExceedListener onTagLimitationExceedListener) {
+        mOnTagLimitationExceedListener = onTagLimitationExceedListener;
     }
 
     public void setCharsLimitation(int limitation) {
@@ -292,36 +378,8 @@ public class AndroidTagGroup extends ViewGroup {
         mOnTagChangeListener = l;
     }
 
-    /**
-     * Register a callback to be invoked when limitation exceed.
-     */
-    public void setOnLimitationExceedListener(OnTagLimitationExceedListener l) {
-        mOnTagLimitationExceedListener = l;
-    }
-
     public void setTagsLimitation(int tagsLimitation) {
         this.mTagsLimitation = tagsLimitation;
-    }    /**
-     * Returns the INPUT state tag in this group.
-     *
-     * @return the INPUT state tag view or null if not exists
-     */
-    public String getInputTagText() {
-        final TagView inputTagView = getInputTag();
-        if (inputTagView != null) {
-            return inputTagView.getText().toString();
-        }
-        return null;
-    }
-
-    public float dp2px(float dp) {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
-                getResources().getDisplayMetrics());
-    }
-
-    public float sp2px(float sp) {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,
-                getResources().getDisplayMetrics());
     }
 
     /**
@@ -495,57 +553,6 @@ public class AndroidTagGroup extends ViewGroup {
                 }
             }
         }
-    }    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-        final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-        final int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-
-        measureChildren(widthMeasureSpec, heightMeasureSpec);
-
-        int width;
-        int height = 0;
-
-        int row = 0; // The row counter.
-        int rowWidth = 0; // Calc the current row width.
-        int rowMaxHeight = 0; // Calc the max tag height, in current row.
-
-        final int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            final View child = getChildAt(i);
-            final int childWidth = child.getMeasuredWidth();
-            final int childHeight = child.getMeasuredHeight();
-
-            if (child.getVisibility() != GONE) {
-                rowWidth += childWidth;
-                if (rowWidth > widthSize) { // Next line.
-                    rowWidth = childWidth; // The next row width.
-                    height += rowMaxHeight + mVerticalSpacing;
-                    rowMaxHeight = childHeight; // The next row max height.
-                    row++;
-                } else { // This line.
-                    rowMaxHeight = Math.max(rowMaxHeight, childHeight);
-                }
-                rowWidth += mHorizontalSpacing;
-            }
-        }
-        // Account for the last row height.
-        height += rowMaxHeight;
-
-        // Account for the padding too.
-        height += getPaddingTop() + getPaddingBottom();
-
-        // If the tags grouped in one row, set the width to wrap the tags.
-        if (row == 0) {
-            width = rowWidth;
-            width += getPaddingLeft() + getPaddingRight();
-        } else {// If the tags grouped exceed one line, set the width to match the parent.
-            width = widthSize;
-        }
-
-        setMeasuredDimension(widthMode == MeasureSpec.EXACTLY ? widthSize : width,
-                heightMode == MeasureSpec.EXACTLY ? heightSize : height);
     }
 
     /**
@@ -967,11 +974,74 @@ public class AndroidTagGroup extends ViewGroup {
                 return super.sendKeyEvent(event);
             }
         }
+    }    /**
+     * Returns the INPUT state tag in this group.
+     *
+     * @return the INPUT state tag view or null if not exists
+     */
+    public String getInputTagText() {
+        final TagView inputTagView = getInputTag();
+        if (inputTagView != null) {
+            return inputTagView.getText().toString();
+        }
+        return null;
     }
 
 
 
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        final int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+
+        measureChildren(widthMeasureSpec, heightMeasureSpec);
+
+        int width;
+        int height = 0;
+
+        int row = 0; // The row counter.
+        int rowWidth = 0; // Calc the current row width.
+        int rowMaxHeight = 0; // Calc the max tag height, in current row.
+
+        final int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            final View child = getChildAt(i);
+            final int childWidth = child.getMeasuredWidth();
+            final int childHeight = child.getMeasuredHeight();
+
+            if (child.getVisibility() != GONE) {
+                rowWidth += childWidth;
+                if (rowWidth > widthSize) { // Next line.
+                    rowWidth = childWidth; // The next row width.
+                    height += rowMaxHeight + mVerticalSpacing;
+                    rowMaxHeight = childHeight; // The next row max height.
+                    row++;
+                } else { // This line.
+                    rowMaxHeight = Math.max(rowMaxHeight, childHeight);
+                }
+                rowWidth += mHorizontalSpacing;
+            }
+        }
+        // Account for the last row height.
+        height += rowMaxHeight;
+
+        // Account for the padding too.
+        height += getPaddingTop() + getPaddingBottom();
+
+        // If the tags grouped in one row, set the width to wrap the tags.
+        if (row == 0) {
+            width = rowWidth;
+            width += getPaddingLeft() + getPaddingRight();
+        } else {// If the tags grouped exceed one line, set the width to match the parent.
+            width = widthSize;
+        }
+
+        setMeasuredDimension(widthMode == MeasureSpec.EXACTLY ? widthSize : width,
+                heightMode == MeasureSpec.EXACTLY ? heightSize : height);
+    }
 
 
     @Override
