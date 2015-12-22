@@ -31,29 +31,29 @@ mTagGroup.setTags(new String[]{"Tag 1", "Tag 2", "Tag 3"});
 - There are following interfaces to implement; `OnTagLimitationExceedListener`, `OnTagChangeListener`, and `OnTagClickListener`.
 
 # Attributes
-|           Attribute          	|     Default      |                         Description                         	 |
-|:------------------------- |:---------------- |:------------------------------------------------------- |
-| atg_isAppendMode        	| false            | Determine the TagGroup mode, APPEND or single DISPLAY.  |
-| atg_inputHint   	        | Add Tag  | The hint of the INPUT tag.                              |
-| atg_borderColor	          | #49C120          | The tag outline border color.                           |
-| atg_textColor           	| #49C120          | The tag text color.                           	         |
-| atg_backgroundColor       | #FFFFFF          | The tag background color.                               |
-| atg_dashBorderColor       | #AAAAAA          | The tag dash outline border color.                      |
-| atg_inputHintColor        | #80000000        | The input tag hint text color.                          |
-| atg_inputTextColor        | #DE000000        | The input tag type text color..                         |
-| atg_checkedBorderColor    | #49C120          | The checked tag outline border color.                   |
-| atg_checkedTextColor      | #FFFFFF          | The checked text color.                                 |
-| atg_checkedMarkerColor    | #FFFFFF          | The checked marker color.                               |
-| atg_checkedBackgroundColor| #49C120          | The checked tag background color.                       |
-| atg_pressedBackgroundColor| #EDEDED          | The tag background color when the tag is being pressed. |
-| atg_borderStrokeWidth     | 0.5dp            | The tag outline border stroke width.        	           |
-| atg_textSize          	  | 13sp             | The tag text size.                                  	   |
-| atg_horizontalSpacing     | 8dp              | The horizontal tag spacing.(Mark1)                      |
-| atg_verticalSpacing  	    | 4dp              | The vertical tag spacing.(Mark2)                      	 |
-| atg_horizontalPadding	    | 12dp             | The horizontal tag padding.(Mark3)                      |
-| atg_verticalPadding  	    | 3dp              | The vertical tag padding.(Mark4)                        |
-| atg_tagsLimitation  	    | -1 (no limitation)                | Adding tags limitation                                  |
-| atg_charsLimitation  	    | -1 (no limitation)                | Characters limitation                                  |
+|           Attribute          	|     Default Value      |                         Description                     |
+|:------------------------------|:-----------------------|:--------------------------------------------------------|
+| atg_isAppendMode        	    | false                  | Determine the mode.                                     |
+| atg_inputHint   	            | Add Tag                | The hint of the INPUT tag.                              |
+| atg_borderColor	            | #49C120                | The tag outline border color.                           |
+| atg_textColor           	    | #49C120                | The tag text color.                           	       |
+| atg_backgroundColor           | #FFFFFF                | The tag background color.                               |
+| atg_dashBorderColor           | #AAAAAA                | The tag dash outline border color.                      |
+| atg_inputHintColor            | #80000000              | The input tag hint text color.                          |
+| atg_inputTextColor            | #DE000000              | The input tag type text color..                         |
+| atg_checkedBorderColor        | #49C120                | The checked tag outline border color.                   |
+| atg_checkedTextColor          | #FFFFFF                | The checked text color.                                 |
+| atg_checkedMarkerColor        | #FFFFFF                | The checked marker color.                               |
+| atg_checkedBackgroundColor    | #49C120                | The checked tag background color.                       |
+| atg_pressedBackgroundColor    | #EDEDED                | The tag background color when the tag is being pressed. |
+| atg_borderStrokeWidth         | 0.5dp                  | The tag outline border stroke width.        	           |
+| atg_textSize          	    | 13sp                   | The tag text size.                                      |
+| atg_horizontalSpacing         | 8dp                    | The horizontal tag spacing.                             |
+| atg_verticalSpacing  	        | 4dp                    | The vertical tag spacing.                           	   |
+| atg_horizontalPadding	        | 12dp                   | The horizontal tag padding.                             |
+| atg_verticalPadding  	        | 3dp                    | The vertical tag padding.                               |
+| atg_tagsLimitation  	        | no limitation          | Adding tags limitation                                  |
+| atg_charsLimitation  	        | no limitation          | Characters limitation                                   |
 
 ## Developed By
 - Jun Gu - <2dxgujun@gmail.com>

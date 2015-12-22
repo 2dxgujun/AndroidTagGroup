@@ -16,7 +16,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    // Travis CI needed
+    // Travis CI needing
     lintOptions {
         abortOnError false
     }
