@@ -51,116 +51,71 @@ import java.util.List;
  * @since 2015-2-3 14:16:32
  */
 public class AndroidTagGroup extends ViewGroup {
-    private final int default_border_color = Color.rgb(0x49, 0xC1, 0x20);
-    private final int default_text_color = Color.rgb(0x49, 0xC1, 0x20);
-    private final int default_background_color = Color.WHITE;
-    private final int default_dash_border_color = Color.rgb(0xAA, 0xAA, 0xAA);
-    private final int default_input_hint_color = Color.argb(0x80, 0x00, 0x00, 0x00);
-    private final int default_input_text_color = Color.argb(0xDE, 0x00, 0x00, 0x00);
-    private final int default_checked_border_color = Color.rgb(0x49, 0xC1, 0x20);
-    private final int default_checked_text_color = Color.WHITE;
-    private final int default_checked_marker_color = Color.WHITE;
-    private final int default_checked_background_color = Color.rgb(0x49, 0xC1, 0x20);
-    private final int default_pressed_background_color = Color.rgb(0xED, 0xED, 0xED);
-    private final float default_border_stroke_width;
-    private final float default_text_size;
-    private final float default_horizontal_spacing;
-    private final float default_vertical_spacing;
-    private final float default_horizontal_padding;
-    private final float default_vertical_padding;
+    private final int DEFAULT_BORDER_COLOR = Color.rgb(0x49, 0xC1, 0x20);
+    private final int DEFAULT_TEXT_COLOR = Color.rgb(0x49, 0xC1, 0x20);
+    private final int DEFAULT_BACKGROUND_COLOR = Color.WHITE;
+    private final int DEFAULT_DASH_BORDER_COLOR = Color.rgb(0xAA, 0xAA, 0xAA);
+    private final int DEFAULT_INPUT_HINT_COLOR = Color.argb(0x80, 0x00, 0x00, 0x00);
+    private final int DEFAULT_INPUT_TEXT_COLOR = Color.argb(0xDE, 0x00, 0x00, 0x00);
+    private final int DEFAULT_CHECKED_BORDER_COLOR = Color.rgb(0x49, 0xC1, 0x20);
+    private final int DEFAULT_CHECKED_TEXT_COLOR = Color.WHITE;
+    private final int DEFAULT_CHECKED_MARKER_COLOR = Color.WHITE;
+    private final int DEFAULT_CHECKED_BACKGROUND_COLOR = Color.rgb(0x49, 0xC1, 0x20);
+    private final int DEFAULT_PRESSED_BACKGROUND_COLOR = Color.rgb(0xED, 0xED, 0xED);
+    private final float mDefaultBorderStrokeWidth;
+    private final float mDefaultTextSize;
+    private final float mDefaultHorizontalSpacing;
+    private final float mDefaultVerticalSpacing;
+    private final float mDefaultHorizontalPadding;
+    private final float mDefaultVerticalPadding;
+    // Characters limitation (Default: no limitation)
     private int mCharsLimitation;
-    /**
-     * Indicates whether this TagGroup is set up to APPEND mode or DISPLAY mode. Default is false.
-     */
+    // Indicates whether this TagGroup is set up to APPEND mode or DISPLAY mode. Default is false.
     private boolean mIsAppendMode;
-    /**
-     * The text to be displayed when the text of the INPUT tag is empty.
-     */
+    // The text to be displayed when the text of the INPUT tag is empty.
     private CharSequence mInputHint;
-    /**
-     * The tag outline border color.
-     */
+    // The tag outline border color.
     private int mBorderColor;
-    /**
-     * The tag text color.
-     */
+    // The tag text color.
     private int mTextColor;
-    /**
-     * The tag background color.
-     */
+    // The tag background color.
     private int mBackgroundColor;
-    /**
-     * The dash outline border color.
-     */
+    // The dash outline border color.
     private int mDashBorderColor;
-    /**
-     * The  input tag hint text color.
-     */
+    // The  input tag hint text color.
     private int mInputHintColor;
-    /**
-     * The input tag type text color.
-     */
+    // The input tag type text color.
     private int mInputTextColor;
-    /**
-     * The checked tag outline border color.
-     */
+    // The checked tag outline border color.
     private int mCheckedBorderColor;
-    /**
-     * The check text color
-     */
+    // The check text color
     private int mCheckedTextColor;
-    /**
-     * The checked marker color.
-     */
+    // The checked marker color.
     private int mCheckedMarkerColor;
-    /**
-     * The checked tag background color.
-     */
+    // The checked tag background color.
     private int mCheckedBackgroundColor;
-    /**
-     * The tag background color, when the tag is being pressed.
-     */
+    // The tag background color, when the tag is being pressed.
     private int mPressedBackgroundColor;
-    /**
-     * The tag outline border stroke width, default is 0.5dp.
-     */
+    // The tag outline border stroke width, default is 0.5dp.
     private float mBorderStrokeWidth;
-    /**
-     * The tag text size, default is 13sp.
-     */
+    // The tag text size, default is 13sp.
     private float mTextSize;
-    /**
-     * The horizontal tag spacing, default is 8.0dp.
-     */
+    // The horizontal tag spacing, default is 8.0dp.
     private int mHorizontalSpacing;
-    /**
-     * The vertical tag spacing, default is 4.0dp.
-     */
+    // The vertical tag spacing, default is 4.0dp.
     private int mVerticalSpacing;
-    /**
-     * The horizontal tag padding, default is 12.0dp.
-     */
+    // The horizontal tag padding, default is 12.0dp.
     private int mHorizontalPadding;
-    /**
-     * The vertical tag padding, default is 3.0dp.
-     */
+    // The vertical tag padding, default is 3.0dp.
     private int mVerticalPadding;
-    /**
-     * Listener used to dispatch tag change event.
-     */
+    // Listener used to dispatch tag change event.
     private OnTagChangeListener mOnTagChangeListener;
     private OnTagLimitationExceedListener mOnTagLimitationExceedListener;
-    /**
-     * Listener used to dispatch tag click event.
-     */
+    // Listener used to dispatch tag click event.
     private OnTagClickListener mOnTagClickListener;
-    /**
-     * Adding tags limitation.
-     */
+    // Adding tags limitation.
     private int mTagsLimitation = -1;
-    /**
-     * Listener used to handle tag click event.
-     */
+    // Listener used to handle tag click event.
     private InternalTagClickListener mInternalTagClickListener = new InternalTagClickListener();
 
     public AndroidTagGroup(Context context) {
@@ -173,35 +128,35 @@ public class AndroidTagGroup extends ViewGroup {
 
     public AndroidTagGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        default_border_stroke_width = dp2px(0.5f);
-        default_text_size = sp2px(13.0f);
-        default_horizontal_spacing = dp2px(8.0f);
-        default_vertical_spacing = dp2px(4.0f);
-        default_horizontal_padding = dp2px(12.0f);
-        default_vertical_padding = dp2px(3.0f);
+        mDefaultBorderStrokeWidth = dp2px(0.5f);
+        mDefaultTextSize = sp2px(13.0f);
+        mDefaultHorizontalSpacing = dp2px(8.0f);
+        mDefaultVerticalSpacing = dp2px(4.0f);
+        mDefaultHorizontalPadding = dp2px(12.0f);
+        mDefaultVerticalPadding = dp2px(3.0f);
 
         // Load styled attributes.
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AndroidTagGroup, defStyleAttr, R.style.AndroidTagGroup);
         try {
             mIsAppendMode = a.getBoolean(R.styleable.AndroidTagGroup_atg_isAppendMode, false);
             mInputHint = a.getText(R.styleable.AndroidTagGroup_atg_inputHint);
-            mBorderColor = a.getColor(R.styleable.AndroidTagGroup_atg_borderColor, default_border_color);
-            mTextColor = a.getColor(R.styleable.AndroidTagGroup_atg_textColor, default_text_color);
-            mBackgroundColor = a.getColor(R.styleable.AndroidTagGroup_atg_backgroundColor, default_background_color);
-            mDashBorderColor = a.getColor(R.styleable.AndroidTagGroup_atg_dashBorderColor, default_dash_border_color);
-            mInputHintColor = a.getColor(R.styleable.AndroidTagGroup_atg_inputHintColor, default_input_hint_color);
-            mInputTextColor = a.getColor(R.styleable.AndroidTagGroup_atg_inputTextColor, default_input_text_color);
-            mCheckedBorderColor = a.getColor(R.styleable.AndroidTagGroup_atg_checkedBorderColor, default_checked_border_color);
-            mCheckedTextColor = a.getColor(R.styleable.AndroidTagGroup_atg_checkedTextColor, default_checked_text_color);
-            mCheckedMarkerColor = a.getColor(R.styleable.AndroidTagGroup_atg_checkedMarkerColor, default_checked_marker_color);
-            mCheckedBackgroundColor = a.getColor(R.styleable.AndroidTagGroup_atg_checkedBackgroundColor, default_checked_background_color);
-            mPressedBackgroundColor = a.getColor(R.styleable.AndroidTagGroup_atg_pressedBackgroundColor, default_pressed_background_color);
-            mBorderStrokeWidth = a.getDimension(R.styleable.AndroidTagGroup_atg_borderStrokeWidth, default_border_stroke_width);
-            mTextSize = a.getDimension(R.styleable.AndroidTagGroup_atg_textSize, default_text_size);
-            mHorizontalSpacing = (int) a.getDimension(R.styleable.AndroidTagGroup_atg_horizontalSpacing, default_horizontal_spacing);
-            mVerticalSpacing = (int) a.getDimension(R.styleable.AndroidTagGroup_atg_verticalSpacing, default_vertical_spacing);
-            mHorizontalPadding = (int) a.getDimension(R.styleable.AndroidTagGroup_atg_horizontalPadding, default_horizontal_padding);
-            mVerticalPadding = (int) a.getDimension(R.styleable.AndroidTagGroup_atg_verticalPadding, default_vertical_padding);
+            mBorderColor = a.getColor(R.styleable.AndroidTagGroup_atg_borderColor, DEFAULT_BORDER_COLOR);
+            mTextColor = a.getColor(R.styleable.AndroidTagGroup_atg_textColor, DEFAULT_TEXT_COLOR);
+            mBackgroundColor = a.getColor(R.styleable.AndroidTagGroup_atg_backgroundColor, DEFAULT_BACKGROUND_COLOR);
+            mDashBorderColor = a.getColor(R.styleable.AndroidTagGroup_atg_dashBorderColor, DEFAULT_DASH_BORDER_COLOR);
+            mInputHintColor = a.getColor(R.styleable.AndroidTagGroup_atg_inputHintColor, DEFAULT_INPUT_HINT_COLOR);
+            mInputTextColor = a.getColor(R.styleable.AndroidTagGroup_atg_inputTextColor, DEFAULT_INPUT_TEXT_COLOR);
+            mCheckedBorderColor = a.getColor(R.styleable.AndroidTagGroup_atg_checkedBorderColor, DEFAULT_CHECKED_BORDER_COLOR);
+            mCheckedTextColor = a.getColor(R.styleable.AndroidTagGroup_atg_checkedTextColor, DEFAULT_CHECKED_TEXT_COLOR);
+            mCheckedMarkerColor = a.getColor(R.styleable.AndroidTagGroup_atg_checkedMarkerColor, DEFAULT_CHECKED_MARKER_COLOR);
+            mCheckedBackgroundColor = a.getColor(R.styleable.AndroidTagGroup_atg_checkedBackgroundColor, DEFAULT_CHECKED_BACKGROUND_COLOR);
+            mPressedBackgroundColor = a.getColor(R.styleable.AndroidTagGroup_atg_pressedBackgroundColor, DEFAULT_PRESSED_BACKGROUND_COLOR);
+            mBorderStrokeWidth = a.getDimension(R.styleable.AndroidTagGroup_atg_borderStrokeWidth, mDefaultBorderStrokeWidth);
+            mTextSize = a.getDimension(R.styleable.AndroidTagGroup_atg_textSize, mDefaultTextSize);
+            mHorizontalSpacing = (int) a.getDimension(R.styleable.AndroidTagGroup_atg_horizontalSpacing, mDefaultHorizontalSpacing);
+            mVerticalSpacing = (int) a.getDimension(R.styleable.AndroidTagGroup_atg_verticalSpacing, mDefaultVerticalSpacing);
+            mHorizontalPadding = (int) a.getDimension(R.styleable.AndroidTagGroup_atg_horizontalPadding, mDefaultHorizontalPadding);
+            mVerticalPadding = (int) a.getDimension(R.styleable.AndroidTagGroup_atg_verticalPadding, mDefaultVerticalPadding);
             mTagsLimitation = a.getInteger(R.styleable.AndroidTagGroup_atg_tagsLimitation, -1);
             mCharsLimitation = a.getInteger(R.styleable.AndroidTagGroup_atg_charsLimitation, -1);
         } finally {
@@ -326,17 +281,6 @@ public class AndroidTagGroup extends ViewGroup {
             }
         }
         return -1;
-    }    /**
-     * Returns the INPUT state tag in this group.
-     *
-     * @return the INPUT state tag view or null if not exists
-     */
-    public String getInputTagText() {
-        final TagView inputTagView = getInputTag();
-        if (inputTagView != null) {
-            return inputTagView.getText().toString();
-        }
-        return null;
     }
 
     /**
@@ -357,6 +301,17 @@ public class AndroidTagGroup extends ViewGroup {
 
     public void setTagsLimitation(int tagsLimitation) {
         this.mTagsLimitation = tagsLimitation;
+    }    /**
+     * Returns the INPUT state tag in this group.
+     *
+     * @return the INPUT state tag view or null if not exists
+     */
+    public String getInputTagText() {
+        final TagView inputTagView = getInputTag();
+        if (inputTagView != null) {
+            return inputTagView.getText().toString();
+        }
+        return null;
     }
 
     public float dp2px(float dp) {
@@ -407,57 +362,6 @@ public class AndroidTagGroup extends ViewGroup {
         } else {
             return null;
         }
-    }    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-        final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-        final int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-
-        measureChildren(widthMeasureSpec, heightMeasureSpec);
-
-        int width;
-        int height = 0;
-
-        int row = 0; // The row counter.
-        int rowWidth = 0; // Calc the current row width.
-        int rowMaxHeight = 0; // Calc the max tag height, in current row.
-
-        final int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            final View child = getChildAt(i);
-            final int childWidth = child.getMeasuredWidth();
-            final int childHeight = child.getMeasuredHeight();
-
-            if (child.getVisibility() != GONE) {
-                rowWidth += childWidth;
-                if (rowWidth > widthSize) { // Next line.
-                    rowWidth = childWidth; // The next row width.
-                    height += rowMaxHeight + mVerticalSpacing;
-                    rowMaxHeight = childHeight; // The next row max height.
-                    row++;
-                } else { // This line.
-                    rowMaxHeight = Math.max(rowMaxHeight, childHeight);
-                }
-                rowWidth += mHorizontalSpacing;
-            }
-        }
-        // Account for the last row height.
-        height += rowMaxHeight;
-
-        // Account for the padding too.
-        height += getPaddingTop() + getPaddingBottom();
-
-        // If the tags grouped in one row, set the width to wrap the tags.
-        if (row == 0) {
-            width = rowWidth;
-            width += getPaddingLeft() + getPaddingRight();
-        } else {// If the tags grouped exceed one line, set the width to match the parent.
-            width = widthSize;
-        }
-
-        setMeasuredDimension(widthMode == MeasureSpec.EXACTLY ? widthSize : width,
-                heightMode == MeasureSpec.EXACTLY ? heightSize : height);
     }
 
     /**
@@ -591,6 +495,57 @@ public class AndroidTagGroup extends ViewGroup {
                 }
             }
         }
+    }    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        final int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+
+        measureChildren(widthMeasureSpec, heightMeasureSpec);
+
+        int width;
+        int height = 0;
+
+        int row = 0; // The row counter.
+        int rowWidth = 0; // Calc the current row width.
+        int rowMaxHeight = 0; // Calc the max tag height, in current row.
+
+        final int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            final View child = getChildAt(i);
+            final int childWidth = child.getMeasuredWidth();
+            final int childHeight = child.getMeasuredHeight();
+
+            if (child.getVisibility() != GONE) {
+                rowWidth += childWidth;
+                if (rowWidth > widthSize) { // Next line.
+                    rowWidth = childWidth; // The next row width.
+                    height += rowMaxHeight + mVerticalSpacing;
+                    rowMaxHeight = childHeight; // The next row max height.
+                    row++;
+                } else { // This line.
+                    rowMaxHeight = Math.max(rowMaxHeight, childHeight);
+                }
+                rowWidth += mHorizontalSpacing;
+            }
+        }
+        // Account for the last row height.
+        height += rowMaxHeight;
+
+        // Account for the padding too.
+        height += getPaddingTop() + getPaddingBottom();
+
+        // If the tags grouped in one row, set the width to wrap the tags.
+        if (row == 0) {
+            width = rowWidth;
+            width += getPaddingLeft() + getPaddingRight();
+        } else {// If the tags grouped exceed one line, set the width to match the parent.
+            width = widthSize;
+        }
+
+        setMeasuredDimension(widthMode == MeasureSpec.EXACTLY ? widthSize : width,
+                heightMode == MeasureSpec.EXACTLY ? heightSize : height);
     }
 
     /**
@@ -1013,6 +968,7 @@ public class AndroidTagGroup extends ViewGroup {
             }
         }
     }
+
 
 
 
