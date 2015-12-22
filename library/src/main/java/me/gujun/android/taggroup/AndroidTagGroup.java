@@ -75,26 +75,37 @@ public class AndroidTagGroup extends ViewGroup {
     private boolean mIsAppendMode;
     // The text to be displayed when the text of the INPUT tag is empty.
     private CharSequence mInputHint;
+    @ColorInt
     // The tag outline border color.
     private int mBorderColor;
+    @ColorInt
     // The tag text color.
     private int mTextColor;
+    @ColorInt
     // The tag background color.
     private int mBackgroundColor;
+    @ColorInt
     // The dash outline border color.
     private int mDashBorderColor;
+    @ColorInt
     // The  input tag hint text color.
     private int mInputHintColor;
+    @ColorInt
     // The input tag type text color.
     private int mInputTextColor;
+    @ColorInt
     // The checked tag outline border color.
     private int mCheckedBorderColor;
+    @ColorInt
     // The check text color
     private int mCheckedTextColor;
+    @ColorInt
     // The checked marker color.
     private int mCheckedMarkerColor;
+    @ColorInt
     // The checked tag background color.
     private int mCheckedBackgroundColor;
+    @ColorInt
     // The tag background color, when the tag is being pressed.
     private int mPressedBackgroundColor;
     // The tag outline border stroke width, default is 0.5dp.
@@ -137,31 +148,31 @@ public class AndroidTagGroup extends ViewGroup {
         mDefaultVerticalPadding = AndroidUtils.dp2px(getContext(), 3.0f);
 
         // Load styled attributes.
-        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AndroidTagGroup, defStyleAttr, R.style.AndroidTagGroup);
+        final TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.AndroidTagGroup, defStyleAttr, R.style.AndroidTagGroup);
         try {
-            mIsAppendMode = a.getBoolean(R.styleable.AndroidTagGroup_atg_isAppendMode, false);
-            mInputHint = a.getText(R.styleable.AndroidTagGroup_atg_inputHint);
-            mBorderColor = a.getColor(R.styleable.AndroidTagGroup_atg_borderColor, DEFAULT_BORDER_COLOR);
-            mTextColor = a.getColor(R.styleable.AndroidTagGroup_atg_textColor, DEFAULT_TEXT_COLOR);
-            mBackgroundColor = a.getColor(R.styleable.AndroidTagGroup_atg_backgroundColor, DEFAULT_BACKGROUND_COLOR);
-            mDashBorderColor = a.getColor(R.styleable.AndroidTagGroup_atg_dashBorderColor, DEFAULT_DASH_BORDER_COLOR);
-            mInputHintColor = a.getColor(R.styleable.AndroidTagGroup_atg_inputHintColor, DEFAULT_INPUT_HINT_COLOR);
-            mInputTextColor = a.getColor(R.styleable.AndroidTagGroup_atg_inputTextColor, DEFAULT_INPUT_TEXT_COLOR);
-            mCheckedBorderColor = a.getColor(R.styleable.AndroidTagGroup_atg_checkedBorderColor, DEFAULT_CHECKED_BORDER_COLOR);
-            mCheckedTextColor = a.getColor(R.styleable.AndroidTagGroup_atg_checkedTextColor, DEFAULT_CHECKED_TEXT_COLOR);
-            mCheckedMarkerColor = a.getColor(R.styleable.AndroidTagGroup_atg_checkedMarkerColor, DEFAULT_CHECKED_MARKER_COLOR);
-            mCheckedBackgroundColor = a.getColor(R.styleable.AndroidTagGroup_atg_checkedBackgroundColor, DEFAULT_CHECKED_BACKGROUND_COLOR);
-            mPressedBackgroundColor = a.getColor(R.styleable.AndroidTagGroup_atg_pressedBackgroundColor, DEFAULT_PRESSED_BACKGROUND_COLOR);
-            mBorderStrokeWidth = a.getDimension(R.styleable.AndroidTagGroup_atg_borderStrokeWidth, mDefaultBorderStrokeWidth);
-            mTextSize = a.getDimension(R.styleable.AndroidTagGroup_atg_textSize, mDefaultTextSize);
-            mHorizontalSpacing = (int) a.getDimension(R.styleable.AndroidTagGroup_atg_horizontalSpacing, mDefaultHorizontalSpacing);
-            mVerticalSpacing = (int) a.getDimension(R.styleable.AndroidTagGroup_atg_verticalSpacing, mDefaultVerticalSpacing);
-            mHorizontalPadding = (int) a.getDimension(R.styleable.AndroidTagGroup_atg_horizontalPadding, mDefaultHorizontalPadding);
-            mVerticalPadding = (int) a.getDimension(R.styleable.AndroidTagGroup_atg_verticalPadding, mDefaultVerticalPadding);
-            mTagsLimitation = a.getInteger(R.styleable.AndroidTagGroup_atg_tagsLimitation, -1);
-            mCharsLimitation = a.getInteger(R.styleable.AndroidTagGroup_atg_charsLimitation, -1);
+            mIsAppendMode = typedArray.getBoolean(R.styleable.AndroidTagGroup_atg_isAppendMode, false);
+            mInputHint = typedArray.getText(R.styleable.AndroidTagGroup_atg_inputHint);
+            mBorderColor = typedArray.getColor(R.styleable.AndroidTagGroup_atg_borderColor, DEFAULT_BORDER_COLOR);
+            mTextColor = typedArray.getColor(R.styleable.AndroidTagGroup_atg_textColor, DEFAULT_TEXT_COLOR);
+            mBackgroundColor = typedArray.getColor(R.styleable.AndroidTagGroup_atg_backgroundColor, DEFAULT_BACKGROUND_COLOR);
+            mDashBorderColor = typedArray.getColor(R.styleable.AndroidTagGroup_atg_dashBorderColor, DEFAULT_DASH_BORDER_COLOR);
+            mInputHintColor = typedArray.getColor(R.styleable.AndroidTagGroup_atg_inputHintColor, DEFAULT_INPUT_HINT_COLOR);
+            mInputTextColor = typedArray.getColor(R.styleable.AndroidTagGroup_atg_inputTextColor, DEFAULT_INPUT_TEXT_COLOR);
+            mCheckedBorderColor = typedArray.getColor(R.styleable.AndroidTagGroup_atg_checkedBorderColor, DEFAULT_CHECKED_BORDER_COLOR);
+            mCheckedTextColor = typedArray.getColor(R.styleable.AndroidTagGroup_atg_checkedTextColor, DEFAULT_CHECKED_TEXT_COLOR);
+            mCheckedMarkerColor = typedArray.getColor(R.styleable.AndroidTagGroup_atg_checkedMarkerColor, DEFAULT_CHECKED_MARKER_COLOR);
+            mCheckedBackgroundColor = typedArray.getColor(R.styleable.AndroidTagGroup_atg_checkedBackgroundColor, DEFAULT_CHECKED_BACKGROUND_COLOR);
+            mPressedBackgroundColor = typedArray.getColor(R.styleable.AndroidTagGroup_atg_pressedBackgroundColor, DEFAULT_PRESSED_BACKGROUND_COLOR);
+            mBorderStrokeWidth = typedArray.getDimension(R.styleable.AndroidTagGroup_atg_borderStrokeWidth, mDefaultBorderStrokeWidth);
+            mTextSize = typedArray.getDimension(R.styleable.AndroidTagGroup_atg_textSize, mDefaultTextSize);
+            mHorizontalSpacing = (int) typedArray.getDimension(R.styleable.AndroidTagGroup_atg_horizontalSpacing, mDefaultHorizontalSpacing);
+            mVerticalSpacing = (int) typedArray.getDimension(R.styleable.AndroidTagGroup_atg_verticalSpacing, mDefaultVerticalSpacing);
+            mHorizontalPadding = (int) typedArray.getDimension(R.styleable.AndroidTagGroup_atg_horizontalPadding, mDefaultHorizontalPadding);
+            mVerticalPadding = (int) typedArray.getDimension(R.styleable.AndroidTagGroup_atg_verticalPadding, mDefaultVerticalPadding);
+            mTagsLimitation = typedArray.getInteger(R.styleable.AndroidTagGroup_atg_tagsLimitation, -1);
+            mCharsLimitation = typedArray.getInteger(R.styleable.AndroidTagGroup_atg_charsLimitation, -1);
         } finally {
-            a.recycle();
+            typedArray.recycle();
         }
 
         if (mIsAppendMode) {
