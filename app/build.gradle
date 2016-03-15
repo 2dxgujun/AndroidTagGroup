@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion '21.1.1'
+    compileSdkVersion 23
+    buildToolsVersion '23.0.2'
     defaultConfig {
-        applicationId 'me.gujun.android.taggroup.demo'
+        applicationId 'me.gujun.android.taggroup.app'
         minSdkVersion 8
-        targetSdkVersion 21
+        targetSdkVersion 23
         versionName project.VERSION_NAME
         versionCode Integer.parseInt(project.VERSION_CODE)
     }
@@ -18,9 +18,13 @@ android {
     }
     productFlavors {
     }
+    // Travis CI needing
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
     compile project(':library')
-    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.android.support:appcompat-v7:23.2.1'
 }

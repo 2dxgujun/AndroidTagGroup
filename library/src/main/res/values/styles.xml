@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="TagGroup">
+    <style name="AndroidTagGroup">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="atg_isAppendMode">false</item>
@@ -25,7 +25,7 @@
         <item name="atg_verticalPadding">3dp</item>
     </style>
 
-    <style name="TagGroup.Small" parent="TagGroup">
+    <style name="TagGroup.Small" parent="AndroidTagGroup">
         <item name="atg_textSize">10sp</item>
         <item name="atg_horizontalSpacing">6dp</item>
         <item name="atg_verticalSpacing">3dp</item>
@@ -33,7 +33,7 @@
         <item name="atg_verticalPadding">2dp</item>
     </style>
 
-    <style name="TagGroup.Large" parent="TagGroup">
+    <style name="TagGroup.Large" parent="AndroidTagGroup">
         <item name="atg_borderStrokeWidth">0.7dp</item>
         <item name="atg_textSize">15sp</item>
         <item name="atg_horizontalSpacing">9dp</item>
@@ -42,14 +42,14 @@
         <item name="atg_verticalPadding">4dp</item>
     </style>
 
-    <style name="TagGroup.Beauty_Red" parent="TagGroup">
+    <style name="TagGroup.Beauty_Red" parent="AndroidTagGroup">
         <item name="atg_borderColor">#FF3D7F</item>
         <item name="atg_textColor">#FF3D7F</item>
         <item name="atg_checkedBorderColor">#FF3D7F</item>
         <item name="atg_checkedBackgroundColor">#FF3D7F</item>
     </style>
 
-    <style name="TagGroup.Beauty_Red.Inverse" parent="TagGroup">
+    <style name="TagGroup.Beauty_Red.Inverse" parent="AndroidTagGroup">
         <item name="atg_borderColor">#FF3D7F</item>
         <item name="atg_textColor">#FFFFFF</item>
         <item name="atg_backgroundColor">#FF3D7F</item>

@@ -1,0 +1,15 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/activity_vertical_margin">
+
+    <me.gujun.android.taggroup.AndroidTagGroup
+        android:id="@+id/androidTagGroup"
+        style="@style/AndroidTagGroup"
+        app:atg_charsLimitation="6"
+        app:atg_isAppendMode="true"
+        app:atg_tagsLimitation="4"/>
+</LinearLayout>

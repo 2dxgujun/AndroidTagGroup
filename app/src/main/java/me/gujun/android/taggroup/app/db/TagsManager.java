@@ -1,4 +1,4 @@
-package me.gujun.android.taggroup.demo.db;
+package me.gujun.android.taggroup.app.db;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -52,17 +52,17 @@ public class TagsManager {
         }
     }
 
+    public void clearTags() {
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.delete(TagsTable.TABLE_NAME, null, null);
+        db.close();
+    }
+
     public void addTag(CharSequence tag) {
         ContentValues values = new ContentValues();
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         values.put(TagsTable.TAG, tag.toString());
         db.insert(TagsTable.TABLE_NAME, null, values);
-        db.close();
-    }
-
-    public void clearTags() {
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        db.delete(TagsTable.TABLE_NAME, null, null);
         db.close();
     }
 }
