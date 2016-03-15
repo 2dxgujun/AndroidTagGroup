@@ -4,7 +4,7 @@ android {
     compileSdkVersion 23
     buildToolsVersion '23.0.2'
     defaultConfig {
-        applicationId 'me.gujun.android.taggroup.demo'
+        applicationId 'me.gujun.android.taggroup.app'
         minSdkVersion 8
         targetSdkVersion 23
         versionName project.VERSION_NAME
@@ -26,5 +26,5 @@ android {
 
 dependencies {
     compile project(':library')
-    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:appcompat-v7:23.2.1'
 }

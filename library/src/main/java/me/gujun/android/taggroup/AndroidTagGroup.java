@@ -434,6 +434,213 @@ public class AndroidTagGroup extends ViewGroup {
     }
 
     /**
+     * Returns the INPUT state tag in this group.
+     *
+     * @return the INPUT state tag view or null if not exists
+     */
+    public String getInputTagText() {
+        final TagView inputTagView = getInputTag();
+        if (inputTagView != null) {
+            return inputTagView.getText().toString();
+        }
+        return null;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        final int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+
+        measureChildren(widthMeasureSpec, heightMeasureSpec);
+
+        int width;
+        int height = 0;
+
+        int row = 0; // The row counter.
+        int rowWidth = 0; // Calc the current row width.
+        int rowMaxHeight = 0; // Calc the max tag height, in current row.
+
+        final int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            final View child = getChildAt(i);
+            final int childWidth = child.getMeasuredWidth();
+            final int childHeight = child.getMeasuredHeight();
+
+            if (child.getVisibility() != GONE) {
+                rowWidth += childWidth;
+                if (rowWidth > widthSize) { // Next line.
+                    rowWidth = childWidth; // The next row width.
+                    height += rowMaxHeight + mVerticalSpacing;
+                    rowMaxHeight = childHeight; // The next row max height.
+                    row++;
+                } else { // This line.
+                    rowMaxHeight = Math.max(rowMaxHeight, childHeight);
+                }
+                rowWidth += mHorizontalSpacing;
+            }
+        }
+        // Account for the last row height.
+        height += rowMaxHeight;
+
+        // Account for the padding too.
+        height += getPaddingTop() + getPaddingBottom();
+
+        // If the tags grouped in one row, set the width to wrap the tags.
+        if (row == 0) {
+            width = rowWidth;
+            width += getPaddingLeft() + getPaddingRight();
+        } else {// If the tags grouped exceed one line, set the width to match the parent.
+            width = widthSize;
+        }
+
+        setMeasuredDimension(widthMode == MeasureSpec.EXACTLY ? widthSize : width,
+                heightMode == MeasureSpec.EXACTLY ? heightSize : height);
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+        SavedState ss = new SavedState(superState);
+        ss.tags = getTags();
+        ss.checkedPosition = getCheckedTagIndex();
+        if (getInputTag() != null) {
+            ss.input = getInputTag().getText().toString();
+        }
+        return ss;
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        if (!(state instanceof SavedState)) {
+            super.onRestoreInstanceState(state);
+            return;
+        }
+
+        SavedState ss = (SavedState) state;
+        super.onRestoreInstanceState(ss.getSuperState());
+
+        setTags(ss.tags);
+        TagView checkedTagView = getTagAt(ss.checkedPosition);
+        if (checkedTagView != null) {
+            checkedTagView.setChecked(true);
+        }
+        if (getInputTag() != null) {
+            getInputTag().setText(ss.input);
+        }
+    }
+
+    /**
+     * Returns the tag array in group, except the INPUT tag.
+     *
+     * @return the tag array.
+     */
+    public String[] getTags() {
+        final int count = getChildCount();
+        final List<String> tagList = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            final TagView tagView = getTagAt(i);
+            if (tagView.mState == TagView.STATE_NORMAL) {
+                tagList.add(tagView.getText().toString());
+            }
+        }
+
+        return tagList.toArray(new String[tagList.size()]);
+    }
+
+    /**
+     * @see #setTags(String...)
+     */
+    public void setTags(List<String> tagList) {
+        setTags(tagList.toArray(new String[tagList.size()]));
+    }
+
+    /**
+     * Set the tags. It will remove all previous tags first.
+     *
+     * @param tags the tag list to set.
+     */
+    public void setTags(String... tags) {
+        if (mTagsLimitation != -1 && tags.length > mTagsLimitation) {
+            throw new IllegalStateException(String.format("There is a limitation (%1$d) in adding tags.", mTagsLimitation));
+        }
+        removeAllViews();
+        for (final String tag : tags) {
+            appendTag(tag);
+        }
+
+        if (mIsAppendMode) {
+            appendInputTag();
+        }
+    }
+
+    /**
+     * @see #appendInputTag(String)
+     */
+    protected void appendInputTag() {
+        appendInputTag(null);
+    }
+
+    /**
+     * Append a INPUT tag to this group. It will throw an exception if there has a previous INPUT tag.
+     *
+     * @param tag the tag text.
+     */
+    protected void appendInputTag(String tag) {
+        final TagView previousInputTag = getInputTag();
+        if (previousInputTag != null) {
+            throw new IllegalStateException("Already has an INPUT tag in group.");
+        }
+
+        final TagView newInputTag = new TagView(getContext(), TagView.STATE_INPUT, tag);
+
+        if (mCharsLimitation != -1) {
+            newInputTag.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if (getInputTagText().length() - 1 == mCharsLimitation) {
+                        newInputTag.setText(getInputTagText().substring(0, mCharsLimitation));
+                        newInputTag.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
+                    }
+                }
+            });
+        }
+
+        // If limitation exceed, disable the input and invoke a callback.
+        if (mTagsLimitation != -1 && getTags().length >= mTagsLimitation) {
+            if (mOnTagLimitationExceedListener != null) {
+                mOnTagLimitationExceedListener.onLimitationExceed();
+            }
+            newInputTag.setEnabled(false);
+        }
+        newInputTag.setOnClickListener(mInternalTagClickListener);
+        addView(newInputTag);
+    }
+
+    /**
+     * Append tag to this group.
+     *
+     * @param tag the tag to append.
+     */
+    protected void appendTag(CharSequence tag) {
+        final TagView newTag = new TagView(getContext(), TagView.STATE_NORMAL, tag);
+        newTag.setOnClickListener(mInternalTagClickListener);
+        addView(newTag);
+    }
+
+
+    /**
      * Interface definition for a callback to be invoked when adding tags limitation exceed.
      */
     public interface OnTagLimitationExceedListener {
@@ -442,6 +649,7 @@ public class AndroidTagGroup extends ViewGroup {
          */
         void onLimitationExceed();
     }
+
 
     /**
      * Interface definition for a callback to be invoked when a tag group is changed.
@@ -461,6 +669,7 @@ public class AndroidTagGroup extends ViewGroup {
          */
         void onDelete(AndroidTagGroup androidTagGroup, String tag);
     }
+
 
     /**
      * Interface definition for a callback to be invoked when a tag is clicked.
@@ -972,221 +1181,6 @@ public class AndroidTagGroup extends ViewGroup {
                 return super.sendKeyEvent(event);
             }
         }
-    }
-
-    /**
-     * Returns the INPUT state tag in this group.
-     *
-     * @return the INPUT state tag view or null if not exists
-     */
-    public String getInputTagText() {
-        final TagView inputTagView = getInputTag();
-        if (inputTagView != null) {
-            return inputTagView.getText().toString();
-        }
-        return null;
-    }
-
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-        final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-        final int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-
-        measureChildren(widthMeasureSpec, heightMeasureSpec);
-
-        int width;
-        int height = 0;
-
-        int row = 0; // The row counter.
-        int rowWidth = 0; // Calc the current row width.
-        int rowMaxHeight = 0; // Calc the max tag height, in current row.
-
-        final int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            final View child = getChildAt(i);
-            final int childWidth = child.getMeasuredWidth();
-            final int childHeight = child.getMeasuredHeight();
-
-            if (child.getVisibility() != GONE) {
-                rowWidth += childWidth;
-                if (rowWidth > widthSize) { // Next line.
-                    rowWidth = childWidth; // The next row width.
-                    height += rowMaxHeight + mVerticalSpacing;
-                    rowMaxHeight = childHeight; // The next row max height.
-                    row++;
-                } else { // This line.
-                    rowMaxHeight = Math.max(rowMaxHeight, childHeight);
-                }
-                rowWidth += mHorizontalSpacing;
-            }
-        }
-        // Account for the last row height.
-        height += rowMaxHeight;
-
-        // Account for the padding too.
-        height += getPaddingTop() + getPaddingBottom();
-
-        // If the tags grouped in one row, set the width to wrap the tags.
-        if (row == 0) {
-            width = rowWidth;
-            width += getPaddingLeft() + getPaddingRight();
-        } else {// If the tags grouped exceed one line, set the width to match the parent.
-            width = widthSize;
-        }
-
-        setMeasuredDimension(widthMode == MeasureSpec.EXACTLY ? widthSize : width,
-                heightMode == MeasureSpec.EXACTLY ? heightSize : height);
-    }
-
-
-    @Override
-    public Parcelable onSaveInstanceState() {
-        Parcelable superState = super.onSaveInstanceState();
-        SavedState ss = new SavedState(superState);
-        ss.tags = getTags();
-        ss.checkedPosition = getCheckedTagIndex();
-        if (getInputTag() != null) {
-            ss.input = getInputTag().getText().toString();
-        }
-        return ss;
-    }
-
-
-    @Override
-    public void onRestoreInstanceState(Parcelable state) {
-        if (!(state instanceof SavedState)) {
-            super.onRestoreInstanceState(state);
-            return;
-        }
-
-        SavedState ss = (SavedState) state;
-        super.onRestoreInstanceState(ss.getSuperState());
-
-        setTags(ss.tags);
-        TagView checkedTagView = getTagAt(ss.checkedPosition);
-        if (checkedTagView != null) {
-            checkedTagView.setChecked(true);
-        }
-        if (getInputTag() != null) {
-            getInputTag().setText(ss.input);
-        }
-    }
-
-
-    /**
-     * Returns the tag array in group, except the INPUT tag.
-     *
-     * @return the tag array.
-     */
-    public String[] getTags() {
-        final int count = getChildCount();
-        final List<String> tagList = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
-            final TagView tagView = getTagAt(i);
-            if (tagView.mState == TagView.STATE_NORMAL) {
-                tagList.add(tagView.getText().toString());
-            }
-        }
-
-        return tagList.toArray(new String[tagList.size()]);
-    }
-
-
-    /**
-     * Set the tags. It will remove all previous tags first.
-     *
-     * @param tags the tag list to set.
-     */
-    public void setTags(String... tags) {
-        if (mTagsLimitation != -1 && tags.length > mTagsLimitation) {
-            throw new IllegalStateException(String.format("There is a limitation (%1$d) in adding tags.", mTagsLimitation));
-        }
-        removeAllViews();
-        for (final String tag : tags) {
-            appendTag(tag);
-        }
-
-        if (mIsAppendMode) {
-            appendInputTag();
-        }
-    }
-
-
-    /**
-     * @see #setTags(String...)
-     */
-    public void setTags(List<String> tagList) {
-        setTags(tagList.toArray(new String[tagList.size()]));
-    }
-
-
-    /**
-     * @see #appendInputTag(String)
-     */
-    protected void appendInputTag() {
-        appendInputTag(null);
-    }
-
-
-    /**
-     * Append a INPUT tag to this group. It will throw an exception if there has a previous INPUT tag.
-     *
-     * @param tag the tag text.
-     */
-    protected void appendInputTag(String tag) {
-        final TagView previousInputTag = getInputTag();
-        if (previousInputTag != null) {
-            throw new IllegalStateException("Already has an INPUT tag in group.");
-        }
-
-        final TagView newInputTag = new TagView(getContext(), TagView.STATE_INPUT, tag);
-
-        if (mCharsLimitation != -1) {
-            newInputTag.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    if (getInputTagText().length() - 1 == mCharsLimitation) {
-                        newInputTag.setText(getInputTagText().substring(0, mCharsLimitation));
-                        newInputTag.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
-                    }
-                }
-            });
-        }
-
-        // If limitation exceed, disable the input and invoke a callback.
-        if (mTagsLimitation != -1 && getTags().length >= mTagsLimitation) {
-            if (mOnTagLimitationExceedListener != null) {
-                mOnTagLimitationExceedListener.onLimitationExceed();
-            }
-            newInputTag.setEnabled(false);
-        }
-        newInputTag.setOnClickListener(mInternalTagClickListener);
-        addView(newInputTag);
-    }
-
-
-    /**
-     * Append tag to this group.
-     *
-     * @param tag the tag to append.
-     */
-    protected void appendTag(CharSequence tag) {
-        final TagView newTag = new TagView(getContext(), TagView.STATE_NORMAL, tag);
-        newTag.setOnClickListener(mInternalTagClickListener);
-        addView(newTag);
     }
 
 

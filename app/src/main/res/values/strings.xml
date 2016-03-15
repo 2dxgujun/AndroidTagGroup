@@ -6,4 +6,6 @@
     <string name="tags_default">Tags (Default)</string>
     <string name="tags_large">Tags (Large)</string>
     <string name="tags_small">Tags (Small)</string>
+    <string name="edit">Edit</string>
+    <string name="submit">Submit</string>
 </resources>
