@@ -212,6 +212,7 @@ public class TagGroup extends ViewGroup {
         final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         final int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        final int contentWidth = widthSize - getPaddingLeft() - getPaddingRight();
 
         measureChildren(widthMeasureSpec, heightMeasureSpec);
 
@@ -230,7 +231,7 @@ public class TagGroup extends ViewGroup {
 
             if (child.getVisibility() != GONE) {
                 rowWidth += childWidth;
-                if (rowWidth > widthSize) { // Next line.
+                if (rowWidth > contentWidth) { // Next line.
                     rowWidth = childWidth; // The next row width.
                     height += rowMaxHeight + verticalSpacing;
                     rowMaxHeight = childHeight; // The next row max height.
