@@ -70,6 +70,9 @@ To delete a tag as user press "Backspace" key or double-tap the tag which you wa
 
 Implement a callback interface: `TagGroup.OnTagClickListener`, and set the listener via `setOnTagClickListener()`.
 
+#### Gravity for TagGroup
+
+To set gravity for TagGroup: use `setGravity(...)` supported `TagGroup.Gravity.LEFT`, `TagGroup.Gravity.MIDDLE` and `TagGroup.Gravity.RIGHT`
 
 # Build
 
