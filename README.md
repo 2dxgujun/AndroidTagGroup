@@ -28,7 +28,23 @@ New update supported Tag Gravity
 # Usage
 
 ## Step 1
-Clone the project and import library to your project.
+
+#### Gradle
+```groovy
+dependencies {
+   compile 'me.gujun.android.taggroup:library:1.4@aar'
+}
+```
+
+#### Maven
+```xml
+<dependency>
+    <groupId>me.gujun.android.taggroup</groupId>
+    <artifactId>library</artifactId>
+    <version>1.4</version>
+    <type>apklib</type>
+</dependency>
+```
 
 ## Step 2
 
@@ -62,6 +78,8 @@ Implement a callback interface: `TagGroup.OnTagClickListener`, and set the liste
 #### Gravity for TagGroup
 
 To set gravity for TagGroup: use `setGravity(...)` supported `TagGroup.Gravity.LEFT`, `TagGroup.Gravity.MIDDLE` and `TagGroup.Gravity.RIGHT`
+
+(Wait for merge to origin-project and make Gradle. If you need, you can clone this project and import to your project)
 
 # Build
 
