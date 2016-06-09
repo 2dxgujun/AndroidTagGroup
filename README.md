@@ -102,6 +102,7 @@ There are several attributes you can set:
 # Developed By
 
 Jun Gu - <2dxgujun@gmail.com>
+Tuan Dinh - <leonacky@gmail.com> (Tag Gravity)
 
 <a href="http://weibo.com/2dxgujun">
   <img alt="Follow me on Weibo" src="http://ww4.sinaimg.cn/large/bce2dea9gw1epjhk9h9m6j20230233yb.jpg"/>
