@@ -9,6 +9,8 @@ The TagGroup is a special layout with a set of tags. You can use it to tag peopl
 
 Also you can contribute new idea to me.
 
+New update supported Tag Gravity
+
 # Demo
 
 ### Screenshot
@@ -18,28 +20,15 @@ Also you can contribute new idea to me.
 ![screenshot2](http://ww4.sinaimg.cn/large/bce2dea9jw1esbsbngv8fj20u005w75v.jpg)
 ![screenshot3](http://ww4.sinaimg.cn/large/bce2dea9jw1esbsbmoagij20u005sabl.jpg)
 
-[Download Demo](https://github.com/2dxgujun/AndroidTagGroup/releases/download/v1.4/AndroidTagGroup-Demo-v1.4.apk)
+### Tag Gravity
+![screenshot4](https://dl.dropboxusercontent.com/u/25101600/tag_gravity.png)
+
+[Download Demo](https://dl.dropboxusercontent.com/u/25101600/TagGroup-demo-release.apk)
 
 # Usage
 
 ## Step 1
-
-#### Gradle
-```groovy
-dependencies {
-   compile 'me.gujun.android.taggroup:library:1.4@aar'
-}
-```
-
-#### Maven
-```xml
-<dependency>
-    <groupId>me.gujun.android.taggroup</groupId>
-    <artifactId>library</artifactId>
-    <version>1.4</version>
-    <type>apklib</type>
-</dependency>
-```
+Clone the project and import library to your project.
 
 ## Step 2
 
@@ -70,6 +59,9 @@ To delete a tag as user press "Backspace" key or double-tap the tag which you wa
 
 Implement a callback interface: `TagGroup.OnTagClickListener`, and set the listener via `setOnTagClickListener()`.
 
+#### Gravity for TagGroup
+
+To set gravity for TagGroup: use `setGravity(...)` supported `TagGroup.Gravity.LEFT`, `TagGroup.Gravity.MIDDLE` and `TagGroup.Gravity.RIGHT`
 
 # Build
 
@@ -110,6 +102,7 @@ There are several attributes you can set:
 # Developed By
 
 Jun Gu - <2dxgujun@gmail.com>
+Tuan Dinh - <leonacky@gmail.com> (Tag Gravity)
 
 <a href="http://weibo.com/2dxgujun">
   <img alt="Follow me on Weibo" src="http://ww4.sinaimg.cn/large/bce2dea9gw1epjhk9h9m6j20230233yb.jpg"/>
