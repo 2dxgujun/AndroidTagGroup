@@ -9,6 +9,8 @@ The TagGroup is a special layout with a set of tags. You can use it to tag peopl
 
 Also you can contribute new idea to me.
 
+New update supported Tag Gravity
+
 # Demo
 
 ### Screenshot
@@ -18,28 +20,15 @@ Also you can contribute new idea to me.
 ![screenshot2](http://ww4.sinaimg.cn/large/bce2dea9jw1esbsbngv8fj20u005w75v.jpg)
 ![screenshot3](http://ww4.sinaimg.cn/large/bce2dea9jw1esbsbmoagij20u005sabl.jpg)
 
-[Download Demo](https://github.com/2dxgujun/AndroidTagGroup/releases/download/v1.4/AndroidTagGroup-Demo-v1.4.apk)
+### Tag Gravity
+![screenshot4](https://dl.dropboxusercontent.com/u/25101600/tag_gravity.png)
+
+[Download Demo](https://dl.dropboxusercontent.com/u/25101600/TagGroup-demo-release.apk)
 
 # Usage
 
 ## Step 1
-
-#### Gradle
-```groovy
-dependencies {
-   compile 'me.gujun.android.taggroup:library:1.4@aar'
-}
-```
-
-#### Maven
-```xml
-<dependency>
-    <groupId>me.gujun.android.taggroup</groupId>
-    <artifactId>library</artifactId>
-    <version>1.4</version>
-    <type>apklib</type>
-</dependency>
-```
+Clone the project and import library to your project.
 
 ## Step 2
 
