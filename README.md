@@ -102,6 +102,7 @@ There are several attributes you can set:
 # Developed By
 
 Jun Gu - <2dxgujun@gmail.com>
+
 Tuan Dinh - <leonacky@gmail.com> (Tag Gravity)
 
 <a href="http://weibo.com/2dxgujun">
