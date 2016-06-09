@@ -22,6 +22,7 @@ public class TagEditorActivity extends ActionBarActivity {
         String[] tags = mTagsManager.getTags();
 
         mTagGroup = (TagGroup) findViewById(R.id.tag_group);
+        mTagGroup.setGravity(TagGroup.TagGravity.LEFT);
         mTagGroup.setTags(tags);
     }
 

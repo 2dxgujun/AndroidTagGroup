@@ -19,6 +19,8 @@ public class MainActivity extends ActionBarActivity {
     private TagGroup mDefaultTagGroup;
     private TagGroup mSmallTagGroup;
     private TagGroup mLargeTagGroup;
+    private TagGroup mLargeMiddleTagGroup;
+    private TagGroup mLargeRightTagGroup;
     private TagGroup mBeautyTagGroup;
     private TagGroup mBeautyInverseTagGroup;
 
@@ -50,6 +52,8 @@ public class MainActivity extends ActionBarActivity {
         mDefaultTagGroup = (TagGroup) findViewById(R.id.tag_group);
         mSmallTagGroup = (TagGroup) findViewById(R.id.tag_group_small);
         mLargeTagGroup = (TagGroup) findViewById(R.id.tag_group_large);
+        mLargeMiddleTagGroup = (TagGroup) findViewById(R.id.tag_group_large_middle);
+        mLargeRightTagGroup = (TagGroup) findViewById(R.id.tag_group_large_right);
         mBeautyTagGroup = (TagGroup) findViewById(R.id.tag_group_beauty);
         mBeautyInverseTagGroup = (TagGroup) findViewById(R.id.tag_group_beauty_inverse);
         if (tags != null && tags.length > 0) {
@@ -58,6 +62,11 @@ public class MainActivity extends ActionBarActivity {
             mLargeTagGroup.setTags(tags);
             mBeautyTagGroup.setTags(tags);
             mBeautyInverseTagGroup.setTags(tags);
+
+            mLargeMiddleTagGroup.setTags(tags);
+            mLargeMiddleTagGroup.setGravity(TagGroup.TagGravity.MIDDLE);
+            mLargeRightTagGroup.setTags(tags);
+            mLargeRightTagGroup.setGravity(TagGroup.TagGravity.RIGHT);
         }
 
         MyTagGroupOnClickListener tgClickListener = new MyTagGroupOnClickListener();
@@ -85,6 +94,10 @@ public class MainActivity extends ActionBarActivity {
         mLargeTagGroup.setTags(tags);
         mBeautyTagGroup.setTags(tags);
         mBeautyInverseTagGroup.setTags(tags);
+        mLargeMiddleTagGroup.setTags(tags);
+        mLargeMiddleTagGroup.setGravity(TagGroup.TagGravity.MIDDLE);
+        mLargeRightTagGroup.setTags(tags);
+        mLargeRightTagGroup.setGravity(TagGroup.TagGravity.RIGHT);
     }
 
     @Override
