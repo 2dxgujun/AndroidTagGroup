@@ -7,7 +7,7 @@ android {
         targetSdkVersion 21
     }
     lintOptions {
-        abortOnError true
+        abortOnError false
     }
     productFlavors {
     }
