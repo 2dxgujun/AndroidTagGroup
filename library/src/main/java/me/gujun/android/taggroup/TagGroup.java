@@ -1161,7 +1161,7 @@ public class TagGroup extends ViewGroup {
     }
 
     /**
-     * A class holder a Tag (TagGravity)
+     * A class holder of a Tag (TagGravity)
      */
     class ChildHolder {
         View child;
