@@ -7,8 +7,8 @@ android {
         applicationId 'me.gujun.android.taggroup.demo'
         minSdkVersion 15
         targetSdkVersion 24
-        versionName project.VERSION_NAME
-        versionCode Integer.parseInt(project.VERSION_CODE)
+        versionName '1.5'
+        versionCode 15
     }
     buildTypes {
         release {
