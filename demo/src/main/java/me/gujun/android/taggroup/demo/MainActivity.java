@@ -3,6 +3,7 @@ package me.gujun.android.taggroup.demo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,7 +14,7 @@ import me.gujun.android.taggroup.TagGroup;
 import me.gujun.android.taggroup.demo.db.TagsManager;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
     private TextView mPromptText;
 
     private TagGroup mDefaultTagGroup;
@@ -52,6 +53,7 @@ public class MainActivity extends ActionBarActivity {
         mLargeTagGroup = (TagGroup) findViewById(R.id.tag_group_large);
         mBeautyTagGroup = (TagGroup) findViewById(R.id.tag_group_beauty);
         mBeautyInverseTagGroup = (TagGroup) findViewById(R.id.tag_group_beauty_inverse);
+
         if (tags != null && tags.length > 0) {
             mDefaultTagGroup.setTags(tags);
             mSmallTagGroup.setTags(tags);
