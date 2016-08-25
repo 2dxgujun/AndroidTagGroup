@@ -1,24 +1,17 @@
 # `AndroidTagGroup`
 
-[![Release 1.4](https://img.shields.io/badge/Release-1.4.1-green.svg)](https://github.com/2dxgujun/AndroidTagGroup/releases)
+[![Release 1.5](https://img.shields.io/badge/Release-1.5-green.svg)](https://github.com/alhazmy13/AndroidTagGroup/releases)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/me.gujun.android.taggroup/library/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/me.gujun.android.taggroup/library)
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-AndroidTagGroup-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1539)
-[![Build Status](https://travis-ci.org/2dxgujun/AndroidTagGroup.png?branch=master)](https://travis-ci.org/2dxgujun/AndroidTagGroup)
+
 
 The TagGroup is a special layout with a set of tags. You can use it to tag people, books or anything you want.
 
-Also you can contribute new idea to me.
 
-# Demo
 
 ### Screenshot
-![screenshot1](http://ww4.sinaimg.cn/large/bce2dea9jw1esbsby9v5fj20u00w8jxx.jpg)
+![screenshot1](https://cloud.githubusercontent.com/assets/4659608/17962806/2570fca0-6abb-11e6-93c8-62287977a029.gif)
 
-### Edit Tags
-![screenshot2](http://ww4.sinaimg.cn/large/bce2dea9jw1esbsbngv8fj20u005w75v.jpg)
-![screenshot3](http://ww4.sinaimg.cn/large/bce2dea9jw1esbsbmoagij20u005sabl.jpg)
-
-[Download Demo](https://github.com/2dxgujun/AndroidTagGroup/releases/download/v1.4/AndroidTagGroup-Demo-v1.4.apk)
 
 # Usage
 
@@ -27,16 +20,16 @@ Also you can contribute new idea to me.
 #### Gradle
 ```groovy
 dependencies {
-   compile 'me.gujun.android.taggroup:library:1.4@aar'
+   compile 'net.alhazmy13.androidtaggroup:library:1.5.0'
 }
 ```
 
 #### Maven
 ```xml
 <dependency>
-    <groupId>me.gujun.android.taggroup</groupId>
+    <groupId>net.alhazmy13.androidtaggroup</groupId>
     <artifactId>library</artifactId>
-    <version>1.4</version>
+    <version>1.5.0</version>
     <type>apklib</type>
 </dependency>
 ```
@@ -71,13 +64,6 @@ To delete a tag as user press "Backspace" key or double-tap the tag which you wa
 Implement a callback interface: `TagGroup.OnTagClickListener`, and set the listener via `setOnTagClickListener()`.
 
 
-# Build
-
-run `./gradlew assembleDebug` (Mac/Linux)
-
-or
-
-run `gradlew.bat assembleDebug` (Windows)
 
 # Attributes
 
@@ -88,7 +74,8 @@ There are several attributes you can set:
 |           attr        	|     default      |                         mean                          	 |
 |:------------------------- |:---------------- |:------------------------------------------------------- |
 | atg_isAppendMode      	| false            | Determine the TagGroup mode, APPEND or single DISPLAY.  |
-| atg_inputHint   	        | Add Tag/添加标签  | The hint of the INPUT tag.                              |
+| atg_showRemoveConfirmation      	| false            | To show confirmation alert before remove any tag  |
+| atg_inputHint   	        | null  | The hint of the INPUT tag.                              |
 | atg_borderColor	        | #49C120          | The tag outline border color.                           |
 | atg_textColor          	| #49C120          | The tag text color.                           	         |
 | atg_backgroundColor       | #FFFFFF          | The tag background color.                               |
@@ -107,16 +94,6 @@ There are several attributes you can set:
 | atg_horizontalPadding	    | 12dp             | The horizontal tag padding.(Mark3)                      |
 | atg_verticalPadding  	    | 3dp              | The vertical tag padding.(Mark4)                        |
 
-# Developed By
-
-Jun Gu - <2dxgujun@gmail.com>
-
-<a href="http://weibo.com/2dxgujun">
-  <img alt="Follow me on Weibo" src="http://ww4.sinaimg.cn/large/bce2dea9gw1epjhk9h9m6j20230233yb.jpg"/>
-</a>
-<a href="https://plus.google.com/u/0/113657331852211913645">
-  <img alt="Follow me on Google Plus" src="http://ww1.sinaimg.cn/large/bce2dea9gw1epjhbx0ouij2023023jr6.jpg"/>
-</a>
 
 # License
 

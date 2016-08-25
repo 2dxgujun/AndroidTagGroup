@@ -1,6 +1,8 @@
 package me.gujun.android.taggroup;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -17,6 +19,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.ArrowKeyMovementMethod;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -46,11 +49,12 @@ import java.util.Locale;
  * is not focusable.
  * </p>
  *
- * @author Jun Gu (http://2dxgujun.com)
+ * @author Jun Gu (http://2dxgujun.com) / Abdullah Alhazmy (http://alhazmy13.net)
  * @version 2.0
- * @since 2015-2-3 14:16:32
+ * @since 2016 -8-23 12:10:02
  */
 public class TagGroup extends ViewGroup {
+    private static final String TAG = "TagGroup";
     private final int default_border_color = Color.rgb(0x49, 0xC1, 0x20);
     private final int default_text_color = Color.rgb(0x49, 0xC1, 0x20);
     private final int default_background_color = Color.WHITE;
@@ -178,6 +182,9 @@ public class TagGroup extends ViewGroup {
     /**
      * Listener used to handle tag click event.
      */
+
+
+    private boolean isShowRemoveConfirmation;
     private InternalTagClickListener mInternalTagClickListener = new InternalTagClickListener();
 
     public TagGroup(Context context) {
@@ -220,6 +227,7 @@ public class TagGroup extends ViewGroup {
             horizontalPadding = (int) a.getDimension(R.styleable.TagGroup_atg_horizontalPadding, default_horizontal_padding);
             verticalPadding = (int) a.getDimension(R.styleable.TagGroup_atg_verticalPadding, default_vertical_padding);
             isRTL = isRTL();
+            isShowRemoveConfirmation = a.getBoolean(R.styleable.TagGroup_atg_showRemoveConfirmation, false);
         } finally {
             a.recycle();
         }
@@ -238,11 +246,21 @@ public class TagGroup extends ViewGroup {
         }
     }
 
+    public static boolean isRTL() {
+        return isRTL(Locale.getDefault());
+    }
+
     /**
      * Call this to force RTL.
      */
     public void setRTL(boolean _rtl) {
         this.isRTL = _rtl;
+    }
+
+    public static boolean isRTL(Locale locale) {
+        final int directionality = Character.getDirectionality(locale.getDisplayName().charAt(0));
+        return directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT ||
+                directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC;
     }
 
     /**
@@ -570,7 +588,7 @@ public class TagGroup extends ViewGroup {
 
     @Override
     public ViewGroup.LayoutParams generateLayoutParams(AttributeSet attrs) {
-        return new TagGroup.LayoutParams(getContext(), attrs);
+        return new LayoutParams(getContext(), attrs);
     }
 
     /**
@@ -587,6 +605,24 @@ public class TagGroup extends ViewGroup {
         if (mOnTagChangeListener != null) {
             mOnTagChangeListener.onDelete(TagGroup.this, tagView.getText().toString());
         }
+    }
+
+    private void showRemoveMsg(final TagView tag) {
+        new AlertDialog.Builder(getContext())
+                .setMessage(R.string.atg_remove_msg)
+                .setTitle(R.string.atg_remove_title)
+                .setPositiveButton(R.string.atg_yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        deleteTag(tag);
+                    }
+                })
+                .setNegativeButton(R.string.atg_no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        tag.setChecked(false);
+                    }
+                }).show();
     }
 
     /**
@@ -637,8 +673,8 @@ public class TagGroup extends ViewGroup {
      * For {@link TagGroup} save and restore state.
      */
     static class SavedState extends BaseSavedState {
-        public static final Parcelable.Creator<SavedState> CREATOR =
-                new Parcelable.Creator<SavedState>() {
+        public static final Creator<SavedState> CREATOR =
+                new Creator<SavedState>() {
                     public SavedState createFromParcel(Parcel in) {
                         return new SavedState(in);
                     }
@@ -693,7 +729,12 @@ public class TagGroup extends ViewGroup {
                 } else {
                     // If the clicked tag is currently checked, delete the tag.
                     if (tag.isChecked) {
-                        deleteTag(tag);
+                        if (isShowRemoveConfirmation)
+                            showRemoveMsg(tag);
+                        else
+                            deleteTag(tag);
+                        Log.d(TAG, "onClick: REMOVED");
+
                     } else {
                         // If the clicked tag is unchecked, uncheck the previous checked tag if exists,
                         // then check the clicked tag.
@@ -803,9 +844,9 @@ public class TagGroup extends ViewGroup {
         public TagView(Context context, final int state, CharSequence text) {
             super(context);
             setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding);
-            setLayoutParams(new TagGroup.LayoutParams(
-                    TagGroup.LayoutParams.WRAP_CONTENT,
-                    TagGroup.LayoutParams.WRAP_CONTENT));
+            setLayoutParams(new LayoutParams(
+                    LayoutParams.WRAP_CONTENT,
+                    LayoutParams.WRAP_CONTENT));
 
             setGravity(Gravity.CENTER);
             setText(text);
@@ -813,7 +854,7 @@ public class TagGroup extends ViewGroup {
 
             mState = state;
 
-            setClickable(isAppendMode);
+            setClickable(true);
             setFocusable(state == STATE_INPUT);
             setFocusableInTouchMode(state == STATE_INPUT);
             setHint(state == STATE_INPUT ? inputHint : null);
@@ -1099,7 +1140,7 @@ public class TagGroup extends ViewGroup {
          * Android: Backspace in WebView/BaseInputConnection</a>
          */
         private class ZanyInputConnection extends InputConnectionWrapper {
-            public ZanyInputConnection(android.view.inputmethod.InputConnection target, boolean mutable) {
+            public ZanyInputConnection(InputConnection target, boolean mutable) {
                 super(target, mutable);
             }
 
@@ -1114,15 +1155,5 @@ public class TagGroup extends ViewGroup {
                 return super.deleteSurroundingText(beforeLength, afterLength);
             }
         }
-    }
-
-    public static boolean isRTL() {
-        return isRTL(Locale.getDefault());
-    }
-
-    public static boolean isRTL(Locale locale) {
-        final int directionality = Character.getDirectionality(locale.getDisplayName().charAt(0));
-        return directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT ||
-                directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC;
     }
 }

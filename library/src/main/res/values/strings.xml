@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="add_tag">Add Tag</string>
+    <string name="atg_remove_msg">Are you sure you want to remove this tag?</string>
+    <string name="atg_remove_title">Alert</string>
+    <string name="atg_yes">Yes</string>
+    <string name="atg_no">No</string>
 </resources>
