@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import me.gujun.android.taggroup.TagGroup;
 import me.gujun.android.taggroup.demo.db.TagsManager;
 
@@ -28,9 +30,9 @@ public class MainActivity extends ActionBarActivity {
 
     private TagGroup.OnTagClickListener mTagClickListener = new TagGroup.OnTagClickListener() {
         @Override
-        public void onTagClick(TagGroup.TagView tag) {
-            Toast.makeText(MainActivity.this, tag.getText().toString(), Toast.LENGTH_SHORT).show();
-            tag.setSelectedTag(!tag.isSelectedTag());
+        public void onTagClick(TagGroup tagGroup, String tag, int position) {
+            Toast.makeText(MainActivity.this, tag, Toast.LENGTH_SHORT).show();
+            tagGroup.setSelectedTag(position, !tagGroup.isSelectedTag(position));
         }
     };
 

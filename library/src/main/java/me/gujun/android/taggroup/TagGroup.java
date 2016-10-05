@@ -403,6 +403,28 @@ public class TagGroup extends ViewGroup {
         }
     }
 
+    public List<Integer> getSelectedTags() {
+        List<Integer> selected = new ArrayList<>();
+        final int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            final TagView child = (TagView) getChildAt(i);
+            if (child.isSelectedTag()) {
+                selected.add(i);
+            }
+        }
+        return selected;
+    }
+
+    public boolean isSelectedTag(int position) {
+        TagView child = (TagView) getChildAt(position);
+        return child.isSelectedTag();
+    }
+
+    public void setSelectedTag(int position, boolean selected) {
+        TagView child = (TagView) getChildAt(position);
+        child.setSelectedTag(selected);
+    }
+
     @Override
     public Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
@@ -510,8 +532,10 @@ public class TagGroup extends ViewGroup {
      */
     public void setTags(String... tags) {
         removeAllViews();
+        int i = 0;
         for (final String tag : tags) {
-            appendTag(tag);
+            appendTag(tag, i);
+            i++;
         }
 
         if (isAppendMode) {
@@ -588,6 +612,7 @@ public class TagGroup extends ViewGroup {
 
         final TagView newInputTag = new TagView(getContext(), TagView.STATE_INPUT, tag);
         newInputTag.setOnClickListener(mInternalTagClickListener);
+        newInputTag.setPosition(-1);
         addView(newInputTag);
     }
 
@@ -596,8 +621,9 @@ public class TagGroup extends ViewGroup {
      *
      * @param tag the tag to append.
      */
-    protected void appendTag(CharSequence tag) {
+    protected void appendTag(CharSequence tag, int position) {
         final TagView newTag = new TagView(getContext(), TagView.STATE_NORMAL, tag);
+        newTag.setPosition(position);
         newTag.setOnClickListener(mInternalTagClickListener);
         addView(newTag);
     }
@@ -659,9 +685,10 @@ public class TagGroup extends ViewGroup {
         /**
          * Called when a tag has been clicked.
          *
-         * @param tag The tag that was clicked.
+         * @param tag      The text of tag that was clicked.
+         * @param position The position of tag that was clicked.
          */
-        void onTagClick(TagView tag);
+        void onTagClick(TagGroup tagGroup, String tag, int position);
     }
 
     /**
@@ -750,7 +777,7 @@ public class TagGroup extends ViewGroup {
                 }
             } else {
                 if (mOnTagClickListener != null) {
-                    mOnTagClickListener.onTagClick(tag);
+                    mOnTagClickListener.onTagClick(TagGroup.this, tag.getText().toString(), tag.getPosition());
                 }
             }
         }
@@ -759,9 +786,11 @@ public class TagGroup extends ViewGroup {
     /**
      * The tag view which has two states can be either NORMAL or INPUT.
      */
-    public class TagView extends TextView {
+    private class TagView extends TextView {
         public static final int STATE_NORMAL = 1;
         public static final int STATE_INPUT = 2;
+
+        private int position = 0;
 
         /**
          * The offset to the text.
@@ -982,6 +1011,14 @@ public class TagGroup extends ViewGroup {
 
         public boolean isSelectedTag() {
             return isSelectedTag;
+        }
+
+        public int getPosition() {
+            return position;
+        }
+
+        public void setPosition(int position) {
+            this.position = position;
         }
 
         /**
