@@ -28,8 +28,9 @@ public class MainActivity extends ActionBarActivity {
 
     private TagGroup.OnTagClickListener mTagClickListener = new TagGroup.OnTagClickListener() {
         @Override
-        public void onTagClick(String tag) {
-            Toast.makeText(MainActivity.this, tag, Toast.LENGTH_SHORT).show();
+        public void onTagClick(TagGroup.TagView tag) {
+            Toast.makeText(MainActivity.this, tag.getText().toString(), Toast.LENGTH_SHORT).show();
+            tag.setSelectedTag(!tag.isSelectedTag());
         }
     };
 

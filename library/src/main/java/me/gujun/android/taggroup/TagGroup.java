@@ -659,9 +659,9 @@ public class TagGroup extends ViewGroup {
         /**
          * Called when a tag has been clicked.
          *
-         * @param tag The tag text of the tag that was clicked.
+         * @param tag The tag that was clicked.
          */
-        void onTagClick(String tag);
+        void onTagClick(TagView tag);
     }
 
     /**
@@ -750,7 +750,7 @@ public class TagGroup extends ViewGroup {
                 }
             } else {
                 if (mOnTagClickListener != null) {
-                    mOnTagClickListener.onTagClick(tag.getText().toString());
+                    mOnTagClickListener.onTagClick(tag);
                 }
             }
         }
@@ -759,7 +759,7 @@ public class TagGroup extends ViewGroup {
     /**
      * The tag view which has two states can be either NORMAL or INPUT.
      */
-    class TagView extends TextView {
+    public class TagView extends TextView {
         public static final int STATE_NORMAL = 1;
         public static final int STATE_INPUT = 2;
 
@@ -782,6 +782,11 @@ public class TagGroup extends ViewGroup {
          * Indicates the tag if checked.
          */
         private boolean isChecked = false;
+
+        /**
+         * Indicates the tag if selected.
+         */
+        private boolean isSelectedTag = false;
 
         /**
          * Indicates the tag if pressed.
@@ -959,10 +964,24 @@ public class TagGroup extends ViewGroup {
             // Make the checked mark drawing region.
             setPadding(horizontalPadding,
                     verticalPadding,
-                    isChecked ? (int) (horizontalPadding + getHeight() / 2.5f + CHECKED_MARKER_OFFSET)
-                            : horizontalPadding,
+                    isChecked ? (int) (horizontalPadding + getHeight() / 2.5f + CHECKED_MARKER_OFFSET) : horizontalPadding,
                     verticalPadding);
             invalidatePaint();
+        }
+
+        /**
+         * Set whether this tag view is in the selected state.
+         *
+         * @param selected true is selected, false otherwise
+         */
+        public void setSelectedTag(boolean selected) {
+            isSelectedTag = selected;
+            // Make the checked mark drawing region.
+            invalidatePaint();
+        }
+
+        public boolean isSelectedTag() {
+            return isSelectedTag;
         }
 
         /**
@@ -1010,6 +1029,10 @@ public class TagGroup extends ViewGroup {
                         mBorderPaint.setColor(checkedBorderColor);
                         mBackgroundPaint.setColor(checkedBackgroundColor);
                         setTextColor(checkedTextColor);
+                    } else if (isSelectedTag) {
+                        mBorderPaint.setColor(checkedBorderColor);
+                        mBackgroundPaint.setColor(checkedBackgroundColor);
+                        setTextColor(checkedTextColor);
                     } else {
                         mBorderPaint.setColor(borderColor);
                         mBackgroundPaint.setColor(backgroundColor);
@@ -1017,9 +1040,15 @@ public class TagGroup extends ViewGroup {
                     }
                 }
             } else {
-                mBorderPaint.setColor(borderColor);
-                mBackgroundPaint.setColor(backgroundColor);
-                setTextColor(textColor);
+                if (isSelectedTag) {
+                    mBorderPaint.setColor(checkedBorderColor);
+                    mBackgroundPaint.setColor(checkedBackgroundColor);
+                    setTextColor(checkedTextColor);
+                } else {
+                    mBorderPaint.setColor(borderColor);
+                    mBackgroundPaint.setColor(backgroundColor);
+                    setTextColor(textColor);
+                }
             }
 
             if (isPressed) {
