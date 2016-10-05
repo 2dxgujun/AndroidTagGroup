@@ -1,5 +1,7 @@
 # `AndroidTagGroup`
 
+[![Join the chat at https://gitter.im/leonacky/AndroidTagGroup](https://badges.gitter.im/leonacky/AndroidTagGroup.svg)](https://gitter.im/leonacky/AndroidTagGroup?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Release 1.4](https://img.shields.io/badge/Release-1.4.1-green.svg)](https://github.com/2dxgujun/AndroidTagGroup/releases)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/me.gujun.android.taggroup/library/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/me.gujun.android.taggroup/library)
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-AndroidTagGroup-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1539)
