@@ -1,4 +1,4 @@
-package me.gujun.android.taggroup.demo;
+package com.aotasoft.taggroup.demo;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,10 +9,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.List;
-
-import me.gujun.android.taggroup.TagGroup;
-import me.gujun.android.taggroup.demo.db.TagsManager;
+import com.aotasoft.taggroup.TagGroup;
+import com.aotasoft.taggroup.demo.db.TagsManager;
 
 
 public class MainActivity extends ActionBarActivity {

@@ -12,7 +12,7 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context=".MainActivity">
+        tools:context="com.aotasoft.taggroup.demo.MainActivity">
 
         <TextView
             android:layout_width="wrap_content"
@@ -29,7 +29,7 @@
             android:text="@string/add_tags"
             android:textColor="@android:color/darker_gray" />
 
-        <me.gujun.android.taggroup.TagGroup
+        <com.aotasoft.taggroup.TagGroup
             android:id="@+id/tag_group"
             style="@style/TagGroup"
             android:layout_marginTop="10dp" />
@@ -42,7 +42,7 @@
             android:layout_marginTop="5dp"
             android:background="#DDD" />
 
-        <me.gujun.android.taggroup.TagGroup
+        <com.aotasoft.taggroup.TagGroup
             android:id="@+id/tag_group_beauty"
             style="@style/TagGroup.Beauty_Red"
             android:layout_marginTop="5dp" />
@@ -55,7 +55,7 @@
             android:layout_marginTop="5dp"
             android:background="#DDD" />
 
-        <me.gujun.android.taggroup.TagGroup
+        <com.aotasoft.taggroup.TagGroup
             android:id="@+id/tag_group_beauty_inverse"
             style="@style/TagGroup.Beauty_Red.Inverse"
             android:layout_marginTop="5dp" />
@@ -67,7 +67,7 @@
             android:text="@string/tags_small"
             android:textSize="14sp" />
 
-        <me.gujun.android.taggroup.TagGroup
+        <com.aotasoft.taggroup.TagGroup
             android:id="@+id/tag_group_small"
             style="@style/TagGroup.Small"
             android:layout_marginTop="10dp" />
@@ -79,7 +79,7 @@
             android:text="@string/tags_large"
             android:textSize="18sp" />
 
-        <me.gujun.android.taggroup.TagGroup
+        <com.aotasoft.taggroup.TagGroup
             android:id="@+id/tag_group_large"
             style="@style/TagGroup.Large"
             android:layout_marginTop="10dp" />
@@ -91,7 +91,7 @@
             android:text="@string/tags_large_middle"
             android:textSize="18sp" />
 
-        <me.gujun.android.taggroup.TagGroup
+        <com.aotasoft.taggroup.TagGroup
             android:id="@+id/tag_group_large_middle"
             style="@style/TagGroup.Large"
             android:layout_marginTop="10dp" />
@@ -104,7 +104,7 @@
             android:text="@string/tags_large_right"
             android:textSize="18sp" />
 
-        <me.gujun.android.taggroup.TagGroup
+        <com.aotasoft.taggroup.TagGroup
             android:id="@+id/tag_group_large_right"
             style="@style/TagGroup.Large"
             android:layout_marginTop="10dp" />

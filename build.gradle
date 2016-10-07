@@ -15,5 +15,6 @@ allprojects {
 
     repositories {
         jcenter()
+        maven { url 'https://oss.sonatype.org/service/local/staging/deploy/maven2/' }
     }
 }

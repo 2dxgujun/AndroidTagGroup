@@ -1,4 +1,4 @@
-package me.gujun.android.taggroup;
+package com.aotasoft.taggroup;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -17,7 +17,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.ArrowKeyMovementMethod;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -44,14 +43,15 @@ import java.util.List;
  * When in DISPLAY mode, the group is only contain NORMAL state tags, and the tags in group
  * is not focusable.
  * </p>
- * <p/>
- * * Add TagGravity for TagGroup
- * * @modified Tuan Dinh (http://aotasoft.com)
- * * @updated 2016-6-9 09:32:20
+ *
  *
  * @author Jun Gu (http://2dxgujun.com)
- * @version 2.0
  * @since 2015-2-3 14:16:32
+ *
+ * Development by
+ * @author Tuan Dinh (http://aotasoft.com)
+ * @version 1.5
+ * @since 2016-6-9 09:32:20
  */
 public class TagGroup extends ViewGroup {
     private final int default_border_color = Color.rgb(0x49, 0xC1, 0x20);
@@ -519,7 +519,7 @@ public class TagGroup extends ViewGroup {
     }
 
     /**
-     * @see #setTags(String...)
+     * @param tagList The list string of Tag
      */
     public void setTags(List<String> tagList) {
         setTags(tagList.toArray(new String[tagList.size()]));
@@ -620,6 +620,7 @@ public class TagGroup extends ViewGroup {
      * Append tag to this group.
      *
      * @param tag the tag to append.
+     * @param position the position of tag in TagGroup.
      */
     protected void appendTag(CharSequence tag, int position) {
         final TagView newTag = new TagView(getContext(), TagView.STATE_NORMAL, tag);
@@ -665,14 +666,14 @@ public class TagGroup extends ViewGroup {
     public interface OnTagChangeListener {
         /**
          * Called when a tag has been appended to the group.
-         *
+         * @param tagGroup the TagGroup object.
          * @param tag the appended tag.
          */
         void onAppend(TagGroup tagGroup, String tag);
 
         /**
          * Called when a tag has been deleted from the the group.
-         *
+         * @param tagGroup the TagGroup object.
          * @param tag the deleted tag.
          */
         void onDelete(TagGroup tagGroup, String tag);
@@ -684,7 +685,7 @@ public class TagGroup extends ViewGroup {
     public interface OnTagClickListener {
         /**
          * Called when a tag has been clicked.
-         *
+         * @param tagGroup The TagGroup object
          * @param tag      The text of tag that was clicked.
          * @param position The position of tag that was clicked.
          */

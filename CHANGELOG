@@ -1,5 +1,19 @@
 Change Log
 ==========
+*** From leonacky/AndroidTagGroup forked from 2dxgujun/AndroidTagGroup
+
+Version 1.5 *(2016-10-07)*
+----------------------------
+
+- Add TagGravity
+- Change listener for detect tag click event
+- Add get/setSelectedTag
+- Add get all selected tags
+
+
+
+
+*** From 2dxgujun/AndroidTagGroup
 
 Version 1.4 *(2015-05-23)*
 ----------------------------

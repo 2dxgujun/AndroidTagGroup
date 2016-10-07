@@ -1,4 +1,4 @@
-package me.gujun.android.taggroup.demo.db;
+package com.aotasoft.taggroup.demo.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

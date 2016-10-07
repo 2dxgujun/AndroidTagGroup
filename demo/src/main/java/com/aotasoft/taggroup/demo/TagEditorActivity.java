@@ -1,12 +1,12 @@
-package me.gujun.android.taggroup.demo;
+package com.aotasoft.taggroup.demo;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import me.gujun.android.taggroup.TagGroup;
-import me.gujun.android.taggroup.demo.db.TagsManager;
+import com.aotasoft.taggroup.TagGroup;
+import com.aotasoft.taggroup.demo.db.TagsManager;
 
 
 public class TagEditorActivity extends ActionBarActivity {

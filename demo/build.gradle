@@ -4,7 +4,7 @@ android {
     compileSdkVersion 21
     buildToolsVersion '21.1.1'
     defaultConfig {
-        applicationId 'me.gujun.android.taggroup.demo'
+        applicationId 'com.aotasoft.taggroup.demo'
         minSdkVersion 8
         targetSdkVersion 21
         versionName project.VERSION_NAME
@@ -25,5 +25,6 @@ android {
 
 dependencies {
     compile project(':library')
+//    compile 'com.aotasoft.taggroup:library:1.6'
     compile 'com.android.support:appcompat-v7:21.0.3'
 }
