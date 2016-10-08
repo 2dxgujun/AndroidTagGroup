@@ -2,16 +2,11 @@
 
 [![Join the chat at https://gitter.im/leonacky/AndroidTagGroup](https://badges.gitter.im/leonacky/AndroidTagGroup.svg)](https://gitter.im/leonacky/AndroidTagGroup?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![Release 1.4](https://img.shields.io/badge/Release-1.4.1-green.svg)](https://github.com/2dxgujun/AndroidTagGroup/releases)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/me.gujun.android.taggroup/library/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/me.gujun.android.taggroup/library)
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-AndroidTagGroup-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1539)
-[![Build Status](https://travis-ci.org/2dxgujun/AndroidTagGroup.png?branch=master)](https://travis-ci.org/2dxgujun/AndroidTagGroup)
-
-The TagGroup is a special layout with a set of tags. You can use it to tag people, books or anything you want.
-
-Also you can contribute new idea to me.
-
-New update supported Tag Gravity
+The TagGroup is a special layout with a set of tags forked from 2dxgujun/AndroidTagGroup
+. I have implemented:
+1. TagGravity
+2. Get/Set SelectedTag
+3. Get all tags is selected
 
 # Demo
 
@@ -34,25 +29,15 @@ New update supported Tag Gravity
 #### Gradle
 ```groovy
 dependencies {
-   compile 'me.gujun.android.taggroup:library:1.4@aar'
+   compile 'com.aotasoft.taggroup:library:1.6'
 }
-```
-
-#### Maven
-```xml
-<dependency>
-    <groupId>me.gujun.android.taggroup</groupId>
-    <artifactId>library</artifactId>
-    <version>1.4</version>
-    <type>apklib</type>
-</dependency>
 ```
 
 ## Step 2
 
 Use it in your own code:
 ```xml
-<me.gujun.android.taggroup.TagGroup
+<com.aotasoft.taggroup.TagGroup
     android:id="@+id/tag_group"
     style="@style/TagGroup" />
 ```
@@ -81,8 +66,6 @@ Implement a callback interface: `TagGroup.OnTagClickListener`, and set the liste
 
 To set gravity for TagGroup: use `setGravity(...)` supported `TagGroup.Gravity.LEFT`, `TagGroup.Gravity.MIDDLE` and `TagGroup.Gravity.RIGHT`
 
-(Wait for merge to origin-project and make Gradle. If you need, you can clone this project and import to your project)
-
 # Build
 
 run `./gradlew assembleDebug` (Mac/Linux)
@@ -100,7 +83,7 @@ There are several attributes you can set:
 |           attr        	|     default      |                         mean                          	 |
 |:------------------------- |:---------------- |:------------------------------------------------------- |
 | atg_isAppendMode      	| false            | Determine the TagGroup mode, APPEND or single DISPLAY.  |
-| atg_inputHint   	        | Add Tag/添加标签  | The hint of the INPUT tag.                              |
+| atg_inputHint   	        | Add Tag  | The hint of the INPUT tag.                              |
 | atg_borderColor	        | #49C120          | The tag outline border color.                           |
 | atg_textColor          	| #49C120          | The tag text color.                           	         |
 | atg_backgroundColor       | #FFFFFF          | The tag background color.                               |
@@ -120,21 +103,11 @@ There are several attributes you can set:
 | atg_verticalPadding  	    | 3dp              | The vertical tag padding.(Mark4)                        |
 
 # Developed By
-
-Jun Gu - <2dxgujun@gmail.com>
-
-Tuan Dinh - <leonacky@gmail.com> (Tag Gravity)
-
-<a href="http://weibo.com/2dxgujun">
-  <img alt="Follow me on Weibo" src="http://ww4.sinaimg.cn/large/bce2dea9gw1epjhk9h9m6j20230233yb.jpg"/>
-</a>
-<a href="https://plus.google.com/u/0/113657331852211913645">
-  <img alt="Follow me on Google Plus" src="http://ww1.sinaimg.cn/large/bce2dea9gw1epjhbx0ouij2023023jr6.jpg"/>
-</a>
+Tuan Dinh - <leonacky@gmail.com> from 2dxgujun/AndroidTagGroup
 
 # License
 
-    Copyright 2015 Jun Gu
+    Copyright 2015 Tuan Dinh
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
