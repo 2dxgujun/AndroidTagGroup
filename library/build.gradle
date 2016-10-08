@@ -20,7 +20,7 @@ android {
     }
 }
 // Used to push in maven
-//apply from: '../maven-push.gradle'
-apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'
+apply from: '../maven-push.gradle'
+//apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'
 dependencies {
 }

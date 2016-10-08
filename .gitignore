@@ -33,7 +33,10 @@ build/
 *.iml
 *.ipr
 *.iws
+*.asc
+*.gpg
 .idea/
 
 # Gradle files
 .gradle/
+library/secring.gpg
