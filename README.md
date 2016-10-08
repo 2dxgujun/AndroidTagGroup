@@ -3,7 +3,7 @@
 [![Join the chat at https://gitter.im/leonacky/AndroidTagGroup](https://badges.gitter.im/leonacky/AndroidTagGroup.svg)](https://gitter.im/leonacky/AndroidTagGroup?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 [![Release 1.6](https://img.shields.io/badge/Release-1.6-green.svg)](https://github.com/leonacky/AndroidTagGroup/releases)
- [![Build Status](https://travis-ci.org/leonacky/AndroidTagGroup.svg?branch=master)](https://travis-ci.org/leonacky/AndroidTagGroup)
+[![Build Status](https://travis-ci.org/leonacky/AndroidTagGroup.svg?branch=master)](https://travis-ci.org/leonacky/AndroidTagGroup)
 
 The TagGroup is a special layout with a set of tags. I have developed from 2dxgujun/AndroidTagGroup
 with new features:
@@ -33,6 +33,16 @@ with new features:
 # Usage
 
 ## Step 1
+
+#### Maven
+```xml
+<dependency>
+    <groupId>com.aotasoft.taggroup</groupId>
+    <artifactId>library</artifactId>
+    <version>1.6</version>
+    <type>aar</type>
+</dependency>
+```
 
 #### Gradle
 ```groovy
