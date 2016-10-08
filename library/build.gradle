@@ -1,5 +1,11 @@
 apply plugin: 'com.android.library'
 
+ext {
+    PUBLISH_GROUP_ID = 'com.aotasoft.taggroup'
+    PUBLISH_ARTIFACT_ID = 'library'
+    PUBLISH_VERSION = '1.6'
+}
+
 android {
     compileSdkVersion 21
     buildToolsVersion '21.1.1'
@@ -14,6 +20,7 @@ android {
     }
 }
 // Used to push in maven
-apply from: '../maven-push.gradle'
+//apply from: '../maven-push.gradle'
+apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'
 dependencies {
 }
