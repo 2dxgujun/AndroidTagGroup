@@ -3,7 +3,6 @@
 [![Join the chat at https://gitter.im/leonacky/AndroidTagGroup](https://badges.gitter.im/leonacky/AndroidTagGroup.svg)](https://gitter.im/leonacky/AndroidTagGroup?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 [![Release 1.6](https://img.shields.io/badge/Release-1.6-green.svg)](https://github.com/leonacky/AndroidTagGroup/releases)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.aotasoft.taggroup/library/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/com.aotasoft.taggroup/library)
 [![Build Status](https://travis-ci.org/leonacky/AndroidTagGroup.svg?branch=master)](https://travis-ci.org/leonacky/AndroidTagGroup)
 
 The TagGroup is a special layout with a set of tags. I have developed from 2dxgujun/AndroidTagGroup
