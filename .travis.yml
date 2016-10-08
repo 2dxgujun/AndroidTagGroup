@@ -32,6 +32,9 @@ before_install:
   - echo yes | android update sdk --filter sys-img-x86-android-19 --no-ui --force > /dev/null
   - echo yes | android update sdk --filter extra-android-support --no-ui --force > /dev/null
   - echo yes | android update sdk --filter extra-android-m2repository --no-ui --force > /dev/null
+  - mkdir "$ANDROID_SDK/licenses" || true
+  - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_SDK/licenses/android-sdk-license"
+  - echo -e "\n79120722343a6f314e0719f863036c702b0e6b2a" > "$ANDROID_SDK/licenses/android-sdk-preview-license"
 
 install:
  - ./gradlew assemble
