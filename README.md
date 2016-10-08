@@ -103,7 +103,7 @@ There are several attributes you can set:
 | atg_verticalPadding  	    | 3dp              | The vertical tag padding.(Mark4)                        |
 
 # Developed By
-Tuan Dinh - <leonacky@gmail.com> from 2dxgujun/AndroidTagGroup
+Tuan Dinh - <leonacky@gmail.com> from origin project 2dxgujun/AndroidTagGroup
 
 # License
 
