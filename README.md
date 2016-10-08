@@ -5,7 +5,7 @@
 The TagGroup is a special layout with a set of tags forked from 2dxgujun/AndroidTagGroup
 . I have implemented:
 1. TagGravity
-2. Get/Set SelectedTag
+2. Tag Selected
 3. Get all tags is selected
 
 # Demo
@@ -61,6 +61,14 @@ To delete a tag as user press "Backspace" key or double-tap the tag which you wa
 #### How to detect tag click event?
 
 Implement a callback interface: `TagGroup.OnTagClickListener`, and set the listener via `setOnTagClickListener()`.
+
+#### How to set a tag is selected?
+
+To set tag is sellected for TagGroup: use `tagroup.setSelectedTag(...)`
+
+#### How to get all tags is selected?
+
+To get all tags is sellected for TagGroup: use `tagroup.getSelectedTags(...)` will return all position of tag is selected
 
 #### Gravity for TagGroup
 
