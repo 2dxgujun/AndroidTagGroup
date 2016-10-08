@@ -2,11 +2,17 @@
 
 [![Join the chat at https://gitter.im/leonacky/AndroidTagGroup](https://badges.gitter.im/leonacky/AndroidTagGroup.svg)](https://gitter.im/leonacky/AndroidTagGroup?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+[![Build Status](https://travis-ci.org/leonacky/AndroidTagGroup.svg?branch=master)](https://travis-ci.org/leonacky/AndroidTagGroup)
+
 The TagGroup is a special layout with a set of tags. I have developed from 2dxgujun/AndroidTagGroup
 with new features:
+
 1. TagGravity
+
 2. Tag Selected
+
 3. Get all tags is selected
+
 4. New implement for detect tag click event
 
 # Demo
