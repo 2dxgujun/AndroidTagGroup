@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import me.gujun.android.taggroup.TagGroup;
 import me.gujun.android.taggroup.demo.db.TagsManager;
@@ -23,6 +24,12 @@ public class TagEditorActivity extends ActionBarActivity {
 
         mTagGroup = (TagGroup) findViewById(R.id.tag_group);
         mTagGroup.setTags(tags);
+        mTagGroup.setOnInputTextChangeListener(new TagGroup.OnInputTextChangeListener() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Toast.makeText(TagEditorActivity.this, s, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
