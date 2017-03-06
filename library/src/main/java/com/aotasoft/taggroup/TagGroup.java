@@ -17,6 +17,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.ArrowKeyMovementMethod;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -928,16 +929,6 @@ public class TagGroup extends ViewGroup {
             setMovementMethod(state == STATE_INPUT ? ArrowKeyMovementMethod.getInstance() : null);
             if(state == STATE_INPUT) {
                 setImeOptions(EditorInfo.IME_ACTION_DONE);
-                setOnEditorActionListener(new EditText.OnEditorActionListener() {
-                    @Override
-                    public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                        if (i == EditorInfo.IME_ACTION_DONE && mOnSubmitAction!=null) {
-                            //do here your stuff f
-                            return mOnSubmitAction.onSubmit(TagView.this);
-                        }
-                        return false;
-                    }
-                });
             }
 
             setSingleLine();
@@ -970,6 +961,13 @@ public class TagGroup extends ViewGroup {
                                 appendInputTag();
                             }
                             return true;
+                        }
+                        if (actionId == EditorInfo.IME_ACTION_DONE && mOnSubmitAction!=null) {
+                            //do here your stuff f
+                            if (isInputAvailable()) {
+                                endInput();
+                                return mOnSubmitAction.onSubmit(TagView.this);
+                            }
                         }
                         return false;
                     }

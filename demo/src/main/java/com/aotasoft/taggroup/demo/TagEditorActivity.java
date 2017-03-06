@@ -6,6 +6,7 @@ import android.text.Editable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.aotasoft.taggroup.TagGroup;
 import com.aotasoft.taggroup.demo.db.TagsManager;
@@ -48,6 +49,7 @@ public class TagEditorActivity extends ActionBarActivity {
             @Override
             public boolean onSubmit(TagGroup.TagView tv) {
                 mTagGroup.submitTag();
+                Toast.makeText(TagEditorActivity.this, "1", Toast.LENGTH_SHORT).show();
                 return false;
             }
         });
