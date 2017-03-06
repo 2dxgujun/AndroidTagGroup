@@ -915,6 +915,10 @@ public class TagGroup extends ViewGroup {
             setFocusableInTouchMode(state == STATE_INPUT);
             setHint(state == STATE_INPUT ? inputHint : null);
             setMovementMethod(state == STATE_INPUT ? ArrowKeyMovementMethod.getInstance() : null);
+            if(state == STATE_INPUT)
+                setImeOptions(EditorInfo.IME_ACTION_DONE);
+
+            setSingleLine();
 
             // Interrupted long click event to avoid PAUSE popup.
             setOnLongClickListener(new OnLongClickListener() {

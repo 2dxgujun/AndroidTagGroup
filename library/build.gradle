@@ -21,6 +21,7 @@ android {
 }
 // Used to push in maven
 apply from: '../maven-push.gradle'
+// Use for jCenter
 //apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'
 dependencies {
 }
