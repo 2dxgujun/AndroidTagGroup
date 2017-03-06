@@ -43,6 +43,14 @@ public class TagEditorActivity extends ActionBarActivity {
                 Log.i(TAG, "afterTextChanged="+s.toString());
             }
         });
+
+        mTagGroup.setOnSubmitActionListener(new TagGroup.OnSubmitActionListener() {
+            @Override
+            public boolean onSubmit(TagGroup.TagView tv) {
+                mTagGroup.submitTag();
+                return false;
+            }
+        });
     }
 
     @Override

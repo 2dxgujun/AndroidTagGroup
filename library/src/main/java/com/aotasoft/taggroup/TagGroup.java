@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputConnectionWrapper;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -181,6 +182,8 @@ public class TagGroup extends ViewGroup {
      * Listener used to dispatch tag input event.
      */
     private OnTagInputTextListener mOnTagInputTextListener;
+
+    private OnSubmitActionListener mOnSubmitAction;
 
     /**
      * Listener used to handle tag click event.
@@ -662,6 +665,10 @@ public class TagGroup extends ViewGroup {
         mOnTagInputTextListener = l;
     }
 
+    public void setOnSubmitActionListener(OnSubmitActionListener l) {
+        mOnSubmitAction = l;
+    }
+
     protected void deleteTag(TagView tagView) {
         removeView(tagView);
         if (mOnTagChangeListener != null) {
@@ -708,6 +715,10 @@ public class TagGroup extends ViewGroup {
         void beforeTextChanged(TagView tv, CharSequence s, int start, int count, int after);
         void onTextChanged(TagView tv, CharSequence s, int start, int before, int count);
         void afterTextChanged(TagView tv, Editable s);
+    }
+
+    public interface OnSubmitActionListener {
+        boolean onSubmit(TagView tv);
     }
 
     /**
@@ -915,8 +926,19 @@ public class TagGroup extends ViewGroup {
             setFocusableInTouchMode(state == STATE_INPUT);
             setHint(state == STATE_INPUT ? inputHint : null);
             setMovementMethod(state == STATE_INPUT ? ArrowKeyMovementMethod.getInstance() : null);
-            if(state == STATE_INPUT)
+            if(state == STATE_INPUT) {
                 setImeOptions(EditorInfo.IME_ACTION_DONE);
+                setOnEditorActionListener(new EditText.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                        if (i == EditorInfo.IME_ACTION_DONE && mOnSubmitAction!=null) {
+                            //do here your stuff f
+                            return mOnSubmitAction.onSubmit(TagView.this);
+                        }
+                        return false;
+                    }
+                });
+            }
 
             setSingleLine();
 
