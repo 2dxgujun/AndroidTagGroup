@@ -178,6 +178,11 @@ public class TagGroup extends ViewGroup {
     private OnTagClickListener mOnTagClickListener;
 
     /**
+     * Listener used to dispatch tag input event.
+     */
+    private OnTagInputTextListener mOnTagInputTextListener;
+
+    /**
      * Listener used to handle tag click event.
      */
     private InternalTagClickListener mInternalTagClickListener = new InternalTagClickListener();
@@ -653,6 +658,10 @@ public class TagGroup extends ViewGroup {
         mOnTagClickListener = l;
     }
 
+    public void setOnTagInputTextListener(OnTagInputTextListener l) {
+        mOnTagInputTextListener = l;
+    }
+
     protected void deleteTag(TagView tagView) {
         removeView(tagView);
         if (mOnTagChangeListener != null) {
@@ -690,6 +699,15 @@ public class TagGroup extends ViewGroup {
          * @param position The position of tag that was clicked.
          */
         void onTagClick(TagGroup tagGroup, String tag, int position);
+    }
+
+    /**
+     * Interface definition for a callback to be invoked when input text.
+     */
+    public interface OnTagInputTextListener {
+        void beforeTextChanged(TagView tv, CharSequence s, int start, int count, int after);
+        void onTextChanged(TagView tv, CharSequence s, int start, int before, int count);
+        void afterTextChanged(TagView tv, Editable s);
     }
 
     /**
@@ -787,7 +805,7 @@ public class TagGroup extends ViewGroup {
     /**
      * The tag view which has two states can be either NORMAL or INPUT.
      */
-    private class TagView extends TextView {
+    public class TagView extends TextView {
         public static final int STATE_NORMAL = 1;
         public static final int STATE_INPUT = 2;
 
@@ -969,14 +987,23 @@ public class TagGroup extends ViewGroup {
                         if (checkedTagView != null) {
                             checkedTagView.setChecked(false);
                         }
+                        if(mOnTagInputTextListener!=null) {
+                            mOnTagInputTextListener.beforeTextChanged(TagView.this, s, start, count, after);
+                        }
                     }
 
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        if(mOnTagInputTextListener!=null) {
+                            mOnTagInputTextListener.onTextChanged(TagView.this, s, start, before, count);
+                        }
                     }
 
                     @Override
                     public void afterTextChanged(Editable s) {
+                        if(mOnTagInputTextListener!=null) {
+                            mOnTagInputTextListener.afterTextChanged(TagView.this, s);
+                        }
                     }
                 });
             }

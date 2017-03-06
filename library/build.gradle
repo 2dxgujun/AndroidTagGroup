@@ -3,7 +3,7 @@ apply plugin: 'com.android.library'
 ext {
     PUBLISH_GROUP_ID = 'com.aotasoft.taggroup'
     PUBLISH_ARTIFACT_ID = 'library'
-    PUBLISH_VERSION = '1.6'
+    PUBLISH_VERSION = '1.7'
 }
 
 android {
