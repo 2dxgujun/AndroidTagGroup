@@ -49,7 +49,6 @@ public class TagEditorActivity extends ActionBarActivity {
             @Override
             public boolean onSubmit(TagGroup.TagView tv) {
                 mTagGroup.submitTag();
-                Toast.makeText(TagEditorActivity.this, "1", Toast.LENGTH_SHORT).show();
                 return false;
             }
         });
