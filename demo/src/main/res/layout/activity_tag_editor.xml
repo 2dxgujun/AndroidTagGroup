@@ -9,9 +9,9 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".TagEditorActivity">
+    tools:context="com.aotasoft.taggroup.demo.TagEditorActivity">
 
-    <me.gujun.android.taggroup.TagGroup
+    <com.aotasoft.taggroup.TagGroup
         android:id="@+id/tag_group"
         style="@style/TagGroup"
         app:atg_isAppendMode="true"/>

@@ -1,11 +1,11 @@
 language: java
-jdk: oraclejdk7
+jdk: oraclejdk8
 branches:
   only:
     - master
 env:
   matrix:
-    - ANDROID_TARGET=android-21  ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-24  ANDROID_ABI=armeabi-v7a
 
 before_install:
   # Install base Android SDK
@@ -18,20 +18,23 @@ before_install:
   - chmod +x gradlew
 
  # Gradle
-  - wget http://services.gradle.org/distributions/gradle-1.12-bin.zip
-  - unzip gradle-1.12-bin.zip
-  - export GRADLE_HOME=$PWD/gradle-1.12
+  - wget http://services.gradle.org/distributions/gradle-2.14-bin.zip
+  - unzip gradle-2.14-bin.zip
+  - export GRADLE_HOME=$PWD/gradle-2.14
   - export PATH=$GRADLE_HOME/bin:$PATH
 
   # Install required components
   # For a full list, run `android list sdk -a --extended`
   # Note that sysimg-19 downloads only ARM, because only the first license query is accepted.
   - echo yes | android update sdk --filter platform-tools --no-ui --force > /dev/null
-  - echo yes | android update sdk --all --filter build-tools-21.1.1 --no-ui --force > /dev/null
-  - echo yes | android update sdk --filter android-21 --no-ui --force > /dev/null
+  - echo yes | android update sdk --all --filter build-tools-24.0.0 --no-ui --force > /dev/null
+  - echo yes | android update sdk --filter android-24 --no-ui --force > /dev/null
   - echo yes | android update sdk --filter sys-img-x86-android-19 --no-ui --force > /dev/null
   - echo yes | android update sdk --filter extra-android-support --no-ui --force > /dev/null
   - echo yes | android update sdk --filter extra-android-m2repository --no-ui --force > /dev/null
+  - mkdir ${ANDROID_HOME}/licenses || true
+  - echo yes | echo -e "8933bad161af4178b1185d1a37fbf41ea5269c55" > ${ANDROID_HOME}/licenses/android-sdk-license
+  - echo yes | echo -e "79120722343a6f314e0719f863036c702b0e6b2a" > ${ANDROID_HOME}/licenses/android-sdk-preview-license
 
 install:
  - ./gradlew assemble

@@ -1,4 +1,4 @@
-package me.gujun.android.taggroup;
+package com.aotasoft.taggroup;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -17,8 +17,8 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.ArrowKeyMovementMethod;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputConnectionWrapper;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -45,9 +46,14 @@ import java.util.List;
  * is not focusable.
  * </p>
  *
+ *
  * @author Jun Gu (http://2dxgujun.com)
- * @version 2.0
  * @since 2015-2-3 14:16:32
+ *
+ * Development by
+ * @author Tuan Dinh (http://aotasoft.com)
+ * @version 1.5
+ * @since 2016-6-9 09:32:20
  */
 public class TagGroup extends ViewGroup {
     private final int default_border_color = Color.rgb(0x49, 0xC1, 0x20);
@@ -68,71 +74,142 @@ public class TagGroup extends ViewGroup {
     private final float default_horizontal_padding;
     private final float default_vertical_padding;
 
-    /** Indicates whether this TagGroup is set up to APPEND mode or DISPLAY mode. Default is false. */
+    /**
+     * Indicates whether this TagGroup is set up to APPEND mode or DISPLAY mode. Default is false.
+     */
     private boolean isAppendMode;
 
-    /** The text to be displayed when the text of the INPUT tag is empty. */
+    /**
+     * The text to be displayed when the text of the INPUT tag is empty.
+     */
     private CharSequence inputHint;
 
-    /** The tag outline border color. */
+    /**
+     * The tag outline border color.
+     */
     private int borderColor;
 
-    /** The tag text color. */
+    /**
+     * The tag text color.
+     */
     private int textColor;
 
-    /** The tag background color. */
+    /**
+     * The tag background color.
+     */
     private int backgroundColor;
 
-    /** The dash outline border color. */
+    /**
+     * The dash outline border color.
+     */
     private int dashBorderColor;
 
-    /** The  input tag hint text color. */
+    /**
+     * The  input tag hint text color.
+     */
     private int inputHintColor;
 
-    /** The input tag type text color. */
+    /**
+     * The input tag type text color.
+     */
     private int inputTextColor;
 
-    /** The checked tag outline border color. */
+    /**
+     * The checked tag outline border color.
+     */
     private int checkedBorderColor;
 
-    /** The check text color */
+    /**
+     * The check text color
+     */
     private int checkedTextColor;
 
-    /** The checked marker color. */
+    /**
+     * The checked marker color.
+     */
     private int checkedMarkerColor;
 
-    /** The checked tag background color. */
+    /**
+     * The checked tag background color.
+     */
     private int checkedBackgroundColor;
 
-    /** The tag background color, when the tag is being pressed. */
+    /**
+     * The tag background color, when the tag is being pressed.
+     */
     private int pressedBackgroundColor;
 
-    /** The tag outline border stroke width, default is 0.5dp. */
+    /**
+     * The tag outline border stroke width, default is 0.5dp.
+     */
     private float borderStrokeWidth;
 
-    /** The tag text size, default is 13sp. */
+    /**
+     * The tag text size, default is 13sp.
+     */
     private float textSize;
 
-    /** The horizontal tag spacing, default is 8.0dp. */
+    /**
+     * The horizontal tag spacing, default is 8.0dp.
+     */
     private int horizontalSpacing;
 
-    /** The vertical tag spacing, default is 4.0dp. */
+    /**
+     * The vertical tag spacing, default is 4.0dp.
+     */
     private int verticalSpacing;
 
-    /** The horizontal tag padding, default is 12.0dp. */
+    /**
+     * The horizontal tag padding, default is 12.0dp.
+     */
     private int horizontalPadding;
 
-    /** The vertical tag padding, default is 3.0dp. */
+    /**
+     * The vertical tag padding, default is 3.0dp.
+     */
     private int verticalPadding;
 
-    /** Listener used to dispatch tag change event. */
+    /**
+     * Listener used to dispatch tag change event.
+     */
     private OnTagChangeListener mOnTagChangeListener;
 
-    /** Listener used to dispatch tag click event. */
+    /**
+     * Listener used to dispatch tag click event.
+     */
     private OnTagClickListener mOnTagClickListener;
 
-    /** Listener used to handle tag click event. */
+    /**
+     * Listener used to dispatch tag input event.
+     */
+    private OnTagInputTextListener mOnTagInputTextListener;
+
+    private OnSubmitActionListener mOnSubmitAction;
+
+    /**
+     * Listener used to handle tag click event.
+     */
     private InternalTagClickListener mInternalTagClickListener = new InternalTagClickListener();
+
+    /**
+     * TagGravity in taggroup
+     * Added by Tuan Dinh
+     */
+    private TagGravity gravity = TagGravity.LEFT;
+
+    public void setGravity(TagGravity gravity) {
+        this.gravity = gravity;
+    }
+
+    public TagGravity getGravity() {
+        return this.gravity;
+    }
+
+    public enum TagGravity {
+        LEFT,
+        MIDDLE,
+        RIGHT
+    }
 
     public TagGroup(Context context) {
         this(context, null);
@@ -259,6 +336,9 @@ public class TagGroup extends ViewGroup {
                 heightMode == MeasureSpec.EXACTLY ? heightSize : height);
     }
 
+
+    List<ArrayList<ChildHolder>> _tags = new ArrayList<>();
+
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         final int parentLeft = getPaddingLeft();
@@ -270,6 +350,9 @@ public class TagGroup extends ViewGroup {
         int childTop = parentTop;
 
         int rowMaxHeight = 0;
+        int row = 0;
+
+        _tags.clear();
 
         final int count = getChildCount();
         for (int i = 0; i < count; i++) {
@@ -282,14 +365,73 @@ public class TagGroup extends ViewGroup {
                     childLeft = parentLeft;
                     childTop += rowMaxHeight + verticalSpacing;
                     rowMaxHeight = height;
+                    row++;
                 } else {
                     rowMaxHeight = Math.max(rowMaxHeight, height);
                 }
-                child.layout(childLeft, childTop, childLeft + width, childTop + height);
 
+                //Comment by Tuan Dinh
+//                child.layout(childLeft, childTop, childLeft + width, childTop + height);
+                ArrayList<ChildHolder> tagrow = new ArrayList<>();
+                if (_tags.size() == row)
+                    _tags.add(tagrow);
+                else
+                    tagrow = _tags.get(row);
+                ChildHolder childHolder = new ChildHolder();
+                childHolder.child = child;
+                childHolder.left = childLeft;
+                childHolder.top = childTop;
+                childHolder.right = childLeft + width;
+                childHolder.bottom = childTop + height;
+                tagrow.add(childHolder);
                 childLeft += width + horizontalSpacing;
             }
         }
+
+
+        /**
+         * Calculating new postion for Tags in TagGravity
+         * Added by Tuan Dinh
+         * */
+        for (int i = 0; i < _tags.size(); i++) {
+            ArrayList<ChildHolder> tagrow = _tags.get(i);
+            if (tagrow.size() > 0) {
+                ChildHolder lastChildHolder = tagrow.get(tagrow.size() - 1);
+                int space = (parentRight - lastChildHolder.right);
+                int space2 = space / 2;
+                for (int j = 0; j < tagrow.size(); j++) {
+                    ChildHolder childHolder = tagrow.get(j);
+                    if (getGravity() == TagGravity.MIDDLE)
+                        childHolder.child.layout(childHolder.left + space2, childHolder.top, childHolder.right + space2, childHolder.bottom);
+                    if (getGravity() == TagGravity.LEFT)
+                        childHolder.child.layout(childHolder.left, childHolder.top, childHolder.right, childHolder.bottom);
+                    if (getGravity() == TagGravity.RIGHT)
+                        childHolder.child.layout(childHolder.left + space, childHolder.top, childHolder.right + space, childHolder.bottom);
+                }
+            }
+        }
+    }
+
+    public List<Integer> getSelectedTags() {
+        List<Integer> selected = new ArrayList<>();
+        final int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            final TagView child = (TagView) getChildAt(i);
+            if (child.isSelectedTag()) {
+                selected.add(i);
+            }
+        }
+        return selected;
+    }
+
+    public boolean isSelectedTag(int position) {
+        TagView child = (TagView) getChildAt(position);
+        return child.isSelectedTag();
+    }
+
+    public void setSelectedTag(int position, boolean selected) {
+        TagView child = (TagView) getChildAt(position);
+        child.setSelectedTag(selected);
     }
 
     @Override
@@ -386,7 +528,7 @@ public class TagGroup extends ViewGroup {
     }
 
     /**
-     * @see #setTags(String...)
+     * @param tagList The list string of Tag
      */
     public void setTags(List<String> tagList) {
         setTags(tagList.toArray(new String[tagList.size()]));
@@ -399,8 +541,10 @@ public class TagGroup extends ViewGroup {
      */
     public void setTags(String... tags) {
         removeAllViews();
+        int i = 0;
         for (final String tag : tags) {
-            appendTag(tag);
+            appendTag(tag, i);
+            i++;
         }
 
         if (isAppendMode) {
@@ -477,6 +621,7 @@ public class TagGroup extends ViewGroup {
 
         final TagView newInputTag = new TagView(getContext(), TagView.STATE_INPUT, tag);
         newInputTag.setOnClickListener(mInternalTagClickListener);
+        newInputTag.setPosition(-1);
         addView(newInputTag);
     }
 
@@ -484,9 +629,11 @@ public class TagGroup extends ViewGroup {
      * Append tag to this group.
      *
      * @param tag the tag to append.
+     * @param position the position of tag in TagGroup.
      */
-    protected void appendTag(CharSequence tag) {
+    protected void appendTag(CharSequence tag, int position) {
         final TagView newTag = new TagView(getContext(), TagView.STATE_NORMAL, tag);
+        newTag.setPosition(position);
         newTag.setOnClickListener(mInternalTagClickListener);
         addView(newTag);
     }
@@ -515,6 +662,14 @@ public class TagGroup extends ViewGroup {
         mOnTagClickListener = l;
     }
 
+    public void setOnTagInputTextListener(OnTagInputTextListener l) {
+        mOnTagInputTextListener = l;
+    }
+
+    public void setOnSubmitActionListener(OnSubmitActionListener l) {
+        mOnSubmitAction = l;
+    }
+
     protected void deleteTag(TagView tagView) {
         removeView(tagView);
         if (mOnTagChangeListener != null) {
@@ -528,14 +683,14 @@ public class TagGroup extends ViewGroup {
     public interface OnTagChangeListener {
         /**
          * Called when a tag has been appended to the group.
-         *
+         * @param tagGroup the TagGroup object.
          * @param tag the appended tag.
          */
         void onAppend(TagGroup tagGroup, String tag);
 
         /**
          * Called when a tag has been deleted from the the group.
-         *
+         * @param tagGroup the TagGroup object.
          * @param tag the deleted tag.
          */
         void onDelete(TagGroup tagGroup, String tag);
@@ -547,10 +702,24 @@ public class TagGroup extends ViewGroup {
     public interface OnTagClickListener {
         /**
          * Called when a tag has been clicked.
-         *
-         * @param tag The tag text of the tag that was clicked.
+         * @param tagGroup The TagGroup object
+         * @param tag      The text of tag that was clicked.
+         * @param position The position of tag that was clicked.
          */
-        void onTagClick(String tag);
+        void onTagClick(TagGroup tagGroup, String tag, int position);
+    }
+
+    /**
+     * Interface definition for a callback to be invoked when input text.
+     */
+    public interface OnTagInputTextListener {
+        void beforeTextChanged(TagView tv, CharSequence s, int start, int count, int after);
+        void onTextChanged(TagView tv, CharSequence s, int start, int before, int count);
+        void afterTextChanged(TagView tv, Editable s);
+    }
+
+    public interface OnSubmitActionListener {
+        boolean onSubmit(TagView tv);
     }
 
     /**
@@ -639,7 +808,7 @@ public class TagGroup extends ViewGroup {
                 }
             } else {
                 if (mOnTagClickListener != null) {
-                    mOnTagClickListener.onTagClick(tag.getText().toString());
+                    mOnTagClickListener.onTagClick(TagGroup.this, tag.getText().toString(), tag.getPosition());
                 }
             }
         }
@@ -648,23 +817,40 @@ public class TagGroup extends ViewGroup {
     /**
      * The tag view which has two states can be either NORMAL or INPUT.
      */
-    class TagView extends TextView {
+    public class TagView extends TextView {
         public static final int STATE_NORMAL = 1;
         public static final int STATE_INPUT = 2;
 
-        /** The offset to the text. */
+        private int position = 0;
+
+        /**
+         * The offset to the text.
+         */
         private static final int CHECKED_MARKER_OFFSET = 3;
 
-        /** The stroke width of the checked marker */
+        /**
+         * The stroke width of the checked marker
+         */
         private static final int CHECKED_MARKER_STROKE_WIDTH = 4;
 
-        /** The current state. */
+        /**
+         * The current state.
+         */
         private int mState;
 
-        /** Indicates the tag if checked. */
+        /**
+         * Indicates the tag if checked.
+         */
         private boolean isChecked = false;
 
-        /** Indicates the tag if pressed. */
+        /**
+         * Indicates the tag if selected.
+         */
+        private boolean isSelectedTag = false;
+
+        /**
+         * Indicates the tag if pressed.
+         */
         private boolean isPressed = false;
 
         private Paint mBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -673,28 +859,44 @@ public class TagGroup extends ViewGroup {
 
         private Paint mCheckedMarkerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        /** The rect for the tag's left corner drawing. */
+        /**
+         * The rect for the tag's left corner drawing.
+         */
         private RectF mLeftCornerRectF = new RectF();
 
-        /** The rect for the tag's right corner drawing. */
+        /**
+         * The rect for the tag's right corner drawing.
+         */
         private RectF mRightCornerRectF = new RectF();
 
-        /** The rect for the tag's horizontal blank fill area. */
+        /**
+         * The rect for the tag's horizontal blank fill area.
+         */
         private RectF mHorizontalBlankFillRectF = new RectF();
 
-        /** The rect for the tag's vertical blank fill area. */
+        /**
+         * The rect for the tag's vertical blank fill area.
+         */
         private RectF mVerticalBlankFillRectF = new RectF();
 
-        /** The rect for the checked mark draw bound. */
+        /**
+         * The rect for the checked mark draw bound.
+         */
         private RectF mCheckedMarkerBound = new RectF();
 
-        /** Used to detect the touch event. */
+        /**
+         * Used to detect the touch event.
+         */
         private Rect mOutRect = new Rect();
 
-        /** The path for draw the tag's outline border. */
+        /**
+         * The path for draw the tag's outline border.
+         */
         private Path mBorderPath = new Path();
 
-        /** The path effect provide draw the dash border. */
+        /**
+         * The path effect provide draw the dash border.
+         */
         private PathEffect mPathEffect = new DashPathEffect(new float[]{10, 5}, 0);
 
         {
@@ -714,7 +916,7 @@ public class TagGroup extends ViewGroup {
                     TagGroup.LayoutParams.WRAP_CONTENT,
                     TagGroup.LayoutParams.WRAP_CONTENT));
 
-            setGravity(Gravity.CENTER);
+            setGravity(android.view.Gravity.CENTER);
             setText(text);
             setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
 
@@ -725,6 +927,11 @@ public class TagGroup extends ViewGroup {
             setFocusableInTouchMode(state == STATE_INPUT);
             setHint(state == STATE_INPUT ? inputHint : null);
             setMovementMethod(state == STATE_INPUT ? ArrowKeyMovementMethod.getInstance() : null);
+            if(state == STATE_INPUT) {
+                setImeOptions(EditorInfo.IME_ACTION_DONE);
+            }
+
+            setSingleLine();
 
             // Interrupted long click event to avoid PAUSE popup.
             setOnLongClickListener(new OnLongClickListener() {
@@ -754,6 +961,13 @@ public class TagGroup extends ViewGroup {
                                 appendInputTag();
                             }
                             return true;
+                        }
+                        if (actionId == EditorInfo.IME_ACTION_DONE && mOnSubmitAction!=null) {
+                            //do here your stuff f
+                            if (isInputAvailable()) {
+                                endInput();
+                                return mOnSubmitAction.onSubmit(TagView.this);
+                            }
                         }
                         return false;
                     }
@@ -797,14 +1011,23 @@ public class TagGroup extends ViewGroup {
                         if (checkedTagView != null) {
                             checkedTagView.setChecked(false);
                         }
+                        if(mOnTagInputTextListener!=null) {
+                            mOnTagInputTextListener.beforeTextChanged(TagView.this, s, start, count, after);
+                        }
                     }
 
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        if(mOnTagInputTextListener!=null) {
+                            mOnTagInputTextListener.onTextChanged(TagView.this, s, start, before, count);
+                        }
                     }
 
                     @Override
                     public void afterTextChanged(Editable s) {
+                        if(mOnTagInputTextListener!=null) {
+                            mOnTagInputTextListener.afterTextChanged(TagView.this, s);
+                        }
                     }
                 });
             }
@@ -822,10 +1045,32 @@ public class TagGroup extends ViewGroup {
             // Make the checked mark drawing region.
             setPadding(horizontalPadding,
                     verticalPadding,
-                    isChecked ? (int) (horizontalPadding + getHeight() / 2.5f + CHECKED_MARKER_OFFSET)
-                            : horizontalPadding,
+                    isChecked ? (int) (horizontalPadding + getHeight() / 2.5f + CHECKED_MARKER_OFFSET) : horizontalPadding,
                     verticalPadding);
             invalidatePaint();
+        }
+
+        /**
+         * Set whether this tag view is in the selected state.
+         *
+         * @param selected true is selected, false otherwise
+         */
+        public void setSelectedTag(boolean selected) {
+            isSelectedTag = selected;
+            // Make the checked mark drawing region.
+            invalidatePaint();
+        }
+
+        public boolean isSelectedTag() {
+            return isSelectedTag;
+        }
+
+        public int getPosition() {
+            return position;
+        }
+
+        public void setPosition(int position) {
+            this.position = position;
         }
 
         /**
@@ -873,6 +1118,10 @@ public class TagGroup extends ViewGroup {
                         mBorderPaint.setColor(checkedBorderColor);
                         mBackgroundPaint.setColor(checkedBackgroundColor);
                         setTextColor(checkedTextColor);
+                    } else if (isSelectedTag) {
+                        mBorderPaint.setColor(checkedBorderColor);
+                        mBackgroundPaint.setColor(checkedBackgroundColor);
+                        setTextColor(checkedTextColor);
                     } else {
                         mBorderPaint.setColor(borderColor);
                         mBackgroundPaint.setColor(backgroundColor);
@@ -880,9 +1129,15 @@ public class TagGroup extends ViewGroup {
                     }
                 }
             } else {
-                mBorderPaint.setColor(borderColor);
-                mBackgroundPaint.setColor(backgroundColor);
-                setTextColor(textColor);
+                if (isSelectedTag) {
+                    mBorderPaint.setColor(checkedBorderColor);
+                    mBackgroundPaint.setColor(checkedBackgroundColor);
+                    setTextColor(checkedTextColor);
+                } else {
+                    mBorderPaint.setColor(borderColor);
+                    mBackgroundPaint.setColor(backgroundColor);
+                    setTextColor(textColor);
+                }
             }
 
             if (isPressed) {
@@ -1021,5 +1276,13 @@ public class TagGroup extends ViewGroup {
                 return super.deleteSurroundingText(beforeLength, afterLength);
             }
         }
+    }
+
+    /**
+     * A class holder of a Tag (TagGravity)
+     */
+    class ChildHolder {
+        View child;
+        int left, top, right, bottom;
     }
 }

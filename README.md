@@ -1,13 +1,21 @@
 # `AndroidTagGroup`
 
-[![Release 1.4](https://img.shields.io/badge/Release-1.4.1-green.svg)](https://github.com/2dxgujun/AndroidTagGroup/releases)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/me.gujun.android.taggroup/library/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/me.gujun.android.taggroup/library)
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-AndroidTagGroup-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1539)
-[![Build Status](https://travis-ci.org/2dxgujun/AndroidTagGroup.png?branch=master)](https://travis-ci.org/2dxgujun/AndroidTagGroup)
+[![Join the chat at https://gitter.im/leonacky/AndroidTagGroup](https://badges.gitter.im/leonacky/AndroidTagGroup.svg)](https://gitter.im/leonacky/AndroidTagGroup?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-The TagGroup is a special layout with a set of tags. You can use it to tag people, books or anything you want.
+[![Release 1.6](https://img.shields.io/badge/Release-1.6-green.svg)](https://github.com/leonacky/AndroidTagGroup/releases)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.aotasoft.taggroup/library/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/com.aotasoft.taggroup/library)
+[![Build Status](https://travis-ci.org/leonacky/AndroidTagGroup.svg?branch=master)](https://travis-ci.org/leonacky/AndroidTagGroup)
 
-Also you can contribute new idea to me.
+The TagGroup is a special layout with a set of tags. I have developed from 2dxgujun/AndroidTagGroup
+with new features:
+
+1. TagGravity
+
+2. Tag Selected
+
+3. Get all tags is selected
+
+4. New implement for detect tag click event
 
 # Demo
 
@@ -18,34 +26,37 @@ Also you can contribute new idea to me.
 ![screenshot2](http://ww4.sinaimg.cn/large/bce2dea9jw1esbsbngv8fj20u005w75v.jpg)
 ![screenshot3](http://ww4.sinaimg.cn/large/bce2dea9jw1esbsbmoagij20u005sabl.jpg)
 
-[Download Demo](https://github.com/2dxgujun/AndroidTagGroup/releases/download/v1.4/AndroidTagGroup-Demo-v1.4.apk)
+### Tag Gravity
+![screenshot4](https://dl.dropboxusercontent.com/u/25101600/tag_gravity.png)
+
+[Download Demo](https://dl.dropboxusercontent.com/u/25101600/TagGroup-demo-release.apk)
 
 # Usage
 
 ## Step 1
 
-#### Gradle
-```groovy
-dependencies {
-   compile 'me.gujun.android.taggroup:library:1.4@aar'
-}
-```
-
 #### Maven
 ```xml
 <dependency>
-    <groupId>me.gujun.android.taggroup</groupId>
+    <groupId>com.aotasoft.taggroup</groupId>
     <artifactId>library</artifactId>
-    <version>1.4</version>
-    <type>apklib</type>
+    <version>1.6</version>
+    <type>aar</type>
 </dependency>
+```
+
+#### Gradle
+```groovy
+dependencies {
+   compile 'com.aotasoft.taggroup:library:1.6'
+}
 ```
 
 ## Step 2
 
 Use it in your own code:
 ```xml
-<me.gujun.android.taggroup.TagGroup
+<com.aotasoft.taggroup.TagGroup
     android:id="@+id/tag_group"
     style="@style/TagGroup" />
 ```
@@ -70,6 +81,17 @@ To delete a tag as user press "Backspace" key or double-tap the tag which you wa
 
 Implement a callback interface: `TagGroup.OnTagClickListener`, and set the listener via `setOnTagClickListener()`.
 
+#### How to set a tag is selected?
+
+To set tag is sellected for TagGroup: use `tagroup.setSelectedTag(...)`
+
+#### How to get all tags is selected?
+
+To get all tags is sellected for TagGroup: use `tagroup.getSelectedTags(...)` will return all position of tag is selected
+
+#### Gravity for TagGroup
+
+To set gravity for TagGroup: use `setGravity(...)` supported `TagGroup.Gravity.LEFT`, `TagGroup.Gravity.MIDDLE` and `TagGroup.Gravity.RIGHT`
 
 # Build
 
@@ -88,7 +110,7 @@ There are several attributes you can set:
 |           attr        	|     default      |                         mean                          	 |
 |:------------------------- |:---------------- |:------------------------------------------------------- |
 | atg_isAppendMode      	| false            | Determine the TagGroup mode, APPEND or single DISPLAY.  |
-| atg_inputHint   	        | Add Tag/添加标签  | The hint of the INPUT tag.                              |
+| atg_inputHint   	        | Add Tag  | The hint of the INPUT tag.                              |
 | atg_borderColor	        | #49C120          | The tag outline border color.                           |
 | atg_textColor          	| #49C120          | The tag text color.                           	         |
 | atg_backgroundColor       | #FFFFFF          | The tag background color.                               |
@@ -108,19 +130,11 @@ There are several attributes you can set:
 | atg_verticalPadding  	    | 3dp              | The vertical tag padding.(Mark4)                        |
 
 # Developed By
-
-Jun Gu - <2dxgujun@gmail.com>
-
-<a href="http://weibo.com/2dxgujun">
-  <img alt="Follow me on Weibo" src="http://ww4.sinaimg.cn/large/bce2dea9gw1epjhk9h9m6j20230233yb.jpg"/>
-</a>
-<a href="https://plus.google.com/u/0/113657331852211913645">
-  <img alt="Follow me on Google Plus" src="http://ww1.sinaimg.cn/large/bce2dea9gw1epjhbx0ouij2023023jr6.jpg"/>
-</a>
+Tuan Dinh - <leonacky@gmail.com> from origin project 2dxgujun/AndroidTagGroup
 
 # License
 
-    Copyright 2015 Jun Gu
+    Copyright 2015 Tuan Dinh
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

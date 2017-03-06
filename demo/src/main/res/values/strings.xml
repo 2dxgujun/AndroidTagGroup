@@ -1,10 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">TagGroup-Demo</string>
-    <string name="title_activity_tag_editor">编辑标签</string>
-    <string name="add_tags">添加标签</string>
-    <string name="tags_default">标签(默认)</string>
-    <string name="tags_small">标签(小号)</string>
-    <string name="tags_large">标签(大号)</string>
-    <string name="submit" translatable="false">Submit</string>
-    <string name="edit" translatable="false">Edit</string>
+    <string name="add_tags">Add Tags</string>
+    <string name="title_activity_tag_editor">Edit Tags</string>
+    <string name="tags_default">Tags (Default)</string>
+    <string name="tags_large">Tags (Large-Left-Default)</string>
+    <string name="tags_small">Tags (Small)</string>
+    <string name="submit">Submit</string>
+    <string name="edit">Edit</string>
+    <string name="tags_large_middle">Tags (Large-Middle)</string>
+    <string name="tags_large_right">Tags (Large-Right)</string>
 </resources>

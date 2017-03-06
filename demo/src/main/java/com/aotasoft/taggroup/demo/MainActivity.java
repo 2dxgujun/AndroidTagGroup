@@ -1,4 +1,4 @@
-package me.gujun.android.taggroup.demo;
+package com.aotasoft.taggroup.demo;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import me.gujun.android.taggroup.TagGroup;
-import me.gujun.android.taggroup.demo.db.TagsManager;
+import com.aotasoft.taggroup.TagGroup;
+import com.aotasoft.taggroup.demo.db.TagsManager;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -19,6 +19,8 @@ public class MainActivity extends ActionBarActivity {
     private TagGroup mDefaultTagGroup;
     private TagGroup mSmallTagGroup;
     private TagGroup mLargeTagGroup;
+    private TagGroup mLargeMiddleTagGroup;
+    private TagGroup mLargeRightTagGroup;
     private TagGroup mBeautyTagGroup;
     private TagGroup mBeautyInverseTagGroup;
 
@@ -26,8 +28,9 @@ public class MainActivity extends ActionBarActivity {
 
     private TagGroup.OnTagClickListener mTagClickListener = new TagGroup.OnTagClickListener() {
         @Override
-        public void onTagClick(String tag) {
+        public void onTagClick(TagGroup tagGroup, String tag, int position) {
             Toast.makeText(MainActivity.this, tag, Toast.LENGTH_SHORT).show();
+            tagGroup.setSelectedTag(position, !tagGroup.isSelectedTag(position));
         }
     };
 
@@ -50,6 +53,8 @@ public class MainActivity extends ActionBarActivity {
         mDefaultTagGroup = (TagGroup) findViewById(R.id.tag_group);
         mSmallTagGroup = (TagGroup) findViewById(R.id.tag_group_small);
         mLargeTagGroup = (TagGroup) findViewById(R.id.tag_group_large);
+        mLargeMiddleTagGroup = (TagGroup) findViewById(R.id.tag_group_large_middle);
+        mLargeRightTagGroup = (TagGroup) findViewById(R.id.tag_group_large_right);
         mBeautyTagGroup = (TagGroup) findViewById(R.id.tag_group_beauty);
         mBeautyInverseTagGroup = (TagGroup) findViewById(R.id.tag_group_beauty_inverse);
         if (tags != null && tags.length > 0) {
@@ -58,6 +63,11 @@ public class MainActivity extends ActionBarActivity {
             mLargeTagGroup.setTags(tags);
             mBeautyTagGroup.setTags(tags);
             mBeautyInverseTagGroup.setTags(tags);
+
+            mLargeMiddleTagGroup.setTags(tags);
+            mLargeMiddleTagGroup.setGravity(TagGroup.TagGravity.MIDDLE);
+            mLargeRightTagGroup.setTags(tags);
+            mLargeRightTagGroup.setGravity(TagGroup.TagGravity.RIGHT);
         }
 
         MyTagGroupOnClickListener tgClickListener = new MyTagGroupOnClickListener();
@@ -85,6 +95,10 @@ public class MainActivity extends ActionBarActivity {
         mLargeTagGroup.setTags(tags);
         mBeautyTagGroup.setTags(tags);
         mBeautyInverseTagGroup.setTags(tags);
+        mLargeMiddleTagGroup.setTags(tags);
+        mLargeMiddleTagGroup.setGravity(TagGroup.TagGravity.MIDDLE);
+        mLargeRightTagGroup.setTags(tags);
+        mLargeRightTagGroup.setGravity(TagGroup.TagGravity.RIGHT);
     }
 
     @Override
