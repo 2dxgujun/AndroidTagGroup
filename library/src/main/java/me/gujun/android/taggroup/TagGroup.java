@@ -1,6 +1,7 @@
 package me.gujun.android.taggroup;
 
 import android.content.Context;
+import android.text.InputType;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
