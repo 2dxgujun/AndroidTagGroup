@@ -736,6 +736,9 @@ public class TagGroup extends ViewGroup {
 
             if (state == STATE_INPUT) {
                 requestFocus();
+                //Replace Enter (new line) button with Action Go
+                setRawInputType(InputType.TYPE_CLASS_TEXT);
+                setImeOptions(EditorInfo.IME_ACTION_GO);
 
                 // Handle the ENTER key down.
                 setOnEditorActionListener(new OnEditorActionListener() {
