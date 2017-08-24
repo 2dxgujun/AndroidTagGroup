@@ -18,6 +18,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.ArrowKeyMovementMethod;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -27,6 +28,8 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputConnectionWrapper;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -128,13 +131,18 @@ public class TagGroup extends ViewGroup {
 
     /** Listener used to dispatch tag change event. */
     private OnTagChangeListener mOnTagChangeListener;
-
+    
+    /** Autocomplete */
+    private AutoCompleteTextView tagView;
+    
     /** Listener used to dispatch tag click event. */
     private OnTagClickListener mOnTagClickListener;
 
     /** Listener used to handle tag click event. */
     private InternalTagClickListener mInternalTagClickListener = new InternalTagClickListener();
 
+    public OnTagCharEntryListener onTagCharEntryListener;
+    
     public TagGroup(Context context) {
         this(context, null);
     }
@@ -330,7 +338,7 @@ public class TagGroup extends ViewGroup {
      *
      * @return the INPUT state tag view or null if not exists
      */
-    protected TagView getInputTag() {
+    public TagView getInputTag() {
         if (isAppendMode) {
             final int inputTagIndex = getChildCount() - 1;
             final TagView inputTag = getTagAt(inputTagIndex);
@@ -367,7 +375,9 @@ public class TagGroup extends ViewGroup {
         TagView lastNormalTagView = getTagAt(lastNormalTagIndex);
         return lastNormalTagView;
     }
-
+    public AutoCompleteTextView getTagView() {
+         return tagView;
+     }
     /**
      * Returns the tag array in group, except the INPUT tag.
      *
@@ -522,7 +532,9 @@ public class TagGroup extends ViewGroup {
             mOnTagChangeListener.onDelete(TagGroup.this, tagView.getText().toString());
         }
     }
-
+    public void setOnTagCharEntryListener(OnTagCharEntryListener listener) {
+         this.onTagCharEntryListener = listener;
+     }
     /**
      * Interface definition for a callback to be invoked when a tag group is changed.
      */
@@ -553,7 +565,9 @@ public class TagGroup extends ViewGroup {
          */
         void onTagClick(String tag);
     }
-
+    public interface OnTagCharEntryListener {
+        void onCharEntry(String text);
+     }
     /**
      * Per-child layout information for layouts.
      */
