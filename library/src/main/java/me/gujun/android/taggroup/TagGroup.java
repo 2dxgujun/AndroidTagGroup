@@ -649,7 +649,7 @@ public class TagGroup extends ViewGroup {
     /**
      * The tag view which has two states can be either NORMAL or INPUT.
      */
-    class TagView extends TextView {
+class TagView extends AutoCompleteTextView {
         public static final int STATE_NORMAL = 1;
         public static final int STATE_INPUT = 2;
 
@@ -762,7 +762,26 @@ public class TagGroup extends ViewGroup {
                         return false;
                     }
                 });
+                //check changes
+                addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        tagView = TagView.this;
+                        onTagCharEntryListener.onCharEntry(s.toString());
+                    }
+                });
+
+                
                 // Handle the BACKSPACE key down.
                 setOnKeyListener(new OnKeyListener() {
                     @Override
