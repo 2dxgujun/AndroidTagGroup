@@ -31,6 +31,7 @@ import android.view.inputmethod.InputConnectionWrapper;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -732,7 +733,7 @@ class TagView extends AutoCompleteTextView {
             setGravity(Gravity.CENTER);
             setText(text);
             setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-
+            setDropDownWidth(MATCH_PARENT);
             mState = state;
 
             setClickable(isAppendMode);
