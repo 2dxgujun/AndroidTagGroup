@@ -733,7 +733,7 @@ class TagView extends AutoCompleteTextView {
             setGravity(Gravity.CENTER);
             setText(text);
             setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-            setDropDownAnchor(android.R.id.content);
+            setDropDownAnchor(R.id.TagAddContainer);
             setDropDownWidth(MATCH_PARENT);
             mState = state;
 
