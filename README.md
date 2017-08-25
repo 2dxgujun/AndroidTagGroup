@@ -61,12 +61,14 @@ To delete a tag as user press "Backspace" key or double-tap the tag which you wa
 #### How to add an autocomplete list?
 
 Just add a string array, this an example for a fragment
-
-        mTagGroup.setOnTagCharEntryListener(new TagGroup.OnTagCharEntryListener() {
+	
+	private String[] suggestionsArray = { "Tag1", "Tag2", "Tag3", "Tag4", "Tag5"};
+        
+	mTagGroup.setOnTagCharEntryListener(new TagGroup.OnTagCharEntryListener() {
             @Override
             public void onCharEntry(String text) {
-
-                    mTagGroup.getTagView().setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, autoCompleteTag));
+		
+                    mTagGroup.getTagView().setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, suggestionsArray));
             }
         });
 
