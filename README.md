@@ -9,10 +9,6 @@ Also you can contribute new idea to me.
 
 # Demo
 
-### Screenshot
-![screenshot1](https://preview.ibb.co/bBobP5/normaltag_Crop.png)
-![screenshot1](https://preview.ibb.co/jMKfHQ/autocomplete_Crop.png)
-
 ### Edit Tags
 ![screenshot2](http://ww4.sinaimg.cn/large/bce2dea9jw1esbsbngv8fj20u005w75v.jpg)
 ![screenshot3](http://ww4.sinaimg.cn/large/bce2dea9jw1esbsbmoagij20u005sabl.jpg)
@@ -115,7 +111,18 @@ There are several attributes you can set:
 | atg_horizontalPadding	    | 12dp             | The horizontal tag padding.(Mark3)                      |
 | atg_verticalPadding  	    | 3dp              | The vertical tag padding.(Mark4)                        |
 
-# Developed By
+# New version by
+
+Lorenzo Zaccagnini - <info@nanadevs.com>
+
+<a href="https://www.facebook.com/DrLorenzoZaccagnini">
+  <img alt="Follow me on Facebook" src="http://icons.iconarchive.com/icons/paomedia/small-n-flat/256/social-facebook-icon.png"/>
+</a>
+<a href="https://www.linkedin.com/in/lorenzo-zaccagnini/">
+  <img alt="Follow me on LinkedIn" src="https://zipperstudio.com/wp-content/uploads/2015/10/linkedin_000.png"/>
+</a>
+
+# Fork of
 
 Jun Gu - <2dxgujun@gmail.com>
 
