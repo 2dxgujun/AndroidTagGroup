@@ -1,7 +1,6 @@
 # `Droid Tag Group 2107 version`
 
-[![](https://jitpack.io/v/LorenzoZaccagnini/AndroidTagGroup.svg)](https://jitpack.io/#LorenzoZaccagnini/AndroidTagGroup)
-
+[![](https://jitpack.io/v/LorenzoZaccagnini/DroidTag.svg)](https://jitpack.io/#LorenzoZaccagnini/DroidTag)
 
 The TagGroup is a special layout with a set of tags. You can use it to tag people, books or anything you want.
 
@@ -21,16 +20,15 @@ Also you can contribute new idea to me.
 #### Gradle
 ```groovy
 dependencies {
-   compile 'com.github.LorenzoZaccagnini:AndroidTagGroup:v1.5'
-}
+compile 'com.github.LorenzoZaccagnini:DroidTag:1.6'}
 ```
 
 #### Maven
 ```xml
 	<dependency>
 	    <groupId>com.github.LorenzoZaccagnini</groupId>
-	    <artifactId>AndroidTagGroup</artifactId>
-	    <version>v1.5</version>
+	    <artifactId>DroidTag</artifactId>
+	    <version>1.6</version>
 	</dependency>
 ```
 
