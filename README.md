@@ -119,7 +119,7 @@ Lorenzo Zaccagnini - <info@nanadevs.com>
   <img alt="Follow me on Facebook" src="https://www.brandsbay.com/media/wysiwyg/facebook-icon.jpg"/>
 </a>
 <a href="https://www.linkedin.com/in/lorenzo-zaccagnini/">
-  <img alt="https://smallbusinesslending.io/wp-content/uploads/2017/06/linkedin.png"/>
+  <img alt="Follow me on LinkedIn" src="https://www.rochester.edu/templatefiles/rwd/img/social-linkedin.png"/>
 </a>
 
 # Fork of
