@@ -10,8 +10,8 @@ Also you can contribute new idea to me.
 # Demo
 
 ### Edit Tags
-![screenshot2](http://ww4.sinaimg.cn/large/bce2dea9jw1esbsbngv8fj20u005w75v.jpg)
-![screenshot3](http://ww4.sinaimg.cn/large/bce2dea9jw1esbsbmoagij20u005sabl.jpg)
+![screenshot1](https://preview.ibb.co/bBobP5/normaltag_Crop.png)
+![screenshot1](https://preview.ibb.co/jMKfHQ/autocomplete_Crop.png)
 
 
 # Usage
@@ -116,10 +116,10 @@ There are several attributes you can set:
 Lorenzo Zaccagnini - <info@nanadevs.com>
 
 <a href="https://www.facebook.com/DrLorenzoZaccagnini">
-  <img alt="Follow me on Facebook" src="http://icons.iconarchive.com/icons/paomedia/small-n-flat/256/social-facebook-icon.png"/>
+  <img alt="Follow me on Facebook" src="https://www.brandsbay.com/media/wysiwyg/facebook-icon.jpg"/>
 </a>
 <a href="https://www.linkedin.com/in/lorenzo-zaccagnini/">
-  <img alt="Follow me on LinkedIn" src="https://zipperstudio.com/wp-content/uploads/2015/10/linkedin_000.png"/>
+  <img alt="https://smallbusinesslending.io/wp-content/uploads/2017/06/linkedin.png"/>
 </a>
 
 # Fork of
