@@ -1,13 +1,13 @@
 package me.gujun.android.taggroup.demo;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.widget.ArrayAdapter;
 
 import me.gujun.android.taggroup.TagGroup;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends ActionBarActivity {
     private TagGroup mTagGroup;
     //TODO REMOVE suggestion string when backend is ready
     private String[] autoFakeServerCompleteTag = { "Tag1", "Tag2", "Tag3", "Tag4", "Tag5"};
