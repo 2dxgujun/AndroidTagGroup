@@ -55,6 +55,7 @@ public class MainActivity extends ActionBarActivity {
         mBeautyInverseTagGroup = (TagGroup) findViewById(R.id.tag_group_beauty_inverse);
 //        font/Lobster-Regular.ttf
         mLargeTagGroup.setCustomTypeface(Typeface.createFromAsset(getAssets(), "font/Lobster-Regular.ttf"));
+        mBeautyInverseTagGroup.showDeleteBtn(R.drawable.letter_x);
         if (tags != null && tags.length > 0) {
             mDefaultTagGroup.setTags(tags);
             mSmallTagGroup.setTags(tags);

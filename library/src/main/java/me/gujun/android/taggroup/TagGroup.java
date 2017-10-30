@@ -183,6 +183,8 @@ public class TagGroup extends ViewGroup {
 
     private Typeface mCustomTypeface;
 
+    private Integer mDeleteResources;
+
     public TagGroup(Context context) {
         this(context, null);
     }
@@ -461,6 +463,10 @@ public class TagGroup extends ViewGroup {
         this.mCustomTypeface = customTypeface;
     }
 
+    public void showDeleteBtn(Integer deleteResources) {
+        this.mDeleteResources = deleteResources;
+    }
+
     /**
      * Returns the tag view at the specified position in the group.
      *
@@ -529,6 +535,8 @@ public class TagGroup extends ViewGroup {
         }
 
         final TagView newInputTag = mCustomTypeface != null ? new TagView(getContext(), TagView.STATE_INPUT, tag, mCustomTypeface) : new TagView(getContext(), TagView.STATE_INPUT, tag);
+        if(mDeleteResources!=null)
+            newInputTag.setDeleteButtonResId(mDeleteResources);
         newInputTag.setOnClickListener(mInternalTagClickListener);
         addView(newInputTag);
     }
@@ -540,6 +548,8 @@ public class TagGroup extends ViewGroup {
      */
     protected void appendTag(CharSequence tag) {
         final TagView newTag = mCustomTypeface != null ? new TagView(getContext(), TagView.STATE_NORMAL, tag, mCustomTypeface) : new TagView(getContext(), TagView.STATE_NORMAL, tag);
+        if(mDeleteResources!=null)
+            newTag.setDeleteButtonResId(mDeleteResources);
         newTag.setOnClickListener(mInternalTagClickListener);
         addView(newTag);
     }
@@ -705,6 +715,8 @@ public class TagGroup extends ViewGroup {
         public static final int STATE_NORMAL = 1;
         public static final int STATE_INPUT = 2;
 
+        private static final int DEFAULT_COMPOUND_PADDING = 50;
+
         /**
          * The offset to the text.
          */
@@ -776,6 +788,8 @@ public class TagGroup extends ViewGroup {
          */
         private PathEffect mPathEffect = new DashPathEffect(new float[]{10, 5}, 0);
 
+        private Integer mDeleteResources;
+
         {
             mBorderPaint.setStyle(Paint.Style.STROKE);
             mBorderPaint.setStrokeWidth(borderStrokeWidth);
@@ -788,6 +802,19 @@ public class TagGroup extends ViewGroup {
         public TagView(Context context, final int state, CharSequence text, @NotNull Typeface customTypeface) {
             this(context, state, text);
             setTypeface(customTypeface);
+        }
+
+        public TagView(Context context, final int state, CharSequence text, int deleteResources) {
+            this(context, state, text);
+            mDeleteResources = deleteResources;
+            setCompoundResources();
+        }
+
+        public TagView(Context context, final int state, CharSequence text, @NotNull Typeface customTypeface, int deleteResources) {
+            this(context, state, text);
+            mDeleteResources = deleteResources;
+            setTypeface(customTypeface);
+            setCompoundResources();
         }
 
         public TagView(Context context, final int state, CharSequence text) {
@@ -1103,6 +1130,16 @@ public class TagGroup extends ViewGroup {
                 }
                 return super.deleteSurroundingText(beforeLength, afterLength);
             }
+        }
+
+        public void setDeleteButtonResId(Integer deleteResources) {
+            this.mDeleteResources = deleteResources;
+            setCompoundResources();
+        }
+
+        private void setCompoundResources(){
+            setCompoundDrawablesWithIntrinsicBounds(0, 0, mDeleteResources, 0);
+            setCompoundDrawablePadding(DEFAULT_COMPOUND_PADDING);
         }
     }
 }
