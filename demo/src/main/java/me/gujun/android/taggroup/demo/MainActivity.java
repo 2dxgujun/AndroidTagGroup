@@ -1,6 +1,7 @@
 package me.gujun.android.taggroup.demo;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -52,6 +53,8 @@ public class MainActivity extends ActionBarActivity {
         mLargeTagGroup = (TagGroup) findViewById(R.id.tag_group_large);
         mBeautyTagGroup = (TagGroup) findViewById(R.id.tag_group_beauty);
         mBeautyInverseTagGroup = (TagGroup) findViewById(R.id.tag_group_beauty_inverse);
+//        font/Lobster-Regular.ttf
+        mLargeTagGroup.setCustomTypeface(Typeface.createFromAsset(getAssets(), "font/Lobster-Regular.ttf"));
         if (tags != null && tags.length > 0) {
             mDefaultTagGroup.setTags(tags);
             mSmallTagGroup.setTags(tags);
