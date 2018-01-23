@@ -10,6 +10,7 @@ import android.graphics.Path;
 import android.graphics.PathEffect;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.Editable;
@@ -49,7 +50,7 @@ import java.util.List;
  * @version 2.0
  * @since 2015-2-3 14:16:32
  */
-public class TagGroup extends ViewGroup {
+public class TagGroup<E extends Parcelable> extends ViewGroup {
     private final int default_border_color = Color.rgb(0x49, 0xC1, 0x20);
     private final int default_text_color = Color.rgb(0x49, 0xC1, 0x20);
     private final int default_background_color = Color.WHITE;
@@ -68,71 +69,121 @@ public class TagGroup extends ViewGroup {
     private final float default_horizontal_padding;
     private final float default_vertical_padding;
 
-    /** Indicates whether this TagGroup is set up to APPEND mode or DISPLAY mode. Default is false. */
+    /**
+     * Indicates whether this TagGroup is set up to APPEND mode or DISPLAY mode. Default is false.
+     */
     private boolean isAppendMode;
 
-    /** The text to be displayed when the text of the INPUT tag is empty. */
+    /**
+     * The text to be displayed when the text of the INPUT tag is empty.
+     */
     private CharSequence inputHint;
 
-    /** The tag outline border color. */
+    /**
+     * The tag outline border color.
+     */
     private int borderColor;
 
-    /** The tag text color. */
+    /**
+     * The tag text color.
+     */
     private int textColor;
 
-    /** The tag background color. */
+    /**
+     * The tag background color.
+     */
     private int backgroundColor;
 
-    /** The dash outline border color. */
+    /**
+     * The dash outline border color.
+     */
     private int dashBorderColor;
 
-    /** The  input tag hint text color. */
+    /**
+     * The  input tag hint text color.
+     */
     private int inputHintColor;
 
-    /** The input tag type text color. */
+    /**
+     * The input tag type text color.
+     */
     private int inputTextColor;
 
-    /** The checked tag outline border color. */
+    /**
+     * The checked tag outline border color.
+     */
     private int checkedBorderColor;
 
-    /** The check text color */
+    /**
+     * The check text color
+     */
     private int checkedTextColor;
 
-    /** The checked marker color. */
+    /**
+     * The checked marker color.
+     */
     private int checkedMarkerColor;
 
-    /** The checked tag background color. */
+    /**
+     * The checked tag background color.
+     */
     private int checkedBackgroundColor;
 
-    /** The tag background color, when the tag is being pressed. */
+    /**
+     * The tag background color, when the tag is being pressed.
+     */
     private int pressedBackgroundColor;
 
-    /** The tag outline border stroke width, default is 0.5dp. */
+    /**
+     * The tag outline border stroke width, default is 0.5dp.
+     */
     private float borderStrokeWidth;
 
-    /** The tag text size, default is 13sp. */
+    /**
+     * The tag text size, default is 13sp.
+     */
     private float textSize;
 
-    /** The horizontal tag spacing, default is 8.0dp. */
+    /**
+     * The horizontal tag spacing, default is 8.0dp.
+     */
     private int horizontalSpacing;
 
-    /** The vertical tag spacing, default is 4.0dp. */
+    /**
+     * The vertical tag spacing, default is 4.0dp.
+     */
     private int verticalSpacing;
 
-    /** The horizontal tag padding, default is 12.0dp. */
+    /**
+     * The horizontal tag padding, default is 12.0dp.
+     */
     private int horizontalPadding;
 
-    /** The vertical tag padding, default is 3.0dp. */
+    /**
+     * The vertical tag padding, default is 3.0dp.
+     */
     private int verticalPadding;
 
-    /** Listener used to dispatch tag change event. */
+    /**
+     * Listener used to dispatch tag change event.
+     */
     private OnTagChangeListener mOnTagChangeListener;
 
-    /** Listener used to dispatch tag click event. */
+    /**
+     * Listener used to dispatch tag click event.
+     */
     private OnTagClickListener mOnTagClickListener;
 
-    /** Listener used to handle tag click event. */
+    /**
+     * Listener used to handle tag click event.
+     */
     private InternalTagClickListener mInternalTagClickListener = new InternalTagClickListener();
+
+    private Typeface mCustomTypeface;
+
+    private Integer mDeleteResources;
+
+    private List<E> mTags;
 
     public TagGroup(Context context) {
         this(context, null);
@@ -372,40 +423,34 @@ public class TagGroup extends ViewGroup {
      *
      * @return the tag array.
      */
-    public String[] getTags() {
-        final int count = getChildCount();
-        final List<String> tagList = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
-            final TagView tagView = getTagAt(i);
-            if (tagView.mState == TagView.STATE_NORMAL) {
-                tagList.add(tagView.getText().toString());
-            }
-        }
-
-        return tagList.toArray(new String[tagList.size()]);
+    public List<E> getTags() {
+        return mTags;
     }
 
-    /**
-     * @see #setTags(String...)
-     */
-    public void setTags(List<String> tagList) {
-        setTags(tagList.toArray(new String[tagList.size()]));
+
+    public void setTags(List<E> tagList) {
+        this.mTags = tagList != null ? tagList : new ArrayList<E>();
+        updateTags();
     }
 
-    /**
-     * Set the tags. It will remove all previous tags first.
-     *
-     * @param tags the tag list to set.
-     */
-    public void setTags(String... tags) {
+
+    private void updateTags() {
         removeAllViews();
-        for (final String tag : tags) {
+        for (final E tag : mTags) {
             appendTag(tag);
         }
 
         if (isAppendMode) {
             appendInputTag();
         }
+    }
+
+    public void setCustomTypeface(Typeface customTypeface) {
+        this.mCustomTypeface = customTypeface;
+    }
+
+    public void showDeleteBtn(Integer deleteResources) {
+        this.mDeleteResources = deleteResources;
     }
 
     /**
@@ -475,7 +520,9 @@ public class TagGroup extends ViewGroup {
             throw new IllegalStateException("Already has a INPUT tag in group.");
         }
 
-        final TagView newInputTag = new TagView(getContext(), TagView.STATE_INPUT, tag);
+        final TagView newInputTag = mCustomTypeface != null ? new TagView(getContext(), TagView.STATE_INPUT, tag, mCustomTypeface) : new TagView(getContext(), TagView.STATE_INPUT, tag);
+        if (mDeleteResources != null)
+            newInputTag.setDeleteButtonResId(mDeleteResources);
         newInputTag.setOnClickListener(mInternalTagClickListener);
         addView(newInputTag);
     }
@@ -485,8 +532,10 @@ public class TagGroup extends ViewGroup {
      *
      * @param tag the tag to append.
      */
-    protected void appendTag(CharSequence tag) {
-        final TagView newTag = new TagView(getContext(), TagView.STATE_NORMAL, tag);
+    protected void appendTag(E tag) {
+        final TagView newTag = mCustomTypeface != null ? new TagView(getContext(), TagView.STATE_NORMAL, tag.toString(), mCustomTypeface) : new TagView(getContext(), TagView.STATE_NORMAL, tag.toString());
+        if (mDeleteResources != null)
+            newTag.setDeleteButtonResId(mDeleteResources);
         newTag.setOnClickListener(mInternalTagClickListener);
         addView(newTag);
     }
@@ -569,27 +618,35 @@ public class TagGroup extends ViewGroup {
     /**
      * For {@link TagGroup} save and restore state.
      */
-    static class SavedState extends BaseSavedState {
-        public static final Parcelable.Creator<SavedState> CREATOR =
-                new Parcelable.Creator<SavedState>() {
-                    public SavedState createFromParcel(Parcel in) {
-                        return new SavedState(in);
-                    }
+    static class SavedState<E extends Parcelable> extends BaseSavedState {
+        public static final Creator<SavedState> CREATOR = new Creator<SavedState>() {
+            @Override
+            public SavedState createFromParcel(Parcel source) {
+                return new SavedState(source);
+            }
 
-                    public SavedState[] newArray(int size) {
-                        return new SavedState[size];
-                    }
-                };
+            @Override
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
         int tagCount;
-        String[] tags;
+        List<E> tags;
         int checkedPosition;
         String input;
 
         public SavedState(Parcel source) {
             super(source);
             tagCount = source.readInt();
-            tags = new String[tagCount];
-            source.readStringArray(tags);
+            if (tagCount == 0)
+                tags = new ArrayList<>();
+            else {
+
+                Class<?> type = (Class<?>) source.readSerializable();
+
+                tags = new ArrayList<E>(tagCount);
+                source.readList(tags, type.getClassLoader());
+            }
             checkedPosition = source.readInt();
             input = source.readString();
         }
@@ -601,9 +658,9 @@ public class TagGroup extends ViewGroup {
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             super.writeToParcel(dest, flags);
-            tagCount = tags.length;
+            tagCount = tags.size();
             dest.writeInt(tagCount);
-            dest.writeStringArray(tags);
+            dest.writeTypedList(tags);
             dest.writeInt(checkedPosition);
             dest.writeString(input);
         }
@@ -648,23 +705,35 @@ public class TagGroup extends ViewGroup {
     /**
      * The tag view which has two states can be either NORMAL or INPUT.
      */
-    class TagView extends TextView {
+    class TagView<E> extends TextView {
         public static final int STATE_NORMAL = 1;
         public static final int STATE_INPUT = 2;
 
-        /** The offset to the text. */
+        private static final int DEFAULT_COMPOUND_PADDING = 50;
+
+        /**
+         * The offset to the text.
+         */
         private static final int CHECKED_MARKER_OFFSET = 3;
 
-        /** The stroke width of the checked marker */
+        /**
+         * The stroke width of the checked marker
+         */
         private static final int CHECKED_MARKER_STROKE_WIDTH = 4;
 
-        /** The current state. */
+        /**
+         * The current state.
+         */
         private int mState;
 
-        /** Indicates the tag if checked. */
+        /**
+         * Indicates the tag if checked.
+         */
         private boolean isChecked = false;
 
-        /** Indicates the tag if pressed. */
+        /**
+         * Indicates the tag if pressed.
+         */
         private boolean isPressed = false;
 
         private Paint mBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -673,29 +742,47 @@ public class TagGroup extends ViewGroup {
 
         private Paint mCheckedMarkerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        /** The rect for the tag's left corner drawing. */
+        /**
+         * The rect for the tag's left corner drawing.
+         */
         private RectF mLeftCornerRectF = new RectF();
 
-        /** The rect for the tag's right corner drawing. */
+        /**
+         * The rect for the tag's right corner drawing.
+         */
         private RectF mRightCornerRectF = new RectF();
 
-        /** The rect for the tag's horizontal blank fill area. */
+        /**
+         * The rect for the tag's horizontal blank fill area.
+         */
         private RectF mHorizontalBlankFillRectF = new RectF();
 
-        /** The rect for the tag's vertical blank fill area. */
+        /**
+         * The rect for the tag's vertical blank fill area.
+         */
         private RectF mVerticalBlankFillRectF = new RectF();
 
-        /** The rect for the checked mark draw bound. */
+        /**
+         * The rect for the checked mark draw bound.
+         */
         private RectF mCheckedMarkerBound = new RectF();
 
-        /** Used to detect the touch event. */
+        /**
+         * Used to detect the touch event.
+         */
         private Rect mOutRect = new Rect();
 
-        /** The path for draw the tag's outline border. */
+        /**
+         * The path for draw the tag's outline border.
+         */
         private Path mBorderPath = new Path();
 
-        /** The path effect provide draw the dash border. */
+        /**
+         * The path effect provide draw the dash border.
+         */
         private PathEffect mPathEffect = new DashPathEffect(new float[]{10, 5}, 0);
+
+        private Integer mDeleteResources;
 
         {
             mBorderPaint.setStyle(Paint.Style.STROKE);
@@ -706,6 +793,23 @@ public class TagGroup extends ViewGroup {
             mCheckedMarkerPaint.setColor(checkedMarkerColor);
         }
 
+        public TagView(Context context, final int state, CharSequence text, Typeface customTypeface) {
+            this(context, state, text);
+            setTypeface(customTypeface);
+        }
+
+        public TagView(Context context, final int state, CharSequence text, int deleteResources) {
+            this(context, state, text);
+            mDeleteResources = deleteResources;
+            setCompoundResources();
+        }
+
+        public TagView(Context context, final int state, CharSequence text, Typeface customTypeface, int deleteResources) {
+            this(context, state, text);
+            mDeleteResources = deleteResources;
+            setTypeface(customTypeface);
+            setCompoundResources();
+        }
 
         public TagView(Context context, final int state, CharSequence text) {
             super(context);
@@ -1020,6 +1124,16 @@ public class TagGroup extends ViewGroup {
                 }
                 return super.deleteSurroundingText(beforeLength, afterLength);
             }
+        }
+
+        public void setDeleteButtonResId(Integer deleteResources) {
+            this.mDeleteResources = deleteResources;
+            setCompoundResources();
+        }
+
+        private void setCompoundResources() {
+            setCompoundDrawablesWithIntrinsicBounds(0, 0, mDeleteResources, 0);
+            setCompoundDrawablePadding(DEFAULT_COMPOUND_PADDING);
         }
     }
 }

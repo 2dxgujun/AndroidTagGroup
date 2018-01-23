@@ -1,6 +1,7 @@
 package me.gujun.android.taggroup.demo;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -8,6 +9,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import me.gujun.android.taggroup.TagGroup;
 import me.gujun.android.taggroup.demo.db.TagsManager;
@@ -36,10 +41,14 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mTagsManager = TagsManager.getInstance(getApplicationContext());
-        String[] tags = mTagsManager.getTags();
+        List<TagData> tags = new ArrayList<>();
+        tags.add(new TagData(0L, "hello"));
+        tags.add(new TagData(0L, "how"));
+        tags.add(new TagData(0L, "are"));
+        tags.add(new TagData(0L, "you"));
 
         mPromptText = (TextView) findViewById(R.id.tv_prompt);
-        mPromptText.setVisibility((tags == null || tags.length == 0) ? View.VISIBLE : View.GONE);
+        mPromptText.setVisibility((tags == null || tags.size() == 0) ? View.VISIBLE : View.GONE);
         mPromptText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,7 +61,10 @@ public class MainActivity extends ActionBarActivity {
         mLargeTagGroup = (TagGroup) findViewById(R.id.tag_group_large);
         mBeautyTagGroup = (TagGroup) findViewById(R.id.tag_group_beauty);
         mBeautyInverseTagGroup = (TagGroup) findViewById(R.id.tag_group_beauty_inverse);
-        if (tags != null && tags.length > 0) {
+//        font/Lobster-Regular.ttf
+        mLargeTagGroup.setCustomTypeface(Typeface.createFromAsset(getAssets(), "font/Lobster-Regular.ttf"));
+        mBeautyInverseTagGroup.showDeleteBtn(R.drawable.letter_x);
+        if (tags != null && tags.size() > 0) {
             mDefaultTagGroup.setTags(tags);
             mSmallTagGroup.setTags(tags);
             mLargeTagGroup.setTags(tags);
@@ -78,8 +90,13 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        String[] tags = mTagsManager.getTags();
-        mPromptText.setVisibility((tags == null || tags.length == 0) ? View.VISIBLE : View.GONE);
+
+        List<TagData> tags = new ArrayList<>();
+        tags.add(new TagData(0L, "hello"));
+        tags.add(new TagData(0L, "how"));
+        tags.add(new TagData(0L, "are"));
+        tags.add(new TagData(0L, "you"));
+        mPromptText.setVisibility((tags == null || tags.size() == 0) ? View.VISIBLE : View.GONE);
         mDefaultTagGroup.setTags(tags);
         mSmallTagGroup.setTags(tags);
         mLargeTagGroup.setTags(tags);
