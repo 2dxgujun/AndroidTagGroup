@@ -29,8 +29,6 @@ import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputConnectionWrapper;
 import android.widget.TextView;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -640,7 +638,7 @@ public class TagGroup<E extends Parcelable> extends ViewGroup {
         public SavedState(Parcel source) {
             super(source);
             tagCount = source.readInt();
-            if(tagCount==0)
+            if (tagCount == 0)
                 tags = new ArrayList<>();
             else {
 
@@ -795,7 +793,7 @@ public class TagGroup<E extends Parcelable> extends ViewGroup {
             mCheckedMarkerPaint.setColor(checkedMarkerColor);
         }
 
-        public TagView(Context context, final int state, CharSequence text, @NotNull Typeface customTypeface) {
+        public TagView(Context context, final int state, CharSequence text, Typeface customTypeface) {
             this(context, state, text);
             setTypeface(customTypeface);
         }
@@ -806,7 +804,7 @@ public class TagGroup<E extends Parcelable> extends ViewGroup {
             setCompoundResources();
         }
 
-        public TagView(Context context, final int state, CharSequence text, @NotNull Typeface customTypeface, int deleteResources) {
+        public TagView(Context context, final int state, CharSequence text, Typeface customTypeface, int deleteResources) {
             this(context, state, text);
             mDeleteResources = deleteResources;
             setTypeface(customTypeface);
