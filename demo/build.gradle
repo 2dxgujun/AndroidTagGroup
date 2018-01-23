@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
+    compileSdkVersion 27
     buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId 'me.gujun.android.taggroup.demo'
-        minSdkVersion 8
-        targetSdkVersion 21
+        minSdkVersion 19
+        targetSdkVersion 27
         versionName project.VERSION_NAME
         versionCode Integer.parseInt(project.VERSION_CODE)
     }
@@ -22,5 +22,5 @@ android {
 
 dependencies {
     compile project(':library')
-    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.android.support:appcompat-v7:27.0.2'
 }
