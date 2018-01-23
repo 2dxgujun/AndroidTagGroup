@@ -5,6 +5,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.Arrays;
+import java.util.List;
+
 import me.gujun.android.taggroup.TagGroup;
 import me.gujun.android.taggroup.demo.db.TagsManager;
 
@@ -19,7 +22,7 @@ public class TagEditorActivity extends ActionBarActivity {
         setContentView(R.layout.activity_tag_editor);
 
         mTagsManager = TagsManager.getInstance(getApplicationContext());
-        String[] tags = mTagsManager.getTags();
+        List<String> tags = Arrays.asList(mTagsManager.getTags());
 
         mTagGroup = (TagGroup) findViewById(R.id.tag_group);
         mTagGroup.setTags(tags);
@@ -34,7 +37,7 @@ public class TagEditorActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            mTagsManager.updateTags(mTagGroup.getTags());
+//            mTagsManager.updateTags(mTagGroup.getTags());
             finish();
             return true;
         } else if (item.getItemId() == R.id.action_submit) {
@@ -46,7 +49,7 @@ public class TagEditorActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        mTagsManager.updateTags(mTagGroup.getTags());
+//        mTagsManager.updateTags(mTagGroup.getTags());
         super.onBackPressed();
     }
 }

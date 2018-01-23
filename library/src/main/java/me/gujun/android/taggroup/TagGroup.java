@@ -52,7 +52,7 @@ import java.util.List;
  * @version 2.0
  * @since 2015-2-3 14:16:32
  */
-public class TagGroup extends ViewGroup {
+public class TagGroup<E extends Parcelable> extends ViewGroup {
     private final int default_border_color = Color.rgb(0x49, 0xC1, 0x20);
     private final int default_text_color = Color.rgb(0x49, 0xC1, 0x20);
     private final int default_background_color = Color.WHITE;
@@ -184,6 +184,8 @@ public class TagGroup extends ViewGroup {
     private Typeface mCustomTypeface;
 
     private Integer mDeleteResources;
+
+    private List<E> mTags;
 
     public TagGroup(Context context) {
         this(context, null);
@@ -423,34 +425,20 @@ public class TagGroup extends ViewGroup {
      *
      * @return the tag array.
      */
-    public String[] getTags() {
-        final int count = getChildCount();
-        final List<String> tagList = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
-            final TagView tagView = getTagAt(i);
-            if (tagView.mState == TagView.STATE_NORMAL) {
-                tagList.add(tagView.getText().toString());
-            }
-        }
-
-        return tagList.toArray(new String[tagList.size()]);
+    public List<E> getTags() {
+        return mTags;
     }
 
-    /**
-     * @see #setTags(String...)
-     */
-    public void setTags(List<String> tagList) {
-        setTags(tagList.toArray(new String[tagList.size()]));
+
+    public void setTags(List<E> tagList) {
+        this.mTags = tagList != null ? tagList : new ArrayList<E>();
+        updateTags();
     }
 
-    /**
-     * Set the tags. It will remove all previous tags first.
-     *
-     * @param tags the tag list to set.
-     */
-    public void setTags(String... tags) {
+
+    private void updateTags() {
         removeAllViews();
-        for (final String tag : tags) {
+        for (final E tag : mTags) {
             appendTag(tag);
         }
 
@@ -535,7 +523,7 @@ public class TagGroup extends ViewGroup {
         }
 
         final TagView newInputTag = mCustomTypeface != null ? new TagView(getContext(), TagView.STATE_INPUT, tag, mCustomTypeface) : new TagView(getContext(), TagView.STATE_INPUT, tag);
-        if(mDeleteResources!=null)
+        if (mDeleteResources != null)
             newInputTag.setDeleteButtonResId(mDeleteResources);
         newInputTag.setOnClickListener(mInternalTagClickListener);
         addView(newInputTag);
@@ -546,9 +534,9 @@ public class TagGroup extends ViewGroup {
      *
      * @param tag the tag to append.
      */
-    protected void appendTag(CharSequence tag) {
-        final TagView newTag = mCustomTypeface != null ? new TagView(getContext(), TagView.STATE_NORMAL, tag, mCustomTypeface) : new TagView(getContext(), TagView.STATE_NORMAL, tag);
-        if(mDeleteResources!=null)
+    protected void appendTag(E tag) {
+        final TagView newTag = mCustomTypeface != null ? new TagView(getContext(), TagView.STATE_NORMAL, tag.toString(), mCustomTypeface) : new TagView(getContext(), TagView.STATE_NORMAL, tag.toString());
+        if (mDeleteResources != null)
             newTag.setDeleteButtonResId(mDeleteResources);
         newTag.setOnClickListener(mInternalTagClickListener);
         addView(newTag);
@@ -632,27 +620,35 @@ public class TagGroup extends ViewGroup {
     /**
      * For {@link TagGroup} save and restore state.
      */
-    static class SavedState extends BaseSavedState {
-        public static final Parcelable.Creator<SavedState> CREATOR =
-                new Parcelable.Creator<SavedState>() {
-                    public SavedState createFromParcel(Parcel in) {
-                        return new SavedState(in);
-                    }
+    static class SavedState<E extends Parcelable> extends BaseSavedState {
+        public static final Creator<SavedState> CREATOR = new Creator<SavedState>() {
+            @Override
+            public SavedState createFromParcel(Parcel source) {
+                return new SavedState(source);
+            }
 
-                    public SavedState[] newArray(int size) {
-                        return new SavedState[size];
-                    }
-                };
+            @Override
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
         int tagCount;
-        String[] tags;
+        List<E> tags;
         int checkedPosition;
         String input;
 
         public SavedState(Parcel source) {
             super(source);
             tagCount = source.readInt();
-            tags = new String[tagCount];
-            source.readStringArray(tags);
+            if(tagCount==0)
+                tags = new ArrayList<>();
+            else {
+
+                Class<?> type = (Class<?>) source.readSerializable();
+
+                tags = new ArrayList<E>(tagCount);
+                source.readList(tags, type.getClassLoader());
+            }
             checkedPosition = source.readInt();
             input = source.readString();
         }
@@ -664,9 +660,9 @@ public class TagGroup extends ViewGroup {
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             super.writeToParcel(dest, flags);
-            tagCount = tags.length;
+            tagCount = tags.size();
             dest.writeInt(tagCount);
-            dest.writeStringArray(tags);
+            dest.writeTypedList(tags);
             dest.writeInt(checkedPosition);
             dest.writeString(input);
         }
@@ -711,7 +707,7 @@ public class TagGroup extends ViewGroup {
     /**
      * The tag view which has two states can be either NORMAL or INPUT.
      */
-    class TagView extends TextView {
+    class TagView<E> extends TextView {
         public static final int STATE_NORMAL = 1;
         public static final int STATE_INPUT = 2;
 
@@ -1137,7 +1133,7 @@ public class TagGroup extends ViewGroup {
             setCompoundResources();
         }
 
-        private void setCompoundResources(){
+        private void setCompoundResources() {
             setCompoundDrawablesWithIntrinsicBounds(0, 0, mDeleteResources, 0);
             setCompoundDrawablePadding(DEFAULT_COMPOUND_PADDING);
         }
