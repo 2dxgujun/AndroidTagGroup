@@ -792,7 +792,9 @@ class TagView extends AutoCompleteTextView {
                     @Override
                     public void afterTextChanged(Editable s) {
                         tagView = TagView.this;
+                       if(onTagCharEntryListener!=null && s !=null){
                         onTagCharEntryListener.onCharEntry(s.toString());
+                        }
                     }
                 });
 
