@@ -1,9 +1,6 @@
-# `AndroidTagGroup`
+# `Droid Tag Group 2017 version`
 
-[![Release 1.4](https://img.shields.io/badge/Release-1.4.1-green.svg)](https://github.com/2dxgujun/AndroidTagGroup/releases)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/me.gujun.android.taggroup/library/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/me.gujun.android.taggroup/library)
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-AndroidTagGroup-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1539)
-[![Build Status](https://travis-ci.org/2dxgujun/AndroidTagGroup.png?branch=master)](https://travis-ci.org/2dxgujun/AndroidTagGroup)
+[![](https://jitpack.io/v/LorenzoZaccagnini/DroidTag.svg)](https://jitpack.io/#LorenzoZaccagnini/DroidTag)
 
 The TagGroup is a special layout with a set of tags. You can use it to tag people, books or anything you want.
 
@@ -11,14 +8,10 @@ Also you can contribute new idea to me.
 
 # Demo
 
-### Screenshot
-![screenshot1](http://ww4.sinaimg.cn/large/bce2dea9jw1esbsby9v5fj20u00w8jxx.jpg)
-
 ### Edit Tags
-![screenshot2](http://ww4.sinaimg.cn/large/bce2dea9jw1esbsbngv8fj20u005w75v.jpg)
-![screenshot3](http://ww4.sinaimg.cn/large/bce2dea9jw1esbsbmoagij20u005sabl.jpg)
+![screenshot1](https://preview.ibb.co/bBobP5/normaltag_Crop.png)
+![screenshot1](https://preview.ibb.co/jMKfHQ/autocomplete_Crop.png)
 
-[Download Demo](https://github.com/2dxgujun/AndroidTagGroup/releases/download/v1.4/AndroidTagGroup-Demo-v1.4.apk)
 
 # Usage
 
@@ -27,18 +20,16 @@ Also you can contribute new idea to me.
 #### Gradle
 ```groovy
 dependencies {
-   compile 'me.gujun.android.taggroup:library:1.4@aar'
-}
+compile 'com.github.LorenzoZaccagnini:DroidTag:1.6'}
 ```
 
 #### Maven
 ```xml
-<dependency>
-    <groupId>me.gujun.android.taggroup</groupId>
-    <artifactId>library</artifactId>
-    <version>1.4</version>
-    <type>apklib</type>
-</dependency>
+	<dependency>
+	    <groupId>com.github.LorenzoZaccagnini</groupId>
+	    <artifactId>DroidTag</artifactId>
+	    <version>1.6</version>
+	</dependency>
 ```
 
 ## Step 2
@@ -60,11 +51,24 @@ Use `setTags(...)` to set the initial tags in the group.
 
 To "submit" a new tag as user press "Enter" or tap the blank area of the tag group, also you can "submit" a new tag via `submitTag()`.
 
-**Note**: Google keyboard (a few soft keyboard not honour the key event) currently not supported "Enter" key to "submit" a new tag.
-
 #### How to delete a tag?
 
 To delete a tag as user press "Backspace" key or double-tap the tag which you want to delete.
+
+
+#### How to add an autocomplete list?
+
+Just add a string array, this an example for a fragment
+	
+	private String[] suggestionsArray = { "Tag1", "Tag2", "Tag3", "Tag4", "Tag5"};
+        
+	mTagGroup.setOnTagCharEntryListener(new TagGroup.OnTagCharEntryListener() {
+            @Override
+            public void onCharEntry(String text) {
+		
+                    mTagGroup.getTagView().setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, suggestionsArray));
+            }
+        });
 
 #### How to detect tag click event?
 
@@ -107,7 +111,18 @@ There are several attributes you can set:
 | atg_horizontalPadding	    | 12dp             | The horizontal tag padding.(Mark3)                      |
 | atg_verticalPadding  	    | 3dp              | The vertical tag padding.(Mark4)                        |
 
-# Developed By
+# New version by
+
+Lorenzo Zaccagnini - <info@nanadevs.com>
+
+<a href="https://www.facebook.com/DrLorenzoZaccagnini">
+  <img alt="Follow me on Facebook" src="https://www.brandsbay.com/media/wysiwyg/facebook-icon.jpg"/>
+</a>
+<a href="https://www.linkedin.com/in/lorenzo-zaccagnini/">
+  <img alt="Follow me on LinkedIn" src="https://www.rochester.edu/templatefiles/rwd/img/social-linkedin.png"/>
+</a>
+
+# Fork of
 
 Jun Gu - <2dxgujun@gmail.com>
 

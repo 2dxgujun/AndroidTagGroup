@@ -1,6 +1,7 @@
 package me.gujun.android.taggroup;
 
 import android.content.Context;
+import android.text.InputType;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -17,6 +18,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.ArrowKeyMovementMethod;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -26,7 +28,10 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputConnectionWrapper;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,13 +132,18 @@ public class TagGroup extends ViewGroup {
 
     /** Listener used to dispatch tag change event. */
     private OnTagChangeListener mOnTagChangeListener;
-
+    
+    /** Autocomplete */
+    private AutoCompleteTextView tagView;
+    
     /** Listener used to dispatch tag click event. */
     private OnTagClickListener mOnTagClickListener;
 
     /** Listener used to handle tag click event. */
     private InternalTagClickListener mInternalTagClickListener = new InternalTagClickListener();
 
+    public OnTagCharEntryListener onTagCharEntryListener;
+    
     public TagGroup(Context context) {
         this(context, null);
     }
@@ -329,7 +339,7 @@ public class TagGroup extends ViewGroup {
      *
      * @return the INPUT state tag view or null if not exists
      */
-    protected TagView getInputTag() {
+    public TagView getInputTag() {
         if (isAppendMode) {
             final int inputTagIndex = getChildCount() - 1;
             final TagView inputTag = getTagAt(inputTagIndex);
@@ -366,7 +376,9 @@ public class TagGroup extends ViewGroup {
         TagView lastNormalTagView = getTagAt(lastNormalTagIndex);
         return lastNormalTagView;
     }
-
+    public AutoCompleteTextView getTagView() {
+         return tagView;
+     }
     /**
      * Returns the tag array in group, except the INPUT tag.
      *
@@ -521,7 +533,9 @@ public class TagGroup extends ViewGroup {
             mOnTagChangeListener.onDelete(TagGroup.this, tagView.getText().toString());
         }
     }
-
+    public void setOnTagCharEntryListener(OnTagCharEntryListener listener) {
+         this.onTagCharEntryListener = listener;
+     }
     /**
      * Interface definition for a callback to be invoked when a tag group is changed.
      */
@@ -552,7 +566,9 @@ public class TagGroup extends ViewGroup {
          */
         void onTagClick(String tag);
     }
-
+    public interface OnTagCharEntryListener {
+        void onCharEntry(String text);
+     }
     /**
      * Per-child layout information for layouts.
      */
@@ -648,7 +664,7 @@ public class TagGroup extends ViewGroup {
     /**
      * The tag view which has two states can be either NORMAL or INPUT.
      */
-    class TagView extends TextView {
+class TagView extends AutoCompleteTextView {
         public static final int STATE_NORMAL = 1;
         public static final int STATE_INPUT = 2;
 
@@ -717,7 +733,7 @@ public class TagGroup extends ViewGroup {
             setGravity(Gravity.CENTER);
             setText(text);
             setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-
+            setDropDownWidth(MATCH_PARENT);
             mState = state;
 
             setClickable(isAppendMode);
@@ -736,6 +752,9 @@ public class TagGroup extends ViewGroup {
 
             if (state == STATE_INPUT) {
                 requestFocus();
+                //Replace Enter (new line) button with Action Go
+                setRawInputType(InputType.TYPE_CLASS_TEXT);
+                setImeOptions(EditorInfo.IME_ACTION_GO);
 
                 // Handle the ENTER key down.
                 setOnEditorActionListener(new OnEditorActionListener() {
@@ -758,7 +777,28 @@ public class TagGroup extends ViewGroup {
                         return false;
                     }
                 });
+                //check changes
+                addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        tagView = TagView.this;
+                       if(onTagCharEntryListener!=null && s !=null){
+                        onTagCharEntryListener.onCharEntry(s.toString());
+                        }
+                    }
+                });
+
+                
                 // Handle the BACKSPACE key down.
                 setOnKeyListener(new OnKeyListener() {
                     @Override
