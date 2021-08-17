@@ -1,7 +1,8 @@
 package me.gujun.android.taggroup.demo;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -9,7 +10,7 @@ import me.gujun.android.taggroup.TagGroup;
 import me.gujun.android.taggroup.demo.db.TagsManager;
 
 
-public class TagEditorActivity extends ActionBarActivity {
+public class TagEditorActivity extends AppCompatActivity {
     private TagGroup mTagGroup;
     private TagsManager mTagsManager;
 
@@ -21,7 +22,7 @@ public class TagEditorActivity extends ActionBarActivity {
         mTagsManager = TagsManager.getInstance(getApplicationContext());
         String[] tags = mTagsManager.getTags();
 
-        mTagGroup = (TagGroup) findViewById(R.id.tag_group);
+        mTagGroup = findViewById(R.id.tag_group);
         mTagGroup.setTags(tags);
     }
 
