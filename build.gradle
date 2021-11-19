@@ -10,6 +10,10 @@ buildscript {
 }
 
 allprojects {
+    tasks.withType(JavaCompile).configureEach {
+        options.incremental = true
+    }
+
     version = VERSION_NAME
     group = GROUP
 
